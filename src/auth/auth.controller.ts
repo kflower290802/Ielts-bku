@@ -36,16 +36,16 @@ export class AuthController {
   @SerializeOptions({
     groups: ['me'],
   })
-  @Post('email/login')
+  @Post('login')
   @ApiOkResponse({
-    type: LoginResponseDto,
+    type: () => LoginResponseDto,
   })
   @HttpCode(HttpStatus.OK)
   public login(@Body() loginDto: AuthEmailLoginDto): Promise<LoginResponseDto> {
     return this.service.validateLogin(loginDto);
   }
 
-  @Post('email/register')
+  @Post('register')
   @HttpCode(HttpStatus.NO_CONTENT)
   async register(@Body() createUserDto: AuthRegisterLoginDto): Promise<void> {
     return this.service.register(createUserDto);
@@ -91,7 +91,7 @@ export class AuthController {
   @Get('me')
   @UseGuards(AuthGuard('jwt'))
   @ApiOkResponse({
-    type: User,
+    type: () => User,
   })
   @HttpCode(HttpStatus.OK)
   public me(@Request() request): Promise<NullableType<User>> {
@@ -100,7 +100,7 @@ export class AuthController {
 
   @ApiBearerAuth()
   @ApiOkResponse({
-    type: RefreshResponseDto,
+    type: () => RefreshResponseDto,
   })
   @SerializeOptions({
     groups: ['me'],
@@ -133,7 +133,7 @@ export class AuthController {
   @UseGuards(AuthGuard('jwt'))
   @HttpCode(HttpStatus.OK)
   @ApiOkResponse({
-    type: User,
+    type: () => User,
   })
   public update(
     @Request() request,

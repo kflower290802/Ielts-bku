@@ -34,10 +34,8 @@ export class UsersDocumentRepository implements UserRepository {
     paginationOptions: IPaginationOptions;
   }): Promise<User[]> {
     const where: FilterQuery<UserSchemaClass> = {};
-    if (filterOptions?.roles?.length) {
-      where['role._id'] = {
-        $in: filterOptions.roles.map((role) => role.id.toString()),
-      };
+    if (filterOptions?.role) {
+      where['role'] = filterOptions.role;
     }
 
     const userObjects = await this.usersModel
@@ -75,23 +73,6 @@ export class UsersDocumentRepository implements UserRepository {
     return userObject ? UserMapper.toDomain(userObject) : null;
   }
 
-  async findBySocialIdAndProvider({
-    socialId,
-    provider,
-  }: {
-    socialId: User['socialId'];
-    provider: User['provider'];
-  }): Promise<NullableType<User>> {
-    if (!socialId || !provider) return null;
-
-    const userObject = await this.usersModel.findOne({
-      socialId,
-      provider,
-    });
-
-    return userObject ? UserMapper.toDomain(userObject) : null;
-  }
-
   async update(id: User['id'], payload: Partial<User>): Promise<User | null> {
     const clonedPayload = { ...payload };
     delete clonedPayload.id;
@@ -119,5 +100,14 @@ export class UsersDocumentRepository implements UserRepository {
     await this.usersModel.deleteOne({
       _id: id.toString(),
     });
+  }
+
+  async findByAccountId(
+    accountId: User['account']['id'],
+  ): Promise<NullableType<User>> {
+    const user = await this.usersModel
+      .findOne({ account: { _id: accountId } })
+      .populate('account');
+    return user ? UserMapper.toDomain(user) : null;
   }
 }

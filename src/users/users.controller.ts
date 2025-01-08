@@ -48,7 +48,7 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @ApiCreatedResponse({
-    type: User,
+    type: () => User,
   })
   @SerializeOptions({
     groups: ['admin'],
@@ -90,7 +90,7 @@ export class UsersController {
   }
 
   @ApiOkResponse({
-    type: User,
+    type: () => User,
   })
   @SerializeOptions({
     groups: ['admin'],
@@ -107,7 +107,7 @@ export class UsersController {
   }
 
   @ApiOkResponse({
-    type: User,
+    type: () => User,
   })
   @SerializeOptions({
     groups: ['admin'],

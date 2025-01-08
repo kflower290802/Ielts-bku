@@ -4,18 +4,11 @@ import { UsersController } from './users.controller';
 
 import { UsersService } from './users.service';
 import { DocumentUserPersistenceModule } from './infrastructure/persistence/document/document-persistence.module';
-import { FilesModule } from '../files/files.module';
-
-const infrastructurePersistenceModule = DocumentUserPersistenceModule;
 
 @Module({
-  imports: [
-    // import modules, etc.
-    infrastructurePersistenceModule,
-    FilesModule,
-  ],
+  imports: [DocumentUserPersistenceModule],
   controllers: [UsersController],
   providers: [UsersService],
-  exports: [UsersService, infrastructurePersistenceModule],
+  exports: [UsersService, DocumentUserPersistenceModule],
 })
 export class UsersModule {}

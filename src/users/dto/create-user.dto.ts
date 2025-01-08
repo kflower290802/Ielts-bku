@@ -1,55 +1,32 @@
-import {
-  // decorators here
-  Transform,
-  Type,
-} from 'class-transformer';
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import {
-  // decorators here
-  IsEmail,
-  IsNotEmpty,
-  IsOptional,
-  MinLength,
-} from 'class-validator';
-import { FileDto } from '../../files/dto/file.dto';
-import { RoleDto } from '../../roles/dto/role.dto';
-import { StatusDto } from '../../statuses/dto/status.dto';
+import { Transform } from 'class-transformer';
+import { ApiProperty } from '@nestjs/swagger';
+import { IsEmail, IsNotEmpty } from 'class-validator';
+
 import { lowerCaseTransformer } from '../../utils/transformers/lower-case.transformer';
+import { StatusEnum } from '../infrastructure/persistence/document/entities/user.schema';
+import { Account } from '../../accounts/domain/account';
 
 export class CreateUserDto {
   @ApiProperty({ example: 'test1@example.com', type: String })
   @Transform(lowerCaseTransformer)
   @IsNotEmpty()
   @IsEmail()
-  email: string | null;
-
-  @ApiProperty()
-  @MinLength(6)
-  password?: string;
-
-  provider?: string;
-
-  socialId?: string | null;
+  email: string;
 
   @ApiProperty({ example: 'John', type: String })
   @IsNotEmpty()
-  firstName: string | null;
+  name: string;
 
-  @ApiProperty({ example: 'Doe', type: String })
+  @ApiProperty({
+    type: String,
+    example: '123 Main St, Springfield, USA',
+  })
+  address: string;
+
+  @ApiProperty()
   @IsNotEmpty()
-  lastName: string | null;
+  account: Account;
 
-  @ApiPropertyOptional({ type: () => FileDto })
-  @IsOptional()
-  photo?: FileDto | null;
-
-  @ApiPropertyOptional({ type: RoleDto })
-  @IsOptional()
-  @Type(() => RoleDto)
-  role?: RoleDto | null;
-
-  @ApiPropertyOptional({ type: StatusDto })
-  @IsOptional()
-  @Type(() => StatusDto)
-  status?: StatusDto;
+  @ApiProperty({ example: StatusEnum.Active })
+  status: StatusEnum;
 }

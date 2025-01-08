@@ -9,15 +9,20 @@ export class AuthRegisterLoginDto {
   @IsEmail()
   email: string;
 
+  @ApiProperty({ example: 'huy.phan', type: String })
+  @IsNotEmpty()
+  @Transform(lowerCaseTransformer)
+  username: string;
+
   @ApiProperty()
   @MinLength(6)
   password: string;
 
   @ApiProperty({ example: 'John' })
   @IsNotEmpty()
-  firstName: string;
+  name: string;
 
-  @ApiProperty({ example: 'Doe' })
+  @ApiProperty({ example: '123 Main St, Springfield, USA' })
   @IsNotEmpty()
-  lastName: string;
+  address: string;
 }

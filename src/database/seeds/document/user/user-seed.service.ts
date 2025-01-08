@@ -2,9 +2,11 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import bcrypt from 'bcryptjs';
 import { Model } from 'mongoose';
-import { RoleEnum } from '../../../../roles/roles.enum';
-import { StatusEnum } from '../../../../statuses/statuses.enum';
-import { UserSchemaClass } from '../../../../users/infrastructure/persistence/document/entities/user.schema';
+import {
+  StatusEnum,
+  UserSchemaClass,
+} from '../../../../users/infrastructure/persistence/document/entities/user.schema';
+import { RoleEnum } from '../../../../accounts/infrastructure/persistence/document/entities/account.schema';
 
 @Injectable()
 export class UserSeedService {
@@ -24,15 +26,11 @@ export class UserSeedService {
 
       const data = new this.model({
         email: 'admin@example.com',
-        password: password,
-        firstName: 'Super',
-        lastName: 'Admin',
-        role: {
-          _id: RoleEnum.admin.toString(),
-        },
-        status: {
-          _id: StatusEnum.active.toString(),
-        },
+        password,
+        name: 'Super',
+        address: '123 Main St, Springfield, USA',
+        role: RoleEnum.Learner,
+        status: StatusEnum.Active,
       });
       await data.save();
     }
@@ -47,15 +45,11 @@ export class UserSeedService {
 
       const data = new this.model({
         email: 'john.doe@example.com',
-        password: password,
-        firstName: 'John',
-        lastName: 'Doe',
-        role: {
-          _id: RoleEnum.user.toString(),
-        },
-        status: {
-          _id: StatusEnum.active.toString(),
-        },
+        password,
+        name: 'John',
+        address: '123 Main St, Springfield, USA',
+        role: RoleEnum.Learner,
+        status: StatusEnum.Active,
       });
 
       await data.save();

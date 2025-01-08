@@ -1,13 +1,16 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { now, HydratedDocument } from 'mongoose';
+import mongoose, { now, HydratedDocument } from 'mongoose';
 
-import { AuthProvidersEnum } from '../../../../../auth/auth-providers.enum';
-import { FileSchemaClass } from '../../../../../files/infrastructure/persistence/document/entities/file.schema';
 import { EntityDocumentHelper } from '../../../../../utils/document-entity-helper';
-import { StatusSchema } from '../../../../../statuses/infrastructure/persistence/document/entities/status.schema';
-import { RoleSchema } from '../../../../../roles/infrastructure/persistence/document/entities/role.schema';
+import { AccountSchemaClass } from '../../../../../accounts/infrastructure/persistence/document/entities/account.schema';
 
 export type UserSchemaDocument = HydratedDocument<UserSchemaClass>;
+
+export enum StatusEnum {
+  Active = 'active',
+  Inactive = 'inactive',
+  Block = 'block',
+}
 
 @Schema({
   timestamps: true,
@@ -21,46 +24,33 @@ export class UserSchemaClass extends EntityDocumentHelper {
     type: String,
     unique: true,
   })
-  email: string | null;
+  email: string;
+
+  @Prop({
+    type: String,
+    unique: true,
+  })
+  phone: string | null;
 
   @Prop()
   password?: string;
 
   @Prop({
-    default: AuthProvidersEnum.email,
+    type: String,
   })
-  provider: string;
+  name: string;
+
+  @Prop({ type: mongoose.Types.ObjectId, ref: 'AccountSchemaClass' })
+  account: AccountSchemaClass;
+
+  @Prop()
+  address: string;
 
   @Prop({
     type: String,
-    default: null,
+    enum: [StatusEnum.Active, StatusEnum.Block, StatusEnum.Inactive],
   })
-  socialId?: string | null;
-
-  @Prop({
-    type: String,
-  })
-  firstName: string | null;
-
-  @Prop({
-    type: String,
-  })
-  lastName: string | null;
-
-  @Prop({
-    type: FileSchemaClass,
-  })
-  photo?: FileSchemaClass | null;
-
-  @Prop({
-    type: RoleSchema,
-  })
-  role?: RoleSchema | null;
-
-  @Prop({
-    type: StatusSchema,
-  })
-  status?: StatusSchema;
+  status: StatusEnum;
 
   @Prop({ default: now })
   createdAt: Date;
@@ -73,5 +63,3 @@ export class UserSchemaClass extends EntityDocumentHelper {
 }
 
 export const UserSchema = SchemaFactory.createForClass(UserSchemaClass);
-
-UserSchema.index({ 'role._id': 1 });

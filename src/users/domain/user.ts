@@ -1,67 +1,38 @@
-import { Exclude, Expose } from 'class-transformer';
-import { FileType } from '../../files/domain/file';
-import { Role } from '../../roles/domain/role';
-import { Status } from '../../statuses/domain/status';
+import { Expose } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
-
-const idType = String;
+import { StatusEnum } from '../infrastructure/persistence/document/entities/user.schema';
+import { Account } from '../../accounts/domain/account';
 
 export class User {
   @ApiProperty({
-    type: idType,
+    type: String,
   })
-  id: number | string;
+  id: string;
 
   @ApiProperty({
     type: String,
     example: 'john.doe@example.com',
   })
   @Expose({ groups: ['me', 'admin'] })
-  email: string | null;
-
-  @Exclude({ toPlainOnly: true })
-  password?: string;
-
-  @ApiProperty({
-    type: String,
-    example: 'email',
-  })
-  @Expose({ groups: ['me', 'admin'] })
-  provider: string;
-
-  @ApiProperty({
-    type: String,
-    example: '1234567890',
-  })
-  @Expose({ groups: ['me', 'admin'] })
-  socialId?: string | null;
+  email: string;
 
   @ApiProperty({
     type: String,
     example: 'John',
   })
-  firstName: string | null;
+  name: string;
 
   @ApiProperty({
     type: String,
-    example: 'Doe',
+    example: '123 Main St, Springfield, USA',
   })
-  lastName: string | null;
+  address: string;
 
-  @ApiProperty({
-    type: () => FileType,
-  })
-  photo?: FileType | null;
+  @ApiProperty()
+  account: Account;
 
-  @ApiProperty({
-    type: () => Role,
-  })
-  role?: Role | null;
-
-  @ApiProperty({
-    type: () => Status,
-  })
-  status?: Status;
+  @ApiProperty()
+  status: StatusEnum;
 
   @ApiProperty()
   createdAt: Date;

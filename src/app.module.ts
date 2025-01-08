@@ -1,12 +1,10 @@
 import { Module } from '@nestjs/common';
 import { UsersModule } from './users/users.module';
-import { FilesModule } from './files/files.module';
 import { AuthModule } from './auth/auth.module';
 import databaseConfig from './database/config/database.config';
 import authConfig from './auth/config/auth.config';
 import appConfig from './config/app.config';
 import mailConfig from './mail/config/mail.config';
-import fileConfig from './files/config/file.config';
 import googleConfig from './auth-google/config/google.config';
 import path from 'path';
 import { ConfigModule, ConfigService } from '@nestjs/config';
@@ -24,18 +22,14 @@ const infrastructureDatabaseModule = MongooseModule.forRootAsync({
   useClass: MongooseConfigService,
 });
 
+import { AccountsModule } from './accounts/accounts.module';
+
 @Module({
   imports: [
+    AccountsModule,
     ConfigModule.forRoot({
       isGlobal: true,
-      load: [
-        databaseConfig,
-        authConfig,
-        appConfig,
-        mailConfig,
-        fileConfig,
-        googleConfig,
-      ],
+      load: [databaseConfig, authConfig, appConfig, mailConfig, googleConfig],
       envFilePath: ['.env'],
     }),
     infrastructureDatabaseModule,
@@ -63,7 +57,6 @@ const infrastructureDatabaseModule = MongooseModule.forRootAsync({
       inject: [ConfigService],
     }),
     UsersModule,
-    FilesModule,
     AuthModule,
     AuthGoogleModule,
     SessionModule,
