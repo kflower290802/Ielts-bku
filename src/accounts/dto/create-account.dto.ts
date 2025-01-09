@@ -4,7 +4,7 @@ import { IsNotEmpty } from 'class-validator';
 import { lowerCaseTransformer } from '../../utils/transformers/lower-case.transformer';
 
 export class CreateAccountDto {
-  @ApiProperty({ example: 'huy.phan' })
+  @ApiProperty({ example: 'khoa.tran' })
   @Transform(lowerCaseTransformer)
   @IsNotEmpty()
   username: string;

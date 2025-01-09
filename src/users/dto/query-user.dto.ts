@@ -8,12 +8,18 @@ import {
 import { Transform, Type, plainToInstance } from 'class-transformer';
 import { User } from '../domain/user';
 import { RoleEnum } from '../../roles/roles.enum';
+import { lowerCaseTransformer } from '../../utils/transformers/lower-case.transformer';
 
 export class FilterUserDto {
   @ApiPropertyOptional({ type: () => RoleEnum })
   @IsOptional()
   @ValidateNested({ each: true })
   role?: RoleEnum | null;
+
+  @ApiPropertyOptional({ type: String })
+  @Transform(lowerCaseTransformer)
+  @IsOptional()
+  name?: string;
 }
 
 export class SortUserDto {

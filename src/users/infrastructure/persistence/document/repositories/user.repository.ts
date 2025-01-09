@@ -9,6 +9,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { FilterQuery, Model } from 'mongoose';
 import { UserMapper } from '../mappers/user.mapper';
 import { IPaginationOptions } from '../../../../../utils/types/pagination-options';
+import { RoleEnum } from '../../../../../accounts/infrastructure/persistence/document/entities/account.schema';
 
 @Injectable()
 export class UsersDocumentRepository implements UserRepository {
@@ -34,12 +35,21 @@ export class UsersDocumentRepository implements UserRepository {
     paginationOptions: IPaginationOptions;
   }): Promise<User[]> {
     const where: FilterQuery<UserSchemaClass> = {};
-    if (filterOptions?.role) {
-      where['role'] = filterOptions.role;
+
+    if (filterOptions?.name) {
+      where.name = { $regex: '.*' + filterOptions.name + '.*' };
     }
 
     const userObjects = await this.usersModel
       .find(where)
+      .populate({
+        path: 'account',
+        match: {
+          role: filterOptions?.role ?? {
+            $in: [RoleEnum.Learner, RoleEnum.Teacher],
+          },
+        },
+      })
       .sort(
         sortOptions?.reduce(
           (accumulator, sort) => ({
