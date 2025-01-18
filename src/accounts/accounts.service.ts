@@ -13,10 +13,7 @@ export class AccountsService {
     private readonly accountRepository: AccountRepository,
   ) {}
 
-  async create(
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    createAccountDto: CreateAccountDto,
-  ) {
+  async create(createAccountDto: CreateAccountDto) {
     // Do not remove comment below.
     // <creating-property />
     const { username } = createAccountDto;
@@ -27,6 +24,7 @@ export class AccountsService {
       // <creating-property-payload />
       username,
       password,
+      subscriptions: [],
     });
   }
 

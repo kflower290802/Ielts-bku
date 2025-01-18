@@ -18,6 +18,7 @@ export enum StatusEnum {
     virtuals: true,
     getters: true,
   },
+  collection: 'user',
 })
 export class UserSchemaClass extends EntityDocumentHelper {
   @Prop({
@@ -40,7 +41,7 @@ export class UserSchemaClass extends EntityDocumentHelper {
   })
   name: string;
 
-  @Prop({ type: mongoose.Types.ObjectId, ref: 'AccountSchemaClass' })
+  @Prop({ type: mongoose.Types.ObjectId, ref: 'account' })
   account: AccountSchemaClass;
 
   @Prop()

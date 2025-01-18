@@ -1,7 +1,8 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { now, HydratedDocument } from 'mongoose';
+import mongoose, { now, HydratedDocument } from 'mongoose';
 import { EntityDocumentHelper } from '../../../../../utils/document-entity-helper';
 import { Exclude } from 'class-transformer';
+import { SubscriptionSchemaClass } from '../../../../../subscriptions/infrastructure/persistence/document/entities/subscription.schema';
 
 export type AccountSchemaDocument = HydratedDocument<AccountSchemaClass>;
 
@@ -17,6 +18,7 @@ export enum RoleEnum {
     virtuals: true,
     getters: true,
   },
+  collection: 'account',
 })
 export class AccountSchemaClass extends EntityDocumentHelper {
   @Prop({ required: true })
@@ -32,6 +34,14 @@ export class AccountSchemaClass extends EntityDocumentHelper {
     default: RoleEnum.Learner,
   })
   role: RoleEnum;
+
+  @Prop({
+    type: [
+      { type: mongoose.Types.ObjectId, ref: SubscriptionSchemaClass.name },
+    ],
+    default: [],
+  })
+  subscriptions: SubscriptionSchemaClass[];
 
   @Prop({ default: now })
   createdAt: Date;

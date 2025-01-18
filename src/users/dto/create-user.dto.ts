@@ -1,6 +1,6 @@
 import { Transform } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsNotEmpty } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsOptional } from 'class-validator';
 
 import { lowerCaseTransformer } from '../../utils/transformers/lower-case.transformer';
 import { StatusEnum } from '../infrastructure/persistence/document/entities/user.schema';
@@ -22,6 +22,13 @@ export class CreateUserDto {
     example: '123 Main St, Springfield, USA',
   })
   address: string;
+
+  @ApiProperty({
+    type: String,
+    example: '1234567890',
+  })
+  @IsOptional()
+  phone: string | null;
 
   @ApiProperty()
   @IsNotEmpty()

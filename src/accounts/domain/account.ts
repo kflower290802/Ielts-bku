@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { RoleEnum } from '../infrastructure/persistence/document/entities/account.schema';
+import { Subscription } from '../../subscriptions/domain/subscription';
 
 export class Account {
   @ApiProperty({
@@ -15,6 +16,9 @@ export class Account {
 
   @ApiProperty()
   role: RoleEnum;
+
+  @ApiProperty()
+  subscriptions: Subscription[];
 
   @ApiProperty()
   createdAt: Date;

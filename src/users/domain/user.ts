@@ -32,6 +32,9 @@ export class User {
   account: Account;
 
   @ApiProperty()
+  phone: string | null;
+
+  @ApiProperty()
   status: StatusEnum;
 
   @ApiProperty()

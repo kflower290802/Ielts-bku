@@ -1,3 +1,4 @@
+import { Subscription } from '../../../../../subscriptions/domain/subscription';
 import { Account } from '../../../../domain/account';
 import { AccountSchemaClass } from '../entities/account.schema';
 
@@ -10,7 +11,11 @@ export class AccountMapper {
     domainEntity.password = raw.password;
     domainEntity.createdAt = raw.createdAt;
     domainEntity.updatedAt = raw.updatedAt;
-
+    domainEntity.subscriptions = raw.subscriptions.map((subscription) => {
+      const domainSubscriptions = new Subscription();
+      domainSubscriptions.id = subscription._id.toString();
+      return domainSubscriptions;
+    });
     return domainEntity;
   }
 

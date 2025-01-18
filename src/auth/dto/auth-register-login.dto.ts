@@ -27,6 +27,10 @@ export class AuthRegisterLoginDto {
   @IsNotEmpty()
   address: string;
 
+  @ApiProperty({ example: '123456789' })
+  @IsOptional()
+  phone: string | null;
+
   @ApiProperty({ example: RoleEnum.Learner })
   @IsOptional()
   role?: RoleEnum;

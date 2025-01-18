@@ -12,6 +12,7 @@ export class UserMapper {
     domainEntity.address = raw.address;
     domainEntity.status = raw.status;
     domainEntity.account = AccountMapper.toDomain(raw.account);
+    domainEntity.phone = raw.phone;
     domainEntity.createdAt = raw.createdAt;
     domainEntity.updatedAt = raw.updatedAt;
     domainEntity.deletedAt = raw.deletedAt;
@@ -29,6 +30,7 @@ export class UserMapper {
     const accountSchema = new AccountSchemaClass();
     accountSchema._id = domainEntity.account.id;
     persistenceSchema.account = accountSchema;
+    persistenceSchema.phone = domainEntity.phone;
     persistenceSchema.address = domainEntity.address;
     persistenceSchema.createdAt = domainEntity.createdAt;
     persistenceSchema.updatedAt = domainEntity.updatedAt;
