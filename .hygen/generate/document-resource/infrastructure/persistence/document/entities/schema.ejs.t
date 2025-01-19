@@ -13,7 +13,7 @@ export type <%= name %>SchemaDocument = HydratedDocument<<%= name %>SchemaClass>
     virtuals: true,
     getters: true,
   },
-  collection: '<%= name %>'
+  collection: '<%= h.inflection.camelize(name, true) %>'
 })
 export class <%= name %>SchemaClass extends EntityDocumentHelper {
   @Prop({ default: now })

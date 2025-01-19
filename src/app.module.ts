@@ -26,8 +26,14 @@ import { AccountsModule } from './accounts/accounts.module';
 
 import { SubscriptionsModule } from './subscriptions/subscriptions.module';
 
+import { HistoriesModule } from './histories/histories.module';
+
+import { ExplainationsModule } from './explainations/explainations.module';
+
 @Module({
   imports: [
+    ExplainationsModule,
+    HistoriesModule,
     SubscriptionsModule,
     AccountsModule,
     ConfigModule.forRoot({
