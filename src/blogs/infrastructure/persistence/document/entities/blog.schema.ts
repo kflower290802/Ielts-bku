@@ -2,7 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { now, HydratedDocument } from 'mongoose';
 import { EntityDocumentHelper } from '../../../../../utils/document-entity-helper';
 
-export type choiceSchemaDocument = HydratedDocument<ChoiceSchemaClass>;
+export type BlogSchemaDocument = HydratedDocument<BlogSchemaClass>;
 
 @Schema({
   timestamps: true,
@@ -10,9 +10,9 @@ export type choiceSchemaDocument = HydratedDocument<ChoiceSchemaClass>;
     virtuals: true,
     getters: true,
   },
-  collection: 'choice',
+  collection: 'blog',
 })
-export class ChoiceSchemaClass extends EntityDocumentHelper {
+export class BlogSchemaClass extends EntityDocumentHelper {
   @Prop({ default: now })
   createdAt: Date;
 
@@ -20,4 +20,4 @@ export class ChoiceSchemaClass extends EntityDocumentHelper {
   updatedAt: Date;
 }
 
-export const choiceSchema = SchemaFactory.createForClass(ChoiceSchemaClass);
+export const BlogSchema = SchemaFactory.createForClass(BlogSchemaClass);

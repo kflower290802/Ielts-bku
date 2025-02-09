@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-export class Choice {
+export class Blog {
   @ApiProperty({
     type: String,
   })

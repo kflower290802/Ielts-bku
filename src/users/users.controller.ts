@@ -54,6 +54,7 @@ export class UsersController {
   })
   @Post()
   @HttpCode(HttpStatus.CREATED)
+  @Roles(RoleEnum.Admin)
   create(@Body() createProfileDto: CreateUserDto): Promise<User> {
     return this.usersService.create(createProfileDto);
   }
@@ -111,6 +112,7 @@ export class UsersController {
   @SerializeOptions({
     groups: ['admin'],
   })
+  @Roles(RoleEnum.Admin)
   @Patch(':id')
   @HttpCode(HttpStatus.OK)
   @ApiParam({

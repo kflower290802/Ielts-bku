@@ -1,27 +1,27 @@
 import { DeepPartial } from '../../../utils/types/deep-partial.type';
 import { NullableType } from '../../../utils/types/nullable.type';
 import { IPaginationOptions } from '../../../utils/types/pagination-options';
-import { choice } from '../../domain/choice';
+import { Choice } from '../../domain/choice';
 
-export abstract class choiceRepository {
+export abstract class ChoiceRepository {
   abstract create(
-    data: Omit<choice, 'id' | 'createdAt' | 'updatedAt'>,
-  ): Promise<choice>;
+    data: Omit<Choice, 'id' | 'createdAt' | 'updatedAt'>,
+  ): Promise<Choice>;
 
   abstract findAllWithPagination({
     paginationOptions,
   }: {
     paginationOptions: IPaginationOptions;
-  }): Promise<choice[]>;
+  }): Promise<Choice[]>;
 
-  abstract findById(id: choice['id']): Promise<NullableType<choice>>;
+  abstract findById(id: Choice['id']): Promise<NullableType<Choice>>;
 
-  abstract findByIds(ids: choice['id'][]): Promise<choice[]>;
+  abstract findByIds(ids: Choice['id'][]): Promise<Choice[]>;
 
   abstract update(
-    id: choice['id'],
-    payload: DeepPartial<choice>,
-  ): Promise<choice | null>;
+    id: Choice['id'],
+    payload: DeepPartial<Choice>,
+  ): Promise<Choice | null>;
 
-  abstract remove(id: choice['id']): Promise<void>;
+  abstract remove(id: Choice['id']): Promise<void>;
 }

@@ -1,25 +1,34 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateExplainationDto } from './dto/create-explaination.dto';
 import { UpdateExplainationDto } from './dto/update-explaination.dto';
 import { ExplainationRepository } from './infrastructure/persistence/explaination.repository';
 import { IPaginationOptions } from '../utils/types/pagination-options';
 import { Explaination } from './domain/explaination';
+import { ChoicesService } from '../choices/choices.service';
 
 @Injectable()
 export class ExplainationsService {
   constructor(
     // Dependencies here
     private readonly explainationRepository: ExplainationRepository,
+    private readonly choicesService: ChoicesService,
   ) {}
 
   async create(createExplainationDto: CreateExplainationDto) {
     // Do not remove comment below.
     // <creating-property />
 
+    const choice = await this.choicesService.findById(
+      createExplainationDto.choiceId,
+    );
+
+    if (!choice) throw new BadRequestException('Choice not found');
+
     return this.explainationRepository.create({
       // Do not remove comment below.
       // <creating-property-payload />
       ...createExplainationDto,
+      choice,
     });
   }
 

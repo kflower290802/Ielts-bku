@@ -2,6 +2,6 @@
 // import { Allow } from 'class-validator';
 
 import { PartialType } from '@nestjs/swagger';
-import { CreateChoiceDto } from './create-choice.dto';
+import { CreateBlogDto } from './create-blog.dto';
 
-export class UpdateChoiceDto extends PartialType(CreateChoiceDto) {}
+export class UpdateBlogDto extends PartialType(CreateBlogDto) {}

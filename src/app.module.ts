@@ -30,8 +30,14 @@ import { HistoriesModule } from './histories/histories.module';
 
 import { ExplainationsModule } from './explainations/explainations.module';
 
+import { ChoicesModule } from './choices/choices.module';
+
+import { BlogsModule } from './blogs/blogs.module';
+
 @Module({
   imports: [
+    BlogsModule,
+    ChoicesModule,
     ExplainationsModule,
     HistoriesModule,
     SubscriptionsModule,

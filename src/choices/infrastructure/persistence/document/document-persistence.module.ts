@@ -1,21 +1,21 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { choiceSchema, choiceSchemaClass } from './entities/choice.schema';
-import { choiceRepository } from '../choice.repository';
-import { choiceDocumentRepository } from './repositories/choice.repository';
+import { choiceSchema, ChoiceSchemaClass } from './entities/choice.schema';
+import { ChoiceRepository } from '../choice.repository';
+import { ChoiceDocumentRepository } from './repositories/choice.repository';
 
 @Module({
   imports: [
     MongooseModule.forFeature([
-      { name: choiceSchemaClass.name, schema: choiceSchema },
+      { name: ChoiceSchemaClass.name, schema: choiceSchema },
     ]),
   ],
   providers: [
     {
-      provide: choiceRepository,
-      useClass: choiceDocumentRepository,
+      provide: ChoiceRepository,
+      useClass: ChoiceDocumentRepository,
     },
   ],
-  exports: [choiceRepository],
+  exports: [ChoiceRepository],
 })
-export class DocumentchoicePersistenceModule {}
+export class DocumentChoicePersistenceModule {}

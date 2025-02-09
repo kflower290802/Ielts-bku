@@ -9,9 +9,9 @@ import {
   UseGuards,
   Query,
 } from '@nestjs/common';
-import { ChoicesService } from './choices.service';
-import { CreateChoiceDto } from './dto/create-choice.dto';
-import { UpdateChoiceDto } from './dto/update-choice.dto';
+import { BlogsService } from './blogs.service';
+import { CreateBlogDto } from './dto/create-blog.dto';
+import { UpdateBlogDto } from './dto/update-blog.dto';
 import {
   ApiBearerAuth,
   ApiCreatedResponse,
@@ -19,40 +19,40 @@ import {
   ApiParam,
   ApiTags,
 } from '@nestjs/swagger';
-import { Choice } from './domain/choice';
+import { Blog } from './domain/blog';
 import { AuthGuard } from '@nestjs/passport';
 import {
   InfinityPaginationResponse,
   InfinityPaginationResponseDto,
 } from '../utils/dto/infinity-pagination-response.dto';
 import { infinityPagination } from '../utils/infinity-pagination';
-import { FindAllChoicesDto } from './dto/find-all-choices.dto';
+import { FindAllBlogsDto } from './dto/find-all-blogs.dto';
 
-@ApiTags('Choices')
+@ApiTags('Blogs')
 @ApiBearerAuth()
 @UseGuards(AuthGuard('jwt'))
 @Controller({
-  path: 'choices',
+  path: 'blogs',
   version: '1',
 })
-export class choicesController {
-  constructor(private readonly choicesService: ChoicesService) {}
+export class BlogsController {
+  constructor(private readonly blogsService: BlogsService) {}
 
   @Post()
   @ApiCreatedResponse({
-    type: Choice,
+    type: Blog,
   })
-  create(@Body() createchoiceDto: CreateChoiceDto) {
-    return this.choicesService.create(createchoiceDto);
+  create(@Body() createBlogDto: CreateBlogDto) {
+    return this.blogsService.create(createBlogDto);
   }
 
   @Get()
   @ApiOkResponse({
-    type: InfinityPaginationResponse(Choice),
+    type: InfinityPaginationResponse(Blog),
   })
   async findAll(
-    @Query() query: FindAllChoicesDto,
-  ): Promise<InfinityPaginationResponseDto<Choice>> {
+    @Query() query: FindAllBlogsDto,
+  ): Promise<InfinityPaginationResponseDto<Blog>> {
     const page = query?.page ?? 1;
     let limit = query?.limit ?? 10;
     if (limit > 50) {
@@ -60,7 +60,7 @@ export class choicesController {
     }
 
     return infinityPagination(
-      await this.choicesService.findAllWithPagination({
+      await this.blogsService.findAllWithPagination({
         paginationOptions: {
           page,
           limit,
@@ -77,10 +77,10 @@ export class choicesController {
     required: true,
   })
   @ApiOkResponse({
-    type: Choice,
+    type: Blog,
   })
   findById(@Param('id') id: string) {
-    return this.choicesService.findById(id);
+    return this.blogsService.findById(id);
   }
 
   @Patch(':id')
@@ -90,10 +90,10 @@ export class choicesController {
     required: true,
   })
   @ApiOkResponse({
-    type: Choice,
+    type: Blog,
   })
-  update(@Param('id') id: string, @Body() updatechoiceDto: UpdateChoiceDto) {
-    return this.choicesService.update(id, updatechoiceDto);
+  update(@Param('id') id: string, @Body() updateBlogDto: UpdateBlogDto) {
+    return this.blogsService.update(id, updateBlogDto);
   }
 
   @Delete(':id')
@@ -103,6 +103,6 @@ export class choicesController {
     required: true,
   })
   remove(@Param('id') id: string) {
-    return this.choicesService.remove(id);
+    return this.blogsService.remove(id);
   }
 }

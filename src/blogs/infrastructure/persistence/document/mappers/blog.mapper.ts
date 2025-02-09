@@ -1,9 +1,9 @@
-import { Choice } from '../../../../domain/choice';
-import { ChoiceSchemaClass } from '../entities/choice.schema';
+import { Blog } from '../../../../domain/blog';
+import { BlogSchemaClass } from '../entities/blog.schema';
 
-export class ChoiceMapper {
-  public static toDomain(raw: ChoiceSchemaClass): Choice {
-    const domainEntity = new Choice();
+export class BlogMapper {
+  public static toDomain(raw: BlogSchemaClass): Blog {
+    const domainEntity = new Blog();
     domainEntity.id = raw._id.toString();
     domainEntity.createdAt = raw.createdAt;
     domainEntity.updatedAt = raw.updatedAt;
@@ -11,8 +11,8 @@ export class ChoiceMapper {
     return domainEntity;
   }
 
-  public static toPersistence(domainEntity: Choice): ChoiceSchemaClass {
-    const persistenceSchema = new ChoiceSchemaClass();
+  public static toPersistence(domainEntity: Blog): BlogSchemaClass {
+    const persistenceSchema = new BlogSchemaClass();
     if (domainEntity.id) {
       persistenceSchema._id = domainEntity.id;
     }

@@ -1,15 +1,15 @@
 import { Module } from '@nestjs/common';
-import { choicesService } from './choices.service';
+import { ChoicesService } from './choices.service';
 import { choicesController } from './choices.controller';
-import { DocumentchoicePersistenceModule } from './infrastructure/persistence/document/document-persistence.module';
+import { DocumentChoicePersistenceModule } from './infrastructure/persistence/document/document-persistence.module';
 
 @Module({
   imports: [
     // import modules, etc.
-    DocumentchoicePersistenceModule,
+    DocumentChoicePersistenceModule,
   ],
   controllers: [choicesController],
-  providers: [choicesService],
-  exports: [choicesService, DocumentchoicePersistenceModule],
+  providers: [ChoicesService],
+  exports: [ChoicesService, DocumentChoicePersistenceModule],
 })
-export class choicesModule {}
+export class ChoicesModule {}

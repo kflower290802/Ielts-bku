@@ -11,4 +11,8 @@ export class CreateExplainationDto {
   @ApiProperty()
   @IsNotEmpty()
   doc: string;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  choiceId: string;
 }
