@@ -5,7 +5,7 @@ import { Blog } from '../../domain/blog';
 
 export abstract class BlogRepository {
   abstract create(
-    data: Omit<Blog, 'id' | 'createdAt' | 'updatedAt'>,
+    data: Omit<Blog, 'id' | 'createdAt' | 'updatedAt' | 'status'>,
   ): Promise<Blog>;
 
   abstract findAllWithPagination({

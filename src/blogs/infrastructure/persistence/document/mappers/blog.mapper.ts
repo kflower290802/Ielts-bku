@@ -5,6 +5,10 @@ export class BlogMapper {
   public static toDomain(raw: BlogSchemaClass): Blog {
     const domainEntity = new Blog();
     domainEntity.id = raw._id.toString();
+    domainEntity.content = raw.content;
+    domainEntity.image = raw.image;
+    domainEntity.title = raw.title;
+    domainEntity.status = raw.status;
     domainEntity.createdAt = raw.createdAt;
     domainEntity.updatedAt = raw.updatedAt;
 
@@ -16,6 +20,10 @@ export class BlogMapper {
     if (domainEntity.id) {
       persistenceSchema._id = domainEntity.id;
     }
+    persistenceSchema.content = domainEntity.content;
+    persistenceSchema.image = domainEntity.image;
+    persistenceSchema.status = domainEntity.status;
+    persistenceSchema.title = domainEntity.title;
     persistenceSchema.createdAt = domainEntity.createdAt;
     persistenceSchema.updatedAt = domainEntity.updatedAt;
 

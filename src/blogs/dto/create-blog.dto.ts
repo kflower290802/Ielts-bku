@@ -1,3 +1,21 @@
+import { ApiProperty } from '@nestjs/swagger';
+import { IsEnum, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { BlogStatus } from '../blog.type';
+
 export class CreateBlogDto {
-  // Don't forget to use the class-validator decorators in the DTO properties.
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsString()
+  title: string;
+
+  @ApiProperty()
+  @IsString()
+  content?: string;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsEnum(BlogStatus, {
+    message: 'invalidBlogStatus',
+  })
+  status?: BlogStatus;
 }

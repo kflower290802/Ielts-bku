@@ -33,9 +33,11 @@ import { ExplainationsModule } from './explainations/explainations.module';
 import { ChoicesModule } from './choices/choices.module';
 
 import { BlogsModule } from './blogs/blogs.module';
+import { CloudinaryModule } from './cloudinary/cloudinary.module';
 
 @Module({
   imports: [
+    CloudinaryModule,
     BlogsModule,
     ChoicesModule,
     ExplainationsModule,

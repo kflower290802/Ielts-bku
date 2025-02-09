@@ -8,6 +8,8 @@ import {
   Delete,
   UseGuards,
   Query,
+  UseInterceptors,
+  UploadedFile,
 } from '@nestjs/common';
 import { BlogsService } from './blogs.service';
 import { CreateBlogDto } from './dto/create-blog.dto';
@@ -27,10 +29,12 @@ import {
 } from '../utils/dto/infinity-pagination-response.dto';
 import { infinityPagination } from '../utils/infinity-pagination';
 import { FindAllBlogsDto } from './dto/find-all-blogs.dto';
+import { Roles } from '../roles/roles.decorator';
+import { RoleEnum } from '../accounts/infrastructure/persistence/document/entities/account.schema';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @ApiTags('Blogs')
 @ApiBearerAuth()
-@UseGuards(AuthGuard('jwt'))
 @Controller({
   path: 'blogs',
   version: '1',
@@ -42,14 +46,22 @@ export class BlogsController {
   @ApiCreatedResponse({
     type: Blog,
   })
-  create(@Body() createBlogDto: CreateBlogDto) {
-    return this.blogsService.create(createBlogDto);
+  @UseGuards(AuthGuard('jwt'))
+  @Roles(RoleEnum.Teacher)
+  @UseInterceptors(FileInterceptor('image'))
+  create(
+    @Body() createBlogDto: CreateBlogDto,
+    @UploadedFile()
+    image: Express.Multer.File,
+  ) {
+    return this.blogsService.create({ ...createBlogDto, image });
   }
 
   @Get()
   @ApiOkResponse({
     type: InfinityPaginationResponse(Blog),
   })
+  @Roles(RoleEnum.Admin)
   async findAll(
     @Query() query: FindAllBlogsDto,
   ): Promise<InfinityPaginationResponseDto<Blog>> {
@@ -92,6 +104,7 @@ export class BlogsController {
   @ApiOkResponse({
     type: Blog,
   })
+  @Roles(RoleEnum.Teacher, RoleEnum.Admin)
   update(@Param('id') id: string, @Body() updateBlogDto: UpdateBlogDto) {
     return this.blogsService.update(id, updateBlogDto);
   }
