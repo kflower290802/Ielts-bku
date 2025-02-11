@@ -2,57 +2,57 @@ import { Injectable } from '@nestjs/common';
 import { NullableType } from '../../../../../utils/types/nullable.type';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { lessonSchemaClass } from '../entities/lesson.schema';
-import { lessonRepository } from '../../lesson.repository';
-import { lesson } from '../../../../domain/lesson';
-import { lessonMapper } from '../mappers/lesson.mapper';
+import { LessonSchemaClass } from '../entities/lesson.schema';
+import { LessonRepository } from '../../lesson.repository';
+import { Lesson } from '../../../../domain/lesson';
+import { LessonMapper } from '../mappers/lesson.mapper';
 import { IPaginationOptions } from '../../../../../utils/types/pagination-options';
 
 @Injectable()
-export class lessonDocumentRepository implements lessonRepository {
+export class lessonDocumentRepository implements LessonRepository {
   constructor(
-    @InjectModel(lessonSchemaClass.name)
-    private readonly lessonModel: Model<lessonSchemaClass>,
+    @InjectModel(LessonSchemaClass.name)
+    private readonly lessonModel: Model<LessonSchemaClass>,
   ) {}
 
-  async create(data: lesson): Promise<lesson> {
-    const persistenceModel = lessonMapper.toPersistence(data);
+  async create(data: Lesson): Promise<Lesson> {
+    const persistenceModel = LessonMapper.toPersistence(data);
     const createdEntity = new this.lessonModel(persistenceModel);
     const entityObject = await createdEntity.save();
-    return lessonMapper.toDomain(entityObject);
+    return LessonMapper.toDomain(entityObject);
   }
 
   async findAllWithPagination({
     paginationOptions,
   }: {
     paginationOptions: IPaginationOptions;
-  }): Promise<lesson[]> {
+  }): Promise<Lesson[]> {
     const entityObjects = await this.lessonModel
       .find()
       .skip((paginationOptions.page - 1) * paginationOptions.limit)
       .limit(paginationOptions.limit);
 
     return entityObjects.map((entityObject) =>
-      lessonMapper.toDomain(entityObject),
+      LessonMapper.toDomain(entityObject),
     );
   }
 
-  async findById(id: lesson['id']): Promise<NullableType<lesson>> {
+  async findById(id: Lesson['id']): Promise<NullableType<Lesson>> {
     const entityObject = await this.lessonModel.findById(id);
-    return entityObject ? lessonMapper.toDomain(entityObject) : null;
+    return entityObject ? LessonMapper.toDomain(entityObject) : null;
   }
 
-  async findByIds(ids: lesson['id'][]): Promise<lesson[]> {
+  async findByIds(ids: Lesson['id'][]): Promise<Lesson[]> {
     const entityObjects = await this.lessonModel.find({ _id: { $in: ids } });
     return entityObjects.map((entityObject) =>
-      lessonMapper.toDomain(entityObject),
+      LessonMapper.toDomain(entityObject),
     );
   }
 
   async update(
-    id: lesson['id'],
-    payload: Partial<lesson>,
-  ): Promise<NullableType<lesson>> {
+    id: Lesson['id'],
+    payload: Partial<Lesson>,
+  ): Promise<NullableType<Lesson>> {
     const clonedPayload = { ...payload };
     delete clonedPayload.id;
 
@@ -65,17 +65,17 @@ export class lessonDocumentRepository implements lessonRepository {
 
     const entityObject = await this.lessonModel.findOneAndUpdate(
       filter,
-      lessonMapper.toPersistence({
-        ...lessonMapper.toDomain(entity),
+      LessonMapper.toPersistence({
+        ...LessonMapper.toDomain(entity),
         ...clonedPayload,
       }),
       { new: true },
     );
 
-    return entityObject ? lessonMapper.toDomain(entityObject) : null;
+    return entityObject ? LessonMapper.toDomain(entityObject) : null;
   }
 
-  async remove(id: lesson['id']): Promise<void> {
+  async remove(id: Lesson['id']): Promise<void> {
     await this.lessonModel.deleteOne({ _id: id });
   }
 }

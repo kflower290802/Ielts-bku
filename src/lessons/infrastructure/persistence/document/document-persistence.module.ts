@@ -1,21 +1,21 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { lessonSchema, lessonSchemaClass } from './entities/lesson.schema';
-import { lessonRepository } from '../lesson.repository';
+import { lessonSchema, LessonSchemaClass } from './entities/lesson.schema';
+import { LessonRepository } from '../lesson.repository';
 import { lessonDocumentRepository } from './repositories/lesson.repository';
 
 @Module({
   imports: [
     MongooseModule.forFeature([
-      { name: lessonSchemaClass.name, schema: lessonSchema },
+      { name: LessonSchemaClass.name, schema: lessonSchema },
     ]),
   ],
   providers: [
     {
-      provide: lessonRepository,
+      provide: LessonRepository,
       useClass: lessonDocumentRepository,
     },
   ],
-  exports: [lessonRepository],
+  exports: [LessonRepository],
 })
-export class DocumentlessonPersistenceModule {}
+export class DocumentLessonPersistenceModule {}

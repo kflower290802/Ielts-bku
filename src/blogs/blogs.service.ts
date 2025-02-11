@@ -23,8 +23,6 @@ export class BlogsService {
     if (imageResponse.http_code)
       throw new InternalServerErrorException('Something went wrong!');
     return this.blogRepository.create({
-      // Do not remove comment below.
-      // <creating-property-payload />
       ...createBlogDto,
       image: imageResponse.secure_url,
     });

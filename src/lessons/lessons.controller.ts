@@ -6,53 +6,76 @@ import {
   Patch,
   Param,
   Delete,
-  UseGuards,
   Query,
+  UseInterceptors,
+  UploadedFile,
 } from '@nestjs/common';
-import { lessonsService } from './lessons.service';
-import { CreatelessonDto } from './dto/create-lesson.dto';
-import { UpdatelessonDto } from './dto/update-lesson.dto';
+import { LessonsService } from './lessons.service';
+import { CreateLessonDto } from './dto/create-lesson.dto';
+import { UpdateLessonDto } from './dto/update-lesson.dto';
 import {
   ApiBearerAuth,
+  ApiConsumes,
   ApiCreatedResponse,
   ApiOkResponse,
   ApiParam,
   ApiTags,
 } from '@nestjs/swagger';
-import { lesson } from './domain/lesson';
-import { AuthGuard } from '@nestjs/passport';
+import { Lesson } from './domain/lesson';
 import {
   InfinityPaginationResponse,
   InfinityPaginationResponseDto,
 } from '../utils/dto/infinity-pagination-response.dto';
 import { infinityPagination } from '../utils/infinity-pagination';
-import { FindAlllessonsDto } from './dto/find-all-lessons.dto';
+import { FindAllLessonsDto } from './dto/find-all-lessons.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
+import path from 'path';
 
 @ApiTags('Lessons')
 @ApiBearerAuth()
-@UseGuards(AuthGuard('jwt'))
+// @UseGuards(AuthGuard('jwt'))
 @Controller({
   path: 'lessons',
   version: '1',
 })
-export class lessonsController {
-  constructor(private readonly lessonsService: lessonsService) {}
+export class LessonsController {
+  constructor(private readonly lessonsService: LessonsService) {}
 
   @Post()
   @ApiCreatedResponse({
-    type: lesson,
+    type: Lesson,
   })
-  create(@Body() createlessonDto: CreatelessonDto) {
-    return this.lessonsService.create(createlessonDto);
+  @UseInterceptors(
+    FileInterceptor('video', {
+      storage: diskStorage({
+        destination: './video-upload',
+        filename: (_, file, cb) => {
+          const uniqueSuffix =
+            Date.now() + '-' + Math.round(Math.random() * 1e9);
+          const ext = path.extname(file.originalname);
+          const filename = `${uniqueSuffix}${ext}`;
+          cb(null, filename);
+        },
+      }),
+    }),
+  )
+  @ApiConsumes('multipart/form-data')
+  async create(
+    @Body() createLessonDto: CreateLessonDto,
+    @UploadedFile() video?: Express.Multer.File,
+  ) {
+    const res = await this.lessonsService.create({ ...createLessonDto, video });
+    return res;
   }
 
   @Get()
   @ApiOkResponse({
-    type: InfinityPaginationResponse(lesson),
+    type: InfinityPaginationResponse(Lesson),
   })
   async findAll(
-    @Query() query: FindAlllessonsDto,
-  ): Promise<InfinityPaginationResponseDto<lesson>> {
+    @Query() query: FindAllLessonsDto,
+  ): Promise<InfinityPaginationResponseDto<Lesson>> {
     const page = query?.page ?? 1;
     let limit = query?.limit ?? 10;
     if (limit > 50) {
@@ -77,7 +100,7 @@ export class lessonsController {
     required: true,
   })
   @ApiOkResponse({
-    type: lesson,
+    type: Lesson,
   })
   findById(@Param('id') id: string) {
     return this.lessonsService.findById(id);
@@ -90,9 +113,9 @@ export class lessonsController {
     required: true,
   })
   @ApiOkResponse({
-    type: lesson,
+    type: Lesson,
   })
-  update(@Param('id') id: string, @Body() updatelessonDto: UpdatelessonDto) {
+  update(@Param('id') id: string, @Body() updatelessonDto: UpdateLessonDto) {
     return this.lessonsService.update(id, updatelessonDto);
   }
 

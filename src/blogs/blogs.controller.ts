@@ -6,7 +6,7 @@ import {
   Patch,
   Param,
   Delete,
-  UseGuards,
+  // UseGuards,
   Query,
   UseInterceptors,
   UploadedFile,
@@ -22,7 +22,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { Blog } from './domain/blog';
-import { AuthGuard } from '@nestjs/passport';
+// import { AuthGuard } from '@nestjs/passport';
 import {
   InfinityPaginationResponse,
   InfinityPaginationResponseDto,
@@ -46,8 +46,8 @@ export class BlogsController {
   @ApiCreatedResponse({
     type: Blog,
   })
-  @UseGuards(AuthGuard('jwt'))
-  @Roles(RoleEnum.Teacher)
+  // @UseGuards(AuthGuard('jwt'))
+  // @Roles(RoleEnum.Teacher)
   @UseInterceptors(FileInterceptor('image'))
   create(
     @Body() createBlogDto: CreateBlogDto,
@@ -61,7 +61,7 @@ export class BlogsController {
   @ApiOkResponse({
     type: InfinityPaginationResponse(Blog),
   })
-  @Roles(RoleEnum.Admin)
+  // @Roles(RoleEnum.Admin)
   async findAll(
     @Query() query: FindAllBlogsDto,
   ): Promise<InfinityPaginationResponseDto<Blog>> {

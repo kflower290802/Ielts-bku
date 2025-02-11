@@ -1,24 +1,18 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { LessonType } from '../lessons.type';
+import { Lesson } from '../../lessons/domain/lesson';
 import { Blog } from '../../blogs/domain/blog';
 
-export class Lesson {
+export class BlogLesson {
   @ApiProperty({
     type: String,
   })
   id: string;
 
   @ApiProperty()
-  name: string;
+  lesson: Lesson;
 
   @ApiProperty()
-  type: LessonType;
-
-  @ApiProperty()
-  videoId?: string;
-
-  @ApiProperty()
-  blog?: Blog;
+  blog: Blog;
 
   @ApiProperty()
   createdAt: Date;

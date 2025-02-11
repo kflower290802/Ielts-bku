@@ -35,8 +35,16 @@ import { ChoicesModule } from './choices/choices.module';
 import { BlogsModule } from './blogs/blogs.module';
 import { CloudinaryModule } from './cloudinary/cloudinary.module';
 
+import { FlashCardsModule } from './flash-cards/flash-cards.module';
+import { VideosModule } from './videos/videos.module';
+
+import { BlogLessonsModule } from './blog-lessons/blog-lessons.module';
+
 @Module({
   imports: [
+    BlogLessonsModule,
+    FlashCardsModule,
+    VideosModule,
     CloudinaryModule,
     BlogsModule,
     ChoicesModule,

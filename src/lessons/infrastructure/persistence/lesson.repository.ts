@@ -1,27 +1,27 @@
 import { DeepPartial } from '../../../utils/types/deep-partial.type';
 import { NullableType } from '../../../utils/types/nullable.type';
 import { IPaginationOptions } from '../../../utils/types/pagination-options';
-import { lesson } from '../../domain/lesson';
+import { Lesson } from '../../domain/lesson';
 
-export abstract class lessonRepository {
+export abstract class LessonRepository {
   abstract create(
-    data: Omit<lesson, 'id' | 'createdAt' | 'updatedAt'>,
-  ): Promise<lesson>;
+    data: Omit<Lesson, 'id' | 'createdAt' | 'updatedAt'>,
+  ): Promise<Lesson>;
 
   abstract findAllWithPagination({
     paginationOptions,
   }: {
     paginationOptions: IPaginationOptions;
-  }): Promise<lesson[]>;
+  }): Promise<Lesson[]>;
 
-  abstract findById(id: lesson['id']): Promise<NullableType<lesson>>;
+  abstract findById(id: Lesson['id']): Promise<NullableType<Lesson>>;
 
-  abstract findByIds(ids: lesson['id'][]): Promise<lesson[]>;
+  abstract findByIds(ids: Lesson['id'][]): Promise<Lesson[]>;
 
   abstract update(
-    id: lesson['id'],
-    payload: DeepPartial<lesson>,
-  ): Promise<lesson | null>;
+    id: Lesson['id'],
+    payload: DeepPartial<Lesson>,
+  ): Promise<Lesson | null>;
 
-  abstract remove(id: lesson['id']): Promise<void>;
+  abstract remove(id: Lesson['id']): Promise<void>;
 }
