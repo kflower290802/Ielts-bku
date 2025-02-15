@@ -1,6 +1,8 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { now, HydratedDocument } from 'mongoose';
+import mongoose, { now, HydratedDocument } from 'mongoose';
 import { EntityDocumentHelper } from '../../../../../utils/document-entity-helper';
+import { UserSchemaClass } from '../../../../../users/infrastructure/persistence/document/entities/user.schema';
+import { ExamSchemaClass } from '../../../../../exams/infrastructure/persistence/document/entities/exam.schema';
 
 export type UserExamSchemaDocument = HydratedDocument<UserExamSchemaClass>;
 
@@ -13,6 +15,26 @@ export type UserExamSchemaDocument = HydratedDocument<UserExamSchemaClass>;
   collection: 'userExam',
 })
 export class UserExamSchemaClass extends EntityDocumentHelper {
+  @Prop({
+    type: mongoose.Types.ObjectId,
+    required: true,
+    ref: UserExamSchemaClass.name,
+  })
+  user: UserSchemaClass;
+
+  @Prop({
+    type: mongoose.Types.ObjectId,
+    required: true,
+    ref: ExamSchemaClass.name,
+  })
+  exam: ExamSchemaClass;
+
+  @Prop()
+  score: number;
+
+  @Prop()
+  progress: number;
+
   @Prop({ default: now })
   createdAt: Date;
 

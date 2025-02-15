@@ -30,9 +30,7 @@ export class UsersService {
       if (userObject) {
         throw new UnprocessableEntityException({
           status: HttpStatus.UNPROCESSABLE_ENTITY,
-          errors: {
-            email: 'emailAlreadyExists',
-          },
+          errors: 'Email already used',
         });
       }
       email = createUserDto.email;

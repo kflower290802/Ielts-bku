@@ -10,4 +10,4 @@ import { CloudinaryModule } from '../cloudinary/cloudinary.module';
   providers: [ExamsService],
   exports: [ExamsService, DocumentExamPersistenceModule],
 })
-export class examsModule {}
+export class ExamsModule {}

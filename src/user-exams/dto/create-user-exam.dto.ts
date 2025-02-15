@@ -1,3 +1,24 @@
+import { ApiProperty } from '@nestjs/swagger';
+import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
+
 export class CreateUserExamDto {
-  // Don't forget to use the class-validator decorators in the DTO properties.
+  @ApiProperty()
+  @IsString()
+  @IsNotEmpty()
+  userId: string;
+
+  @ApiProperty()
+  @IsString()
+  @IsNotEmpty()
+  examId: string;
+
+  @ApiProperty()
+  @IsNumber()
+  @IsNotEmpty()
+  progress: number;
+
+  @ApiProperty()
+  @IsNumber()
+  @IsNotEmpty()
+  score: number;
 }

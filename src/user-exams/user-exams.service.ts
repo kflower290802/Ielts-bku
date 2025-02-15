@@ -1,27 +1,38 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateUserExamDto } from './dto/create-user-exam.dto';
 import { UpdateUserExamDto } from './dto/update-user-exam.dto';
 import { UserExamRepository } from './infrastructure/persistence/user-exam.repository';
 import { IPaginationOptions } from '../utils/types/pagination-options';
 import { UserExam } from './domain/user-exam';
+import { UsersService } from '../users/users.service';
+import { ExamsService } from '../exams/exams.service';
 
 @Injectable()
 export class UserExamsService {
   constructor(
     // Dependencies here
     private readonly userExamRepository: UserExamRepository,
+    private readonly usersService: UsersService,
+    private readonly examsService: ExamsService,
   ) {}
 
-  async create(
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    createUserExamDto: CreateUserExamDto,
-  ) {
+  async create(createUserExamDto: CreateUserExamDto) {
     // Do not remove comment below.
     // <creating-property />
+    const { userId, examId, ...rest } = createUserExamDto;
+    const user = await this.usersService.findById(userId);
 
+    if (!user) throw new BadRequestException('User not found');
+
+    const exam = await this.examsService.findById(examId);
+
+    if (!exam) throw new BadRequestException('Exam not found');
     return this.userExamRepository.create({
       // Do not remove comment below.
       // <creating-property-payload />
+      user,
+      exam,
+      ...rest,
     });
   }
 

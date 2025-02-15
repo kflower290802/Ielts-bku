@@ -45,9 +45,7 @@ export class AuthService {
     if (!user) {
       throw new UnprocessableEntityException({
         status: HttpStatus.UNPROCESSABLE_ENTITY,
-        errors: {
-          email: 'notFound',
-        },
+        errors: 'Email not found',
       });
     }
     const account = user.account;
@@ -55,9 +53,7 @@ export class AuthService {
     if (!account.password) {
       throw new UnprocessableEntityException({
         status: HttpStatus.UNPROCESSABLE_ENTITY,
-        errors: {
-          password: 'incorrectPassword',
-        },
+        errors: 'Account not found',
       });
     }
 
@@ -69,9 +65,7 @@ export class AuthService {
     if (!isValidPassword) {
       throw new UnprocessableEntityException({
         status: HttpStatus.UNPROCESSABLE_ENTITY,
-        errors: {
-          password: 'incorrectPassword',
-        },
+        errors: 'Invalid password',
       });
     }
 
