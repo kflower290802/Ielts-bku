@@ -25,8 +25,9 @@ export class User {
   @ApiProperty({
     type: String,
     example: '123 Main St, Springfield, USA',
+    required: false,
   })
-  address: string;
+  address?: string;
 
   @ApiProperty()
   account: Account;

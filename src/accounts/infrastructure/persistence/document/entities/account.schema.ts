@@ -21,8 +21,8 @@ export enum RoleEnum {
   collection: 'account',
 })
 export class AccountSchemaClass extends EntityDocumentHelper {
-  @Prop({ required: true })
-  username: string;
+  @Prop({ required: false })
+  username?: string;
 
   @Prop({ required: true, type: String })
   @Exclude({ toPlainOnly: true })

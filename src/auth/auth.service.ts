@@ -40,20 +40,7 @@ export class AuthService {
   ) {}
 
   async validateLogin(loginDto: AuthEmailLoginDto): Promise<LoginResponseDto> {
-    const account = await this.accountsService.findByUsername(
-      loginDto.username,
-    );
-
-    if (!account) {
-      throw new UnprocessableEntityException({
-        status: HttpStatus.UNPROCESSABLE_ENTITY,
-        errors: {
-          email: 'notFound',
-        },
-      });
-    }
-
-    const user = await this.usersService.findByAccountId(account.id);
+    const user = await this.usersService.findByEmail(loginDto.email);
 
     if (!user) {
       throw new UnprocessableEntityException({
@@ -63,6 +50,7 @@ export class AuthService {
         },
       });
     }
+    const account = user.account;
 
     if (!account.password) {
       throw new UnprocessableEntityException({

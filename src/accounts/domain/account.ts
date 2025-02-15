@@ -9,7 +9,7 @@ export class Account {
   id: string;
 
   @ApiProperty({ example: 'John Doe' })
-  username: string;
+  username?: string;
 
   @ApiProperty()
   password: string;

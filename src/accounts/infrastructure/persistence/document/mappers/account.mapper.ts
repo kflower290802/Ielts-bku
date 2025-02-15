@@ -11,11 +11,14 @@ export class AccountMapper {
     domainEntity.password = raw.password;
     domainEntity.createdAt = raw.createdAt;
     domainEntity.updatedAt = raw.updatedAt;
-    domainEntity.subscriptions = raw.subscriptions.map((subscription) => {
-      const domainSubscriptions = new Subscription();
-      domainSubscriptions.id = subscription._id.toString();
-      return domainSubscriptions;
-    });
+    if (raw.subscriptions && raw.subscriptions.length) {
+      domainEntity.subscriptions = raw.subscriptions.map((subscription) => {
+        const domainSubscriptions = new Subscription();
+        domainSubscriptions.id = subscription._id.toString();
+        return domainSubscriptions;
+      });
+    }
+
     return domainEntity;
   }
 

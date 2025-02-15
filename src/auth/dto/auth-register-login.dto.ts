@@ -11,9 +11,9 @@ export class AuthRegisterLoginDto {
   email: string;
 
   @ApiProperty({ example: 'khoa.tran', type: String })
-  @IsNotEmpty()
+  @IsOptional()
   @Transform(lowerCaseTransformer)
-  username: string;
+  username?: string;
 
   @ApiProperty()
   @MinLength(6)
@@ -24,8 +24,8 @@ export class AuthRegisterLoginDto {
   name: string;
 
   @ApiProperty({ example: '123 Main St, Springfield, USA' })
-  @IsNotEmpty()
-  address: string;
+  @IsOptional()
+  address?: string;
 
   @ApiProperty({ example: '123456789' })
   @IsOptional()

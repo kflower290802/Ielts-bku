@@ -1,0 +1,27 @@
+import { DeepPartial } from '../../../utils/types/deep-partial.type';
+import { NullableType } from '../../../utils/types/nullable.type';
+import { IPaginationOptions } from '../../../utils/types/pagination-options';
+import { UserExam } from '../../domain/user-exam';
+
+export abstract class UserExamRepository {
+  abstract create(
+    data: Omit<UserExam, 'id' | 'createdAt' | 'updatedAt'>,
+  ): Promise<UserExam>;
+
+  abstract findAllWithPagination({
+    paginationOptions,
+  }: {
+    paginationOptions: IPaginationOptions;
+  }): Promise<UserExam[]>;
+
+  abstract findById(id: UserExam['id']): Promise<NullableType<UserExam>>;
+
+  abstract findByIds(ids: UserExam['id'][]): Promise<UserExam[]>;
+
+  abstract update(
+    id: UserExam['id'],
+    payload: DeepPartial<UserExam>,
+  ): Promise<UserExam | null>;
+
+  abstract remove(id: UserExam['id']): Promise<void>;
+}

@@ -27,12 +27,6 @@ export class UserSchemaClass extends EntityDocumentHelper {
   })
   email: string;
 
-  @Prop({
-    type: String,
-    unique: true,
-  })
-  phone: string | null;
-
   @Prop()
   password?: string;
 
@@ -41,11 +35,15 @@ export class UserSchemaClass extends EntityDocumentHelper {
   })
   name: string;
 
-  @Prop({ type: mongoose.Types.ObjectId, ref: 'account' })
+  @Prop({
+    type: mongoose.Types.ObjectId,
+    ref: AccountSchemaClass.name,
+    required: true,
+  })
   account: AccountSchemaClass;
 
-  @Prop()
-  address: string;
+  @Prop({ required: false })
+  address?: string;
 
   @Prop({
     type: String,

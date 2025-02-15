@@ -42,8 +42,11 @@ import { BlogLessonsModule } from './blog-lessons/blog-lessons.module';
 
 import { examsModule } from './exams/exams.module';
 
+import { UserExamsModule } from './user-exams/user-exams.module';
+
 @Module({
   imports: [
+    UserExamsModule,
     examsModule,
     BlogLessonsModule,
     FlashCardsModule,

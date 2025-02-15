@@ -79,7 +79,9 @@ export class UsersDocumentRepository implements UserRepository {
   async findByEmail(email: User['email']): Promise<NullableType<User>> {
     if (!email) return null;
 
-    const userObject = await this.usersModel.findOne({ email });
+    const userObject = await this.usersModel
+      .findOne({ email })
+      .populate('account');
     return userObject ? UserMapper.toDomain(userObject) : null;
   }
 
