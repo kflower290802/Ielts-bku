@@ -61,12 +61,11 @@ export class LessonsController {
     }),
   )
   @ApiConsumes('multipart/form-data')
-  async create(
+  create(
     @Body() createLessonDto: CreateLessonDto,
     @UploadedFile() video?: Express.Multer.File,
   ) {
-    const res = await this.lessonsService.create({ ...createLessonDto, video });
-    return res;
+    return this.lessonsService.create({ ...createLessonDto, video });
   }
 
   @Get()

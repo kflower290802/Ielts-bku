@@ -1,55 +1,57 @@
 import { Injectable } from '@nestjs/common';
-import { CreateexamDto } from './dto/create-exam.dto';
-import { UpdateexamDto } from './dto/update-exam.dto';
-import { examRepository } from './infrastructure/persistence/exam.repository';
+import { CreateExamDto } from './dto/create-exam.dto';
+import { UpdateExamDto } from './dto/update-exam.dto';
+import { ExamRepository } from './infrastructure/persistence/exam.repository';
 import { IPaginationOptions } from '../utils/types/pagination-options';
-import { exam } from './domain/exam';
+import { Exam } from './domain/exam';
+import { CloudinaryService } from '../cloudinary/cloudinary.service';
+import { ExamType } from './exams.type';
 
 @Injectable()
-export class examsService {
+export class ExamsService {
   constructor(
-    // Dependencies here
-    private readonly examRepository: examRepository,
+    private readonly examRepository: ExamRepository,
+    private readonly cloudinaryService: CloudinaryService,
   ) {}
 
-  async create(
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    createexamDto: CreateexamDto,
-  ) {
-    // Do not remove comment below.
-    // <creating-property />
-
+  async create(createExamDto: CreateExamDto) {
+    const { secure_url } = await this.cloudinaryService.uploadImage(
+      createExamDto.file,
+    );
     return this.examRepository.create({
-      // Do not remove comment below.
-      // <creating-property-payload />
+      ...createExamDto,
+      image: secure_url,
     });
   }
 
   findAllWithPagination({
     paginationOptions,
+    type,
   }: {
     paginationOptions: IPaginationOptions;
+    type?: ExamType;
   }) {
     return this.examRepository.findAllWithPagination({
       paginationOptions: {
         page: paginationOptions.page,
         limit: paginationOptions.limit,
       },
+      type,
     });
   }
 
-  findById(id: exam['id']) {
+  findById(id: Exam['id']) {
     return this.examRepository.findById(id);
   }
 
-  findByIds(ids: exam['id'][]) {
+  findByIds(ids: Exam['id'][]) {
     return this.examRepository.findByIds(ids);
   }
 
   async update(
-    id: exam['id'],
+    id: Exam['id'],
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    updateexamDto: UpdateexamDto,
+    updateExamDto: UpdateExamDto,
   ) {
     // Do not remove comment below.
     // <updating-property />
@@ -60,7 +62,7 @@ export class examsService {
     });
   }
 
-  remove(id: exam['id']) {
+  remove(id: Exam['id']) {
     return this.examRepository.remove(id);
   }
 }

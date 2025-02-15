@@ -1,8 +1,9 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { now, HydratedDocument } from 'mongoose';
 import { EntityDocumentHelper } from '../../../../../utils/document-entity-helper';
+import { ExamType } from '../../../../exams.type';
 
-export type examSchemaDocument = HydratedDocument<examSchemaClass>;
+export type ExamSchemaDocument = HydratedDocument<ExamSchemaClass>;
 
 @Schema({
   timestamps: true,
@@ -12,7 +13,30 @@ export type examSchemaDocument = HydratedDocument<examSchemaClass>;
   },
   collection: 'exam',
 })
-export class examSchemaClass extends EntityDocumentHelper {
+export class ExamSchemaClass extends EntityDocumentHelper {
+  @Prop({ required: true })
+  name: string;
+
+  @Prop({
+    enum: [
+      ExamType.Listening,
+      ExamType.Reading,
+      ExamType.Writing,
+      ExamType.Speaking,
+    ],
+    required: true,
+  })
+  type: ExamType;
+
+  @Prop({ type: Number, required: true })
+  time: number;
+
+  @Prop({ required: true, type: Number })
+  year: number;
+
+  @Prop({ required: true })
+  image: string;
+
   @Prop({ default: now })
   createdAt: Date;
 
@@ -20,4 +44,4 @@ export class examSchemaClass extends EntityDocumentHelper {
   updatedAt: Date;
 }
 
-export const examSchema = SchemaFactory.createForClass(examSchemaClass);
+export const examSchema = SchemaFactory.createForClass(ExamSchemaClass);

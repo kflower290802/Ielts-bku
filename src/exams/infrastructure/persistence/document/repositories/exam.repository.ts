@@ -2,57 +2,68 @@ import { Injectable } from '@nestjs/common';
 import { NullableType } from '../../../../../utils/types/nullable.type';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { examSchemaClass } from '../entities/exam.schema';
-import { examRepository } from '../../exam.repository';
-import { exam } from '../../../../domain/exam';
-import { examMapper } from '../mappers/exam.mapper';
+import { ExamSchemaClass } from '../entities/exam.schema';
+import { ExamRepository } from '../../exam.repository';
+import { Exam } from '../../../../domain/exam';
+import { ExamMapper } from '../mappers/exam.mapper';
 import { IPaginationOptions } from '../../../../../utils/types/pagination-options';
+import { ExamType } from '../../../../exams.type';
+
+type ExamFilter = {
+  type?: ExamType;
+};
 
 @Injectable()
-export class examDocumentRepository implements examRepository {
+export class examDocumentRepository implements ExamRepository {
   constructor(
-    @InjectModel(examSchemaClass.name)
-    private readonly examModel: Model<examSchemaClass>,
+    @InjectModel(ExamSchemaClass.name)
+    private readonly examModel: Model<ExamSchemaClass>,
   ) {}
 
-  async create(data: exam): Promise<exam> {
-    const persistenceModel = examMapper.toPersistence(data);
+  async create(data: Exam): Promise<Exam> {
+    const persistenceModel = ExamMapper.toPersistence(data);
     const createdEntity = new this.examModel(persistenceModel);
     const entityObject = await createdEntity.save();
-    return examMapper.toDomain(entityObject);
+    return ExamMapper.toDomain(entityObject);
   }
 
   async findAllWithPagination({
     paginationOptions,
+    type,
   }: {
     paginationOptions: IPaginationOptions;
-  }): Promise<exam[]> {
+    type?: ExamType;
+  }): Promise<Exam[]> {
+    const filters: ExamFilter = {};
+    if (type) {
+      filters.type = type;
+    }
     const entityObjects = await this.examModel
-      .find()
+      .find(filters)
       .skip((paginationOptions.page - 1) * paginationOptions.limit)
       .limit(paginationOptions.limit);
 
     return entityObjects.map((entityObject) =>
-      examMapper.toDomain(entityObject),
+      ExamMapper.toDomain(entityObject),
     );
   }
 
-  async findById(id: exam['id']): Promise<NullableType<exam>> {
+  async findById(id: Exam['id']): Promise<NullableType<Exam>> {
     const entityObject = await this.examModel.findById(id);
-    return entityObject ? examMapper.toDomain(entityObject) : null;
+    return entityObject ? ExamMapper.toDomain(entityObject) : null;
   }
 
-  async findByIds(ids: exam['id'][]): Promise<exam[]> {
+  async findByIds(ids: Exam['id'][]): Promise<Exam[]> {
     const entityObjects = await this.examModel.find({ _id: { $in: ids } });
     return entityObjects.map((entityObject) =>
-      examMapper.toDomain(entityObject),
+      ExamMapper.toDomain(entityObject),
     );
   }
 
   async update(
-    id: exam['id'],
-    payload: Partial<exam>,
-  ): Promise<NullableType<exam>> {
+    id: Exam['id'],
+    payload: Partial<Exam>,
+  ): Promise<NullableType<Exam>> {
     const clonedPayload = { ...payload };
     delete clonedPayload.id;
 
@@ -65,17 +76,17 @@ export class examDocumentRepository implements examRepository {
 
     const entityObject = await this.examModel.findOneAndUpdate(
       filter,
-      examMapper.toPersistence({
-        ...examMapper.toDomain(entity),
+      ExamMapper.toPersistence({
+        ...ExamMapper.toDomain(entity),
         ...clonedPayload,
       }),
       { new: true },
     );
 
-    return entityObject ? examMapper.toDomain(entityObject) : null;
+    return entityObject ? ExamMapper.toDomain(entityObject) : null;
   }
 
-  async remove(id: exam['id']): Promise<void> {
+  async remove(id: Exam['id']): Promise<void> {
     await this.examModel.deleteOne({ _id: id });
   }
 }

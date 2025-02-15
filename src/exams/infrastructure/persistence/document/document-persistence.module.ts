@@ -1,21 +1,21 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { examSchema, examSchemaClass } from './entities/exam.schema';
-import { examRepository } from '../exam.repository';
+import { examSchema, ExamSchemaClass } from './entities/exam.schema';
+import { ExamRepository } from '../exam.repository';
 import { examDocumentRepository } from './repositories/exam.repository';
 
 @Module({
   imports: [
     MongooseModule.forFeature([
-      { name: examSchemaClass.name, schema: examSchema },
+      { name: ExamSchemaClass.name, schema: examSchema },
     ]),
   ],
   providers: [
     {
-      provide: examRepository,
+      provide: ExamRepository,
       useClass: examDocumentRepository,
     },
   ],
-  exports: [examRepository],
+  exports: [ExamRepository],
 })
-export class DocumentexamPersistenceModule {}
+export class DocumentExamPersistenceModule {}

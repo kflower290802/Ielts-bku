@@ -1,27 +1,30 @@
 import { DeepPartial } from '../../../utils/types/deep-partial.type';
 import { NullableType } from '../../../utils/types/nullable.type';
 import { IPaginationOptions } from '../../../utils/types/pagination-options';
-import { exam } from '../../domain/exam';
+import { Exam } from '../../domain/exam';
+import { ExamType } from '../../exams.type';
 
-export abstract class examRepository {
+export abstract class ExamRepository {
   abstract create(
-    data: Omit<exam, 'id' | 'createdAt' | 'updatedAt'>,
-  ): Promise<exam>;
+    data: Omit<Exam, 'id' | 'createdAt' | 'updatedAt'>,
+  ): Promise<Exam>;
 
   abstract findAllWithPagination({
     paginationOptions,
+    type,
   }: {
     paginationOptions: IPaginationOptions;
-  }): Promise<exam[]>;
+    type?: ExamType;
+  }): Promise<Exam[]>;
 
-  abstract findById(id: exam['id']): Promise<NullableType<exam>>;
+  abstract findById(id: Exam['id']): Promise<NullableType<Exam>>;
 
-  abstract findByIds(ids: exam['id'][]): Promise<exam[]>;
+  abstract findByIds(ids: Exam['id'][]): Promise<Exam[]>;
 
   abstract update(
-    id: exam['id'],
-    payload: DeepPartial<exam>,
-  ): Promise<exam | null>;
+    id: Exam['id'],
+    payload: DeepPartial<Exam>,
+  ): Promise<Exam | null>;
 
-  abstract remove(id: exam['id']): Promise<void>;
+  abstract remove(id: Exam['id']): Promise<void>;
 }

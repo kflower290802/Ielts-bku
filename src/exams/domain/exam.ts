@@ -1,10 +1,26 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { ExamType } from '../exams.type';
 
-export class exam {
+export class Exam {
   @ApiProperty({
     type: String,
   })
   id: string;
+
+  @ApiProperty()
+  name: string;
+
+  @ApiProperty()
+  type: ExamType;
+
+  @ApiProperty()
+  time: number;
+
+  @ApiProperty()
+  image: string;
+
+  @ApiProperty()
+  year: number;
 
   @ApiProperty()
   createdAt: Date;

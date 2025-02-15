@@ -1,8 +1,9 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { IsNumber, IsOptional } from 'class-validator';
+import { IsEnum, IsNumber, IsOptional } from 'class-validator';
 import { Transform } from 'class-transformer';
+import { ExamType } from '../exams.type';
 
-export class FindAllexamsDto {
+export class FindAllExamsDto {
   @ApiPropertyOptional()
   @Transform(({ value }) => (value ? Number(value) : 1))
   @IsNumber()
@@ -14,4 +15,17 @@ export class FindAllexamsDto {
   @IsNumber()
   @IsOptional()
   limit?: number;
+
+  @ApiPropertyOptional({
+    enum: ExamType,
+    example: ExamType.Listening,
+  })
+  @IsEnum([
+    ExamType.Listening,
+    ExamType.Reading,
+    ExamType.Speaking,
+    ExamType.Writing,
+  ])
+  @IsOptional()
+  type?: ExamType;
 }

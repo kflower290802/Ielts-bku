@@ -40,8 +40,11 @@ import { VideosModule } from './videos/videos.module';
 
 import { BlogLessonsModule } from './blog-lessons/blog-lessons.module';
 
+import { examsModule } from './exams/exams.module';
+
 @Module({
   imports: [
+    examsModule,
     BlogLessonsModule,
     FlashCardsModule,
     VideosModule,
