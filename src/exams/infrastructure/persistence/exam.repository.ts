@@ -2,7 +2,7 @@ import { DeepPartial } from '../../../utils/types/deep-partial.type';
 import { NullableType } from '../../../utils/types/nullable.type';
 import { IPaginationOptions } from '../../../utils/types/pagination-options';
 import { Exam } from '../../domain/exam';
-import { ExamType } from '../../exams.type';
+import { ExamStatus, ExamType } from '../../exams.type';
 
 export abstract class ExamRepository {
   abstract create(
@@ -12,9 +12,13 @@ export abstract class ExamRepository {
   abstract findAllWithPagination({
     paginationOptions,
     type,
+    status,
+    userId,
   }: {
     paginationOptions: IPaginationOptions;
     type?: ExamType;
+    status?: ExamStatus;
+    userId: string;
   }): Promise<Exam[]>;
 
   abstract findById(id: Exam['id']): Promise<NullableType<Exam>>;

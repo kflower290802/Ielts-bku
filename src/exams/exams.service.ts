@@ -5,7 +5,7 @@ import { ExamRepository } from './infrastructure/persistence/exam.repository';
 import { IPaginationOptions } from '../utils/types/pagination-options';
 import { Exam } from './domain/exam';
 import { CloudinaryService } from '../cloudinary/cloudinary.service';
-import { ExamType } from './exams.type';
+import { ExamStatus, ExamType } from './exams.type';
 
 @Injectable()
 export class ExamsService {
@@ -27,9 +27,13 @@ export class ExamsService {
   findAllWithPagination({
     paginationOptions,
     type,
+    status,
+    userId,
   }: {
     paginationOptions: IPaginationOptions;
     type?: ExamType;
+    status?: ExamStatus;
+    userId: string;
   }) {
     return this.examRepository.findAllWithPagination({
       paginationOptions: {
@@ -37,6 +41,8 @@ export class ExamsService {
         limit: paginationOptions.limit,
       },
       type,
+      status,
+      userId,
     });
   }
 

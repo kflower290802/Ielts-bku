@@ -1,17 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { NullableType } from '../../../../../utils/types/nullable.type';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import mongoose, { Model } from 'mongoose';
 import { ExamSchemaClass } from '../entities/exam.schema';
 import { ExamRepository } from '../../exam.repository';
 import { Exam } from '../../../../domain/exam';
 import { ExamMapper } from '../mappers/exam.mapper';
 import { IPaginationOptions } from '../../../../../utils/types/pagination-options';
-import { ExamType } from '../../../../exams.type';
-
-type ExamFilter = {
-  type?: ExamType;
-};
+import { ExamStatus, ExamType } from '../../../../exams.type';
+import { UserExamSchemaClass } from '../../../../../user-exams/infrastructure/persistence/document/entities/user-exam.schema';
+import { UserSchemaClass } from '../../../../../users/infrastructure/persistence/document/entities/user.schema';
 
 @Injectable()
 export class examDocumentRepository implements ExamRepository {
@@ -30,22 +28,76 @@ export class examDocumentRepository implements ExamRepository {
   async findAllWithPagination({
     paginationOptions,
     type,
+    status,
+    userId,
   }: {
     paginationOptions: IPaginationOptions;
     type?: ExamType;
+    status?: ExamStatus;
+    userId: string;
   }): Promise<Exam[]> {
-    const filters: ExamFilter = {};
+    const filters: any = {};
+    const { limit, page } = paginationOptions;
+    const skip = (page - 1) * limit;
     if (type) {
       filters.type = type;
     }
-    const entityObjects = await this.examModel
-      .find(filters)
-      .skip((paginationOptions.page - 1) * paginationOptions.limit)
-      .limit(paginationOptions.limit);
+    if (status === ExamStatus.NotStarted) {
+      filters.userExams = {
+        $not: {
+          $elemMatch: { user: new mongoose.Types.ObjectId(userId) },
+        },
+      };
+    }
+    if (status === ExamStatus.InProgress) {
+      filters.userExams = {
+        $elemMatch: {
+          user: new mongoose.Types.ObjectId(userId),
+          progress: { $lt: 100 },
+        },
+      };
+    }
+    if (status === ExamStatus.Completed) {
+      filters.userExams = {
+        $elemMatch: {
+          user: new mongoose.Types.ObjectId(userId),
+          progress: 100,
+        },
+      };
+    }
+    const entityObjects = await this.examModel.aggregate([
+      {
+        $lookup: {
+          from: UserExamSchemaClass.name,
+          localField: '_id',
+          foreignField: UserSchemaClass.name,
+          as: 'userExams',
+        },
+      },
+      {
+        $match: filters,
+      },
+      {
+        $project: {
+          name: 1,
+          type: 1,
+          time: 1,
+          year: 1,
+          image: 1,
+          createdAt: 1,
+          updatedAt: 1,
+        },
+      },
+      {
+        $facet: {
+          metadata: [{ $count: 'total' }],
+          data: [{ $skip: skip }, { $limit: limit }],
+        },
+      },
+    ]);
 
-    return entityObjects.map((entityObject) =>
-      ExamMapper.toDomain(entityObject),
-    );
+    const result = entityObjects[0]?.data || [];
+    return result.map((entityObject) => ExamMapper.toDomain(entityObject));
   }
 
   async findById(id: Exam['id']): Promise<NullableType<Exam>> {

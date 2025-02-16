@@ -37,15 +37,16 @@ import { CloudinaryModule } from './cloudinary/cloudinary.module';
 
 import { FlashCardsModule } from './flash-cards/flash-cards.module';
 import { VideosModule } from './videos/videos.module';
-
 import { BlogLessonsModule } from './blog-lessons/blog-lessons.module';
-
 import { ExamsModule } from './exams/exams.module';
-
 import { UserExamsModule } from './user-exams/user-exams.module';
+import { ExamPassagesModule } from './exam-passages/exam-passages.module';
+import { ExamPassageQuestionsModule } from './exam-passage-questions/exam-passage-questions.module';
 
 @Module({
   imports: [
+    ExamPassageQuestionsModule,
+    ExamPassagesModule,
     UserExamsModule,
     ExamsModule,
     BlogLessonsModule,

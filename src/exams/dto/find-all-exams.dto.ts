@@ -1,7 +1,7 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { IsEnum, IsNumber, IsOptional } from 'class-validator';
+import { IsEnum, IsNotEmpty, IsNumber, IsOptional } from 'class-validator';
 import { Transform } from 'class-transformer';
-import { ExamType } from '../exams.type';
+import { ExamStatus, ExamType } from '../exams.type';
 
 export class FindAllExamsDto {
   @ApiPropertyOptional()
@@ -28,4 +28,16 @@ export class FindAllExamsDto {
   ])
   @IsOptional()
   type?: ExamType;
+
+  @ApiPropertyOptional({
+    enum: ExamStatus,
+    example: ExamStatus.NotStarted,
+  })
+  @IsEnum([ExamStatus.NotStarted, ExamStatus.InProgress, ExamStatus.Completed])
+  @IsOptional()
+  status?: ExamStatus;
+
+  @ApiPropertyOptional()
+  @IsNotEmpty()
+  userId: string;
 }
