@@ -75,7 +75,12 @@ export class ExamsService {
     return this.examRepository.remove(id);
   }
 
-  findAllPassage(id: Exam['id']) {
-    console.log({ id });
+  async findAllPassage(id: Exam['id']) {
+    const exam = await this.examRepository.findById(id);
+    const examPassage = await this.examPassagesService.findAllByExamId(id);
+    return {
+      ...exam,
+      examPassage,
+    };
   }
 }

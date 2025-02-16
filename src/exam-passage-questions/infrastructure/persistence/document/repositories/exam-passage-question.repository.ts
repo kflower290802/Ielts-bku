@@ -7,6 +7,7 @@ import { ExamPassageQuestionRepository } from '../../exam-passage-question.repos
 import { ExamPassageQuestion } from '../../../../domain/exam-passage-question';
 import { ExamPassageQuestionMapper } from '../mappers/exam-passage-question.mapper';
 import { IPaginationOptions } from '../../../../../utils/types/pagination-options';
+import { ExamPassage } from '../../../../../exam-passages/domain/exam-passage';
 
 @Injectable()
 export class ExamPassageQuestionDocumentRepository
@@ -89,5 +90,18 @@ export class ExamPassageQuestionDocumentRepository
 
   async remove(id: ExamPassageQuestion['id']): Promise<void> {
     await this.examPassageQuestionModel.deleteOne({ _id: id });
+  }
+
+  async findByExamPassageId(
+    id: ExamPassage['id'],
+  ): Promise<ExamPassageQuestion[]> {
+    const examPassageQuestion = await this.examPassageQuestionModel
+      .find({
+        examPassage: {
+          _id: id,
+        },
+      })
+      .select('-answer');
+    return examPassageQuestion.map(ExamPassageQuestionMapper.toDomain);
   }
 }

@@ -11,6 +11,7 @@ import { IPaginationOptions } from '../utils/types/pagination-options';
 import { ExamPassage } from './domain/exam-passage';
 import { ExamsService } from '../exams/exams.service';
 import { Exam } from '../exams/domain/exam';
+import { ExamPassageQuestionsService } from '../exam-passage-questions/exam-passage-questions.service';
 
 @Injectable()
 export class ExamPassagesService {
@@ -19,6 +20,8 @@ export class ExamPassagesService {
     private readonly examPassageRepository: ExamPassageRepository,
     @Inject(forwardRef(() => ExamsService))
     private readonly examsService: ExamsService,
+    // @Inject(forwardRef(() => ExamPassagesService))
+    private readonly examPassageQuestionService: ExamPassageQuestionsService,
   ) {}
 
   async create(createExamPassageDto: CreateExamPassageDto) {
@@ -51,8 +54,17 @@ export class ExamPassagesService {
     });
   }
 
-  findAllByExamId(id: Exam['id']) {
-    return this.examPassageRepository.findByExamId(id);
+  async findAllByExamId(id: Exam['id']) {
+    const examPassages = await this.examPassageRepository.findByExamId(id);
+    const examPassagesQuestions = examPassages.map(async (passage) => {
+      const questions =
+        await this.examPassageQuestionService.findByExamPassageId(passage.id);
+      return {
+        ...passage,
+        questions,
+      };
+    });
+    return Promise.all(examPassagesQuestions);
   }
 
   findById(id: ExamPassage['id']) {

@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { UserExamsService } from './user-exams.service';
 import { UserExamsController } from './user-exams.controller';
 import { DocumentUserExamPersistenceModule } from './infrastructure/persistence/document/document-persistence.module';
@@ -6,7 +6,11 @@ import { UsersModule } from '../users/users.module';
 import { ExamsModule } from '../exams/exams.module';
 
 @Module({
-  imports: [DocumentUserExamPersistenceModule, UsersModule, ExamsModule],
+  imports: [
+    DocumentUserExamPersistenceModule,
+    UsersModule,
+    forwardRef(() => ExamsModule),
+  ],
   controllers: [UserExamsController],
   providers: [UserExamsService],
   exports: [UserExamsService, DocumentUserExamPersistenceModule],

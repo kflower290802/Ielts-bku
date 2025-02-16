@@ -10,7 +10,6 @@ import { ExamsService } from '../exams/exams.service';
 @Injectable()
 export class UserExamsService {
   constructor(
-    // Dependencies here
     private readonly userExamRepository: UserExamRepository,
     private readonly usersService: UsersService,
     private readonly examsService: ExamsService,

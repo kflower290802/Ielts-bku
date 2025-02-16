@@ -4,12 +4,14 @@ import { ExamsController } from './exams.controller';
 import { DocumentExamPersistenceModule } from './infrastructure/persistence/document/document-persistence.module';
 import { CloudinaryModule } from '../cloudinary/cloudinary.module';
 import { ExamPassagesModule } from '../exam-passages/exam-passages.module';
+import { UserExamsModule } from '../user-exams/user-exams.module';
 
 @Module({
   imports: [
     DocumentExamPersistenceModule,
     CloudinaryModule,
     forwardRef(() => ExamPassagesModule),
+    forwardRef(() => UserExamsModule),
   ],
   controllers: [ExamsController],
   providers: [ExamsService],

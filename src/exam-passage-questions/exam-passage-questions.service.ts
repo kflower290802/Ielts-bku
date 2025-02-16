@@ -1,15 +1,22 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  forwardRef,
+  Inject,
+  Injectable,
+} from '@nestjs/common';
 import { CreateExamPassageQuestionDto } from './dto/create-exam-passage-question.dto';
 import { UpdateExamPassageQuestionDto } from './dto/update-exam-passage-question.dto';
 import { ExamPassageQuestionRepository } from './infrastructure/persistence/exam-passage-question.repository';
 import { IPaginationOptions } from '../utils/types/pagination-options';
 import { ExamPassageQuestion } from './domain/exam-passage-question';
 import { ExamPassagesService } from '../exam-passages/exam-passages.service';
+import { ExamPassage } from '../exam-passages/domain/exam-passage';
 
 @Injectable()
 export class ExamPassageQuestionsService {
   constructor(
     private readonly examPassageQuestionRepository: ExamPassageQuestionRepository,
+    @Inject(forwardRef(() => ExamPassagesService))
     private readonly examPassageService: ExamPassagesService,
   ) {}
 
@@ -67,5 +74,9 @@ export class ExamPassageQuestionsService {
 
   remove(id: ExamPassageQuestion['id']) {
     return this.examPassageQuestionRepository.remove(id);
+  }
+
+  findByExamPassageId(id: ExamPassage['id']) {
+    return this.examPassageQuestionRepository.findByExamPassageId(id);
   }
 }

@@ -78,6 +78,28 @@ export class examDocumentRepository implements ExamRepository {
         $match: filters,
       },
       {
+        $addFields: {
+          status: {
+            $cond: {
+              if: { $eq: [{ $size: '$userExams' }, 0] },
+              then: ExamStatus.NotStarted,
+              else: {
+                $let: {
+                  vars: { userExam: { $arrayElemAt: ['$userExams', 0] } },
+                  in: {
+                    $cond: {
+                      if: { $lt: ['$$userExam.progress', 100] },
+                      then: ExamStatus.InProgress,
+                      else: ExamStatus.Completed,
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+      {
         $project: {
           name: 1,
           type: 1,
@@ -86,6 +108,7 @@ export class examDocumentRepository implements ExamRepository {
           image: 1,
           createdAt: 1,
           updatedAt: 1,
+          status: 1,
         },
       },
       {
@@ -96,8 +119,13 @@ export class examDocumentRepository implements ExamRepository {
       },
     ]);
 
+    console.log({ entityObjects: entityObjects[0].data });
+
     const result = entityObjects[0]?.data || [];
-    return result.map((entityObject) => ExamMapper.toDomain(entityObject));
+    return result.map((entityObject) => ({
+      ...ExamMapper.toDomain(entityObject),
+      status: entityObject.status,
+    }));
   }
 
   async findById(id: Exam['id']): Promise<NullableType<Exam>> {

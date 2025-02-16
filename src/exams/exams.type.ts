@@ -7,6 +7,6 @@ export enum ExamType {
 
 export enum ExamStatus {
   NotStarted = 'not-started',
-  InProgress = 'in progress',
+  InProgress = 'in-progress',
   Completed = 'completed',
 }
