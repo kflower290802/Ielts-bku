@@ -85,6 +85,12 @@ export class ExamsController {
     );
   }
 
+  @Get('year')
+  @ApiOkResponse({ type: [Number] })
+  findYearsExam() {
+    return this.examsService.findYearsExam();
+  }
+
   @Get(':id')
   @ApiParam({
     name: 'id',

@@ -36,4 +36,11 @@ export class FindAllExamsDto {
   @IsEnum([ExamStatus.NotStarted, ExamStatus.InProgress, ExamStatus.Completed])
   @IsOptional()
   status?: ExamStatus;
+
+  @ApiPropertyOptional({
+    type: Number,
+    example: 2024,
+  })
+  @IsOptional()
+  year?: number;
 }

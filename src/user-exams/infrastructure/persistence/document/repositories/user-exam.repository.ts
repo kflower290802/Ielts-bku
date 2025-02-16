@@ -7,6 +7,7 @@ import { UserExamRepository } from '../../user-exam.repository';
 import { UserExam } from '../../../../domain/user-exam';
 import { UserExamMapper } from '../mappers/user-exam.mapper';
 import { IPaginationOptions } from '../../../../../utils/types/pagination-options';
+import { User } from '../../../../../users/domain/user';
 
 @Injectable()
 export class UserExamDocumentRepository implements UserExamRepository {
@@ -77,5 +78,16 @@ export class UserExamDocumentRepository implements UserExamRepository {
 
   async remove(id: UserExam['id']): Promise<void> {
     await this.userExamModel.deleteOne({ _id: id });
+  }
+
+  async findByUserId(id: User['id']): Promise<NullableType<UserExam>> {
+    const userExam = await this.userExamModel
+      .findOne({
+        user: {
+          _id: id,
+        },
+      })
+      .sort({ createdAt: -1 });
+    return userExam ? UserExamMapper.toDomain(userExam) : null;
   }
 }

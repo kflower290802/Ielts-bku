@@ -14,11 +14,13 @@ export abstract class ExamRepository {
     type,
     status,
     userId,
+    year,
   }: {
     paginationOptions: IPaginationOptions;
     type?: ExamType;
     status?: ExamStatus;
     userId: string;
+    year?: number;
   }): Promise<Exam[]>;
 
   abstract findById(id: Exam['id']): Promise<NullableType<Exam>>;
@@ -31,4 +33,6 @@ export abstract class ExamRepository {
   ): Promise<Exam | null>;
 
   abstract remove(id: Exam['id']): Promise<void>;
+
+  abstract findYearsExam(): Promise<number[]>;
 }

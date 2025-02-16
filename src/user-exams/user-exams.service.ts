@@ -1,4 +1,9 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  forwardRef,
+  Inject,
+  Injectable,
+} from '@nestjs/common';
 import { CreateUserExamDto } from './dto/create-user-exam.dto';
 import { UpdateUserExamDto } from './dto/update-user-exam.dto';
 import { UserExamRepository } from './infrastructure/persistence/user-exam.repository';
@@ -6,12 +11,14 @@ import { IPaginationOptions } from '../utils/types/pagination-options';
 import { UserExam } from './domain/user-exam';
 import { UsersService } from '../users/users.service';
 import { ExamsService } from '../exams/exams.service';
+import { User } from '../users/domain/user';
 
 @Injectable()
 export class UserExamsService {
   constructor(
     private readonly userExamRepository: UserExamRepository,
     private readonly usersService: UsersService,
+    @Inject(forwardRef(() => ExamsService))
     private readonly examsService: ExamsService,
   ) {}
 
@@ -72,5 +79,9 @@ export class UserExamsService {
 
   remove(id: UserExam['id']) {
     return this.userExamRepository.remove(id);
+  }
+
+  findByUserId(id: User['id']) {
+    return this.userExamRepository.findByUserId(id);
   }
 }

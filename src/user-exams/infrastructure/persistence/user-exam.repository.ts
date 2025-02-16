@@ -1,3 +1,4 @@
+import { User } from '../../../users/domain/user';
 import { DeepPartial } from '../../../utils/types/deep-partial.type';
 import { NullableType } from '../../../utils/types/nullable.type';
 import { IPaginationOptions } from '../../../utils/types/pagination-options';
@@ -24,4 +25,6 @@ export abstract class UserExamRepository {
   ): Promise<UserExam | null>;
 
   abstract remove(id: UserExam['id']): Promise<void>;
+
+  abstract findByUserId(id: User['id']): Promise<NullableType<UserExam>>;
 }

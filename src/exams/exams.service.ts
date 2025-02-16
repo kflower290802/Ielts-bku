@@ -7,6 +7,8 @@ import { Exam } from './domain/exam';
 import { CloudinaryService } from '../cloudinary/cloudinary.service';
 import { ExamStatus, ExamType } from './exams.type';
 import { ExamPassagesService } from '../exam-passages/exam-passages.service';
+import { UserExamsService } from '../user-exams/user-exams.service';
+import { User } from '../users/domain/user';
 
 @Injectable()
 export class ExamsService {
@@ -15,6 +17,8 @@ export class ExamsService {
     private readonly cloudinaryService: CloudinaryService,
     @Inject(forwardRef(() => ExamPassagesService))
     private readonly examPassagesService: ExamPassagesService,
+    @Inject(forwardRef(() => UserExamsService))
+    private readonly userExamsService: UserExamsService,
   ) {}
 
   async create(createExamDto: CreateExamDto) {
@@ -32,11 +36,13 @@ export class ExamsService {
     type,
     status,
     userId,
+    year,
   }: {
     paginationOptions: IPaginationOptions;
     type?: ExamType;
     status?: ExamStatus;
     userId: string;
+    year?: number;
   }) {
     return this.examRepository.findAllWithPagination({
       paginationOptions: {
@@ -46,6 +52,7 @@ export class ExamsService {
       type,
       status,
       userId,
+      year,
     });
   }
 
@@ -75,12 +82,18 @@ export class ExamsService {
     return this.examRepository.remove(id);
   }
 
-  async findAllPassage(id: Exam['id']) {
+  async findAllPassage(id: Exam['id'], userId: User['id']) {
     const exam = await this.examRepository.findById(id);
     const examPassage = await this.examPassagesService.findAllByExamId(id);
+    const userExam = await this.userExamsService.findByUserId(userId);
     return {
       ...exam,
       examPassage,
+      userExam,
     };
+  }
+
+  findYearsExam() {
+    return this.examRepository.findYearsExam();
   }
 }

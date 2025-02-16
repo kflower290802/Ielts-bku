@@ -30,15 +30,21 @@ export class examDocumentRepository implements ExamRepository {
     type,
     status,
     userId,
+    year,
   }: {
     paginationOptions: IPaginationOptions;
     type?: ExamType;
     status?: ExamStatus;
     userId: string;
+    year: number;
   }): Promise<Exam[]> {
     const filters: any = {};
     const { limit, page } = paginationOptions;
     const skip = (page - 1) * limit;
+    if (year) {
+      filters.year = +year;
+    }
+
     if (type) {
       filters.type = type;
     }
@@ -119,8 +125,6 @@ export class examDocumentRepository implements ExamRepository {
       },
     ]);
 
-    console.log({ entityObjects: entityObjects[0].data });
-
     const result = entityObjects[0]?.data || [];
     return result.map((entityObject) => ({
       ...ExamMapper.toDomain(entityObject),
@@ -168,5 +172,9 @@ export class examDocumentRepository implements ExamRepository {
 
   async remove(id: Exam['id']): Promise<void> {
     await this.examModel.deleteOne({ _id: id });
+  }
+
+  findYearsExam(): Promise<number[]> {
+    return this.examModel.distinct('year').sort('year');
   }
 }
