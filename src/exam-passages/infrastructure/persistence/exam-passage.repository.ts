@@ -1,3 +1,4 @@
+import { Exam } from '../../../exams/domain/exam';
 import { DeepPartial } from '../../../utils/types/deep-partial.type';
 import { NullableType } from '../../../utils/types/nullable.type';
 import { IPaginationOptions } from '../../../utils/types/pagination-options';
@@ -24,4 +25,6 @@ export abstract class ExamPassageRepository {
   ): Promise<ExamPassage | null>;
 
   abstract remove(id: ExamPassage['id']): Promise<void>;
+
+  abstract findByExamId(id: Exam['id']): Promise<ExamPassage[]>;
 }

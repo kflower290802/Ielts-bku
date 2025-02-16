@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { CreateExamDto } from './dto/create-exam.dto';
 import { UpdateExamDto } from './dto/update-exam.dto';
 import { ExamRepository } from './infrastructure/persistence/exam.repository';
@@ -6,12 +6,15 @@ import { IPaginationOptions } from '../utils/types/pagination-options';
 import { Exam } from './domain/exam';
 import { CloudinaryService } from '../cloudinary/cloudinary.service';
 import { ExamStatus, ExamType } from './exams.type';
+import { ExamPassagesService } from '../exam-passages/exam-passages.service';
 
 @Injectable()
 export class ExamsService {
   constructor(
     private readonly examRepository: ExamRepository,
     private readonly cloudinaryService: CloudinaryService,
+    @Inject(forwardRef(() => ExamPassagesService))
+    private readonly examPassagesService: ExamPassagesService,
   ) {}
 
   async create(createExamDto: CreateExamDto) {
@@ -70,5 +73,9 @@ export class ExamsService {
 
   remove(id: Exam['id']) {
     return this.examRepository.remove(id);
+  }
+
+  findAllPassage(id: Exam['id']) {
+    console.log({ id });
   }
 }

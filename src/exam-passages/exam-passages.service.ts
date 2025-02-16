@@ -1,16 +1,23 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  forwardRef,
+  Inject,
+  Injectable,
+} from '@nestjs/common';
 import { CreateExamPassageDto } from './dto/create-exam-passage.dto';
 import { UpdateExamPassageDto } from './dto/update-exam-passage.dto';
 import { ExamPassageRepository } from './infrastructure/persistence/exam-passage.repository';
 import { IPaginationOptions } from '../utils/types/pagination-options';
 import { ExamPassage } from './domain/exam-passage';
 import { ExamsService } from '../exams/exams.service';
+import { Exam } from '../exams/domain/exam';
 
 @Injectable()
 export class ExamPassagesService {
   constructor(
     // Dependencies here
     private readonly examPassageRepository: ExamPassageRepository,
+    @Inject(forwardRef(() => ExamsService))
     private readonly examsService: ExamsService,
   ) {}
 
@@ -18,7 +25,7 @@ export class ExamPassagesService {
     // Do not remove comment below.
     // <creating-property />
 
-    const { examId, passage } = createExamPassageDto;
+    const { examId, ...rest } = createExamPassageDto;
     const exam = await this.examsService.findById(examId);
 
     if (!exam) throw new BadRequestException('Exam not found!');
@@ -27,7 +34,7 @@ export class ExamPassagesService {
       // Do not remove comment below.
       // <creating-property-payload />
       exam,
-      passage,
+      ...rest,
     });
   }
 
@@ -42,6 +49,10 @@ export class ExamPassagesService {
         limit: paginationOptions.limit,
       },
     });
+  }
+
+  findAllByExamId(id: Exam['id']) {
+    return this.examPassageRepository.findByExamId(id);
   }
 
   findById(id: ExamPassage['id']) {

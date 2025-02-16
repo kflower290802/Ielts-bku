@@ -7,6 +7,7 @@ import { ExamPassageRepository } from '../../exam-passage.repository';
 import { ExamPassage } from '../../../../domain/exam-passage';
 import { ExamPassageMapper } from '../mappers/exam-passage.mapper';
 import { IPaginationOptions } from '../../../../../utils/types/pagination-options';
+import { Exam } from '../../../../../exams/domain/exam';
 
 @Injectable()
 export class ExamPassageDocumentRepository implements ExamPassageRepository {
@@ -79,5 +80,14 @@ export class ExamPassageDocumentRepository implements ExamPassageRepository {
 
   async remove(id: ExamPassage['id']): Promise<void> {
     await this.examPassageModel.deleteOne({ _id: id });
+  }
+
+  async findByExamId(id: Exam['id']): Promise<ExamPassage[]> {
+    const entityObjects = await this.examPassageModel.find({
+      exam: {
+        _id: id,
+      },
+    });
+    return entityObjects.map(ExamPassageMapper.toDomain);
   }
 }

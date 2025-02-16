@@ -8,6 +8,9 @@ export class ExamPassage {
   id: string;
 
   @ApiProperty()
+  title: string;
+
+  @ApiProperty()
   passage: string;
 
   @ApiProperty()

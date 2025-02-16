@@ -6,7 +6,7 @@ import {
   Patch,
   Param,
   Delete,
-  UseGuards,
+  // UseGuards,
   Query,
 } from '@nestjs/common';
 import { ExamPassagesService } from './exam-passages.service';
@@ -20,7 +20,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { ExamPassage } from './domain/exam-passage';
-import { AuthGuard } from '@nestjs/passport';
+// import { AuthGuard } from '@nestjs/passport';
 import {
   InfinityPaginationResponse,
   InfinityPaginationResponseDto,
@@ -30,7 +30,7 @@ import { FindAllExamPassagesDto } from './dto/find-all-exam-passages.dto';
 
 @ApiTags('Exampassages')
 @ApiBearerAuth()
-@UseGuards(AuthGuard('jwt'))
+// @UseGuards(AuthGuard('jwt'))
 @Controller({
   path: 'exam-passages',
   version: '1',

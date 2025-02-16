@@ -6,16 +6,17 @@ import {
   Patch,
   Param,
   Delete,
-  // UseGuards,
+  UseGuards,
   Query,
   UseInterceptors,
   UploadedFile,
+  Request,
 } from '@nestjs/common';
 import { ExamsService } from './exams.service';
 import { CreateExamDto } from './dto/create-exam.dto';
 import { UpdateExamDto } from './dto/update-exam.dto';
 import {
-  // ApiBearerAuth,
+  ApiBearerAuth,
   ApiConsumes,
   ApiCreatedResponse,
   ApiOkResponse,
@@ -23,7 +24,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { Exam } from './domain/exam';
-// import { AuthGuard } from '@nestjs/passport';
+import { AuthGuard } from '@nestjs/passport';
 import {
   InfinityPaginationResponse,
   InfinityPaginationResponseDto,
@@ -33,8 +34,7 @@ import { FindAllExamsDto } from './dto/find-all-exams.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 
 @ApiTags('Exams')
-// @ApiBearerAuth()
-// @UseGuards(AuthGuard('jwt'))
+@ApiBearerAuth()
 @Controller({
   path: 'exams',
   version: '1',
@@ -60,9 +60,12 @@ export class ExamsController {
   @ApiOkResponse({
     type: InfinityPaginationResponse(Exam),
   })
+  @UseGuards(AuthGuard('jwt'))
   async findAll(
     @Query() query: FindAllExamsDto,
+    @Request() request,
   ): Promise<InfinityPaginationResponseDto<Exam>> {
+    const userId = request.user.id;
     const page = query?.page ?? 1;
     let limit = query?.limit ?? 10;
     if (limit > 50) {
@@ -75,6 +78,7 @@ export class ExamsController {
           page,
           limit,
         },
+        userId,
         ...query,
       }),
       { page, limit },

@@ -23,6 +23,9 @@ export class ExamPassageSchemaClass extends EntityDocumentHelper {
   exam: ExamSchemaClass;
 
   @Prop()
+  title: string;
+
+  @Prop()
   passage: string;
 
   @Prop({ default: now })
