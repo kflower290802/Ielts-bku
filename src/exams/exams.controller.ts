@@ -101,6 +101,18 @@ export class ExamsController {
     return this.examsService.findById(id);
   }
 
+  @Get('start-exam/:id')
+  @ApiParam({
+    name: 'id',
+    type: String,
+    required: true,
+  })
+  @UseGuards(AuthGuard('jwt'))
+  startExam(@Param('id') id: string, @Request() request) {
+    const userId = request.user.id;
+    return this.examsService.startExam(id, userId);
+  }
+
   @Patch(':id')
   @ApiParam({
     name: 'id',

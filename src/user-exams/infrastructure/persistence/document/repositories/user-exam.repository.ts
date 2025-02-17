@@ -87,7 +87,8 @@ export class UserExamDocumentRepository implements UserExamRepository {
           _id: id,
         },
       })
-      .sort({ createdAt: -1 });
+      .sort({ createdAt: -1 })
+      .populate('exam');
     return userExam ? UserExamMapper.toDomain(userExam) : null;
   }
 }

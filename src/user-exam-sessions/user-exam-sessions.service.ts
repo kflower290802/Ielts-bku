@@ -23,8 +23,6 @@ export class UserExamSessionsService {
 
     if (!userExam) throw new BadRequestException('Exam user not found');
     return this.userExamSessionRepository.create({
-      // Do not remove comment below.
-      // <creating-property-payload />
       userExam,
       ...rest,
     });
@@ -67,5 +65,17 @@ export class UserExamSessionsService {
 
   remove(id: UserExamSession['id']) {
     return this.userExamSessionRepository.remove(id);
+  }
+
+  async getTotalTimeSpent(userExamId: string): Promise<number> {
+    const sessions =
+      await this.userExamSessionRepository.getSessionsByUserExamId(userExamId);
+    return sessions.reduce((total, session) => {
+      const sessionTime =
+        ((session.endTime?.getTime() || new Date().getTime()) -
+          session.startTime.getTime()) /
+        60000;
+      return total + sessionTime;
+    }, 0);
   }
 }

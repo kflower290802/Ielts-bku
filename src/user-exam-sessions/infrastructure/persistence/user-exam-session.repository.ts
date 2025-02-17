@@ -1,3 +1,4 @@
+import { UserExam } from '../../../user-exams/domain/user-exam';
 import { DeepPartial } from '../../../utils/types/deep-partial.type';
 import { NullableType } from '../../../utils/types/nullable.type';
 import { IPaginationOptions } from '../../../utils/types/pagination-options';
@@ -26,4 +27,8 @@ export abstract class UserExamSessionRepository {
   ): Promise<UserExamSession | null>;
 
   abstract remove(id: UserExamSession['id']): Promise<void>;
+
+  abstract getSessionsByUserExamId(
+    userExamId: UserExam['id'],
+  ): Promise<UserExamSession[]>;
 }

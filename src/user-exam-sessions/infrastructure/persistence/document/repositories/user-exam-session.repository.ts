@@ -7,6 +7,7 @@ import { UserExamSessionRepository } from '../../user-exam-session.repository';
 import { UserExamSession } from '../../../../domain/user-exam-session';
 import { UserExamSessionMapper } from '../mappers/user-exam-session.mapper';
 import { IPaginationOptions } from '../../../../../utils/types/pagination-options';
+import { UserExam } from '../../../../../user-exams/domain/user-exam';
 
 @Injectable()
 export class UserExamSessionDocumentRepository
@@ -83,5 +84,16 @@ export class UserExamSessionDocumentRepository
 
   async remove(id: UserExamSession['id']): Promise<void> {
     await this.userExamSessionModel.deleteOne({ _id: id });
+  }
+
+  async getSessionsByUserExamId(
+    userExamId: UserExam['id'],
+  ): Promise<UserExamSession[]> {
+    const entityObjects = await this.userExamSessionModel.find({
+      userExam: {
+        _id: userExamId,
+      },
+    });
+    return entityObjects.map(UserExamSessionMapper.toDomain);
   }
 }

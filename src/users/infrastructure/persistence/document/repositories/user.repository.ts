@@ -6,7 +6,7 @@ import { User } from '../../../../domain/user';
 import { UserRepository } from '../../user.repository';
 import { UserSchemaClass } from '../entities/user.schema';
 import { InjectModel } from '@nestjs/mongoose';
-import { FilterQuery, Model, Promise } from 'mongoose';
+import mongoose, { FilterQuery, Model, Promise } from 'mongoose';
 import { UserMapper } from '../mappers/user.mapper';
 import { IPaginationOptions } from '../../../../../utils/types/pagination-options';
 import { RoleEnum } from '../../../../../accounts/infrastructure/persistence/document/entities/account.schema';
@@ -75,7 +75,10 @@ export class UsersDocumentRepository implements UserRepository {
   }
 
   async findById(id: User['id']): Promise<NullableType<User>> {
-    const userObject = await this.usersModel.findById(id);
+    const userObject = await this.usersModel.findById(
+      new mongoose.Types.ObjectId(id),
+    );
+    console.log({ userObject });
     return userObject ? UserMapper.toDomain(userObject) : null;
   }
 

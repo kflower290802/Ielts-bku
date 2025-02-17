@@ -5,6 +5,7 @@ import { DocumentExamPersistenceModule } from './infrastructure/persistence/docu
 import { CloudinaryModule } from '../cloudinary/cloudinary.module';
 import { ExamPassagesModule } from '../exam-passages/exam-passages.module';
 import { UserExamsModule } from '../user-exams/user-exams.module';
+import { UserExamSessionsModule } from '../user-exam-sessions/user-exam-sessions.module';
 
 @Module({
   imports: [
@@ -12,6 +13,7 @@ import { UserExamsModule } from '../user-exams/user-exams.module';
     CloudinaryModule,
     forwardRef(() => ExamPassagesModule),
     forwardRef(() => UserExamsModule),
+    UserExamSessionsModule,
   ],
   controllers: [ExamsController],
   providers: [ExamsService],

@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsDate, IsNotEmpty, IsString } from 'class-validator';
+import { IsDate, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class CreateUserExamSessionDto {
   @ApiProperty({ example: new Date() })
@@ -8,9 +8,9 @@ export class CreateUserExamSessionDto {
   startTime: Date;
 
   @ApiProperty({ example: new Date() })
-  @IsNotEmpty()
+  @IsOptional()
   @IsDate()
-  endTime: Date;
+  endTime?: Date;
 
   @ApiProperty()
   @IsNotEmpty()

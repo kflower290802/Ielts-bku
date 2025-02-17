@@ -45,8 +45,11 @@ import { ExamPassageQuestionsModule } from './exam-passage-questions/exam-passag
 
 import { UserExamSessionsModule } from './user-exam-sessions/user-exam-sessions.module';
 
+import { UserExamAnswersModule } from './user-exam-answers/user-exam-answers.module';
+
 @Module({
   imports: [
+    UserExamAnswersModule,
     UserExamSessionsModule,
     ExamPassageQuestionsModule,
     ExamPassagesModule,

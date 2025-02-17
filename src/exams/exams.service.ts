@@ -1,4 +1,9 @@
-import { forwardRef, Inject, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  forwardRef,
+  Inject,
+  Injectable,
+} from '@nestjs/common';
 import { CreateExamDto } from './dto/create-exam.dto';
 import { UpdateExamDto } from './dto/update-exam.dto';
 import { ExamRepository } from './infrastructure/persistence/exam.repository';
@@ -9,6 +14,7 @@ import { ExamStatus, ExamType } from './exams.type';
 import { ExamPassagesService } from '../exam-passages/exam-passages.service';
 import { UserExamsService } from '../user-exams/user-exams.service';
 import { User } from '../users/domain/user';
+import { UserExamSessionsService } from '../user-exam-sessions/user-exam-sessions.service';
 
 @Injectable()
 export class ExamsService {
@@ -19,6 +25,7 @@ export class ExamsService {
     private readonly examPassagesService: ExamPassagesService,
     @Inject(forwardRef(() => UserExamsService))
     private readonly userExamsService: UserExamsService,
+    private readonly userExamSessionService: UserExamSessionsService,
   ) {}
 
   async create(createExamDto: CreateExamDto) {
@@ -82,18 +89,55 @@ export class ExamsService {
     return this.examRepository.remove(id);
   }
 
-  async findAllPassage(id: Exam['id'], userId: User['id']) {
+  async findAllPassage(id: Exam['id']) {
     const exam = await this.examRepository.findById(id);
     const examPassage = await this.examPassagesService.findAllByExamId(id);
-    const userExam = await this.userExamsService.findByUserId(userId);
     return {
       ...exam,
       examPassage,
-      userExam,
     };
   }
 
   findYearsExam() {
     return this.examRepository.findYearsExam();
+  }
+
+  async getRemainingTime(userExamId: string): Promise<number> {
+    const userExam = await this.userExamsService.findById(userExamId);
+    if (!userExam) {
+      throw new BadRequestException('User exam not found');
+    }
+
+    const exam = await this.examRepository.findById(userExam.exam.id);
+    if (!exam) {
+      throw new BadRequestException('Exam not found');
+    }
+
+    const totalTimeSpent =
+      await this.userExamSessionService.getTotalTimeSpent(userExamId);
+
+    const remainingTime = exam.time - totalTimeSpent;
+
+    return remainingTime > 0 ? remainingTime : 0;
+  }
+
+  async startExam(id: Exam['id'], userId: User['id']) {
+    const exam = this.findAllPassage(id);
+    const userExam = await this.userExamsService.create({
+      examId: id,
+      userId,
+      progress: 0,
+      score: 0,
+    });
+    await this.userExamSessionService.create({
+      startTime: new Date(),
+      examUserId: userExam.id,
+    });
+    const remainingTime = await this.getRemainingTime(userExam.id);
+
+    return {
+      exam,
+      remainingTime,
+    };
   }
 }

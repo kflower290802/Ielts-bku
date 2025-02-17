@@ -25,8 +25,8 @@ export class UserExamSessionSchemaClass extends EntityDocumentHelper {
   @Prop({ type: Date, required: true })
   startTime: Date;
 
-  @Prop({ type: Date, required: true })
-  endTime: Date;
+  @Prop({ type: Date, required: false })
+  endTime?: Date;
 
   @Prop({ default: now })
   createdAt: Date;

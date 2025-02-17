@@ -14,7 +14,7 @@ export class UserExamSession {
   startTime: Date;
 
   @ApiProperty()
-  endTime: Date;
+  endTime?: Date;
 
   @ApiProperty()
   createdAt: Date;
