@@ -7,7 +7,7 @@ import {
   Param,
   Delete,
   UseGuards,
-  Query,
+  // Query,
 } from '@nestjs/common';
 import { SubscriptionsService } from './subscriptions.service';
 import { CreateSubscriptionDto } from './dto/create-subscription.dto';
@@ -21,12 +21,12 @@ import {
 } from '@nestjs/swagger';
 import { Subscription } from './domain/subscription';
 import { AuthGuard } from '@nestjs/passport';
-import {
-  InfinityPaginationResponse,
-  InfinityPaginationResponseDto,
-} from '../utils/dto/infinity-pagination-response.dto';
-import { infinityPagination } from '../utils/infinity-pagination';
-import { FindAllSubscriptionsDto } from './dto/find-all-subscriptions.dto';
+// import {
+//   InfinityPaginationResponse,
+//   InfinityPaginationResponseDto,
+// } from '../utils/dto/infinity-pagination-response.dto';
+// import { infinityPagination } from '../utils/infinity-pagination';
+// import { FindAllSubscriptionsDto } from './dto/find-all-subscriptions.dto';
 
 @ApiTags('Subscriptions')
 @ApiBearerAuth()
@@ -46,29 +46,29 @@ export class SubscriptionsController {
     return this.subscriptionsService.create(createSubscriptionDto);
   }
 
-  @Get()
-  @ApiOkResponse({
-    type: InfinityPaginationResponse(Subscription),
-  })
-  async findAll(
-    @Query() query: FindAllSubscriptionsDto,
-  ): Promise<InfinityPaginationResponseDto<Subscription>> {
-    const page = query?.page ?? 1;
-    let limit = query?.limit ?? 10;
-    if (limit > 50) {
-      limit = 50;
-    }
+  // @Get()
+  // @ApiOkResponse({
+  //   type: InfinityPaginationResponse(Subscription),
+  // })
+  // async findAll(
+  //   @Query() query: FindAllSubscriptionsDto,
+  // ): Promise<InfinityPaginationResponseDto<Subscription>> {
+  //   const page = query?.page ?? 1;
+  //   let limit = query?.limit ?? 10;
+  //   if (limit > 50) {
+  //     limit = 50;
+  //   }
 
-    return infinityPagination(
-      await this.subscriptionsService.findAllWithPagination({
-        paginationOptions: {
-          page,
-          limit,
-        },
-      }),
-      { page, limit },
-    );
-  }
+  //   return infinityPagination(
+  //     await this.subscriptionsService.findAllWithPagination({
+  //       paginationOptions: {
+  //         page,
+  //         limit,
+  //       },
+  //     }),
+  //     { page, limit },
+  //   );
+  // }
 
   @Get(':id')
   @ApiParam({

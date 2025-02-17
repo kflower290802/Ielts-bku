@@ -7,7 +7,7 @@ import {
   Param,
   Delete,
   UseGuards,
-  Query,
+  // Query,
 } from '@nestjs/common';
 import { ExplainationsService } from './explainations.service';
 import { CreateExplainationDto } from './dto/create-explaination.dto';
@@ -21,12 +21,12 @@ import {
 } from '@nestjs/swagger';
 import { Explaination } from './domain/explaination';
 import { AuthGuard } from '@nestjs/passport';
-import {
-  InfinityPaginationResponse,
-  InfinityPaginationResponseDto,
-} from '../utils/dto/infinity-pagination-response.dto';
-import { infinityPagination } from '../utils/infinity-pagination';
-import { FindAllExplainationsDto } from './dto/find-all-explainations.dto';
+// import {
+//   InfinityPaginationResponse,
+//   InfinityPaginationResponseDto,
+// } from '../utils/dto/infinity-pagination-response.dto';
+// import { infinityPagination } from '../utils/infinity-pagination';
+// import { FindAllExplainationsDto } from './dto/find-all-explainations.dto';
 
 @ApiTags('Explainations')
 @ApiBearerAuth()
@@ -46,29 +46,29 @@ export class ExplainationsController {
     return this.explainationsService.create(createExplainationDto);
   }
 
-  @Get()
-  @ApiOkResponse({
-    type: InfinityPaginationResponse(Explaination),
-  })
-  async findAll(
-    @Query() query: FindAllExplainationsDto,
-  ): Promise<InfinityPaginationResponseDto<Explaination>> {
-    const page = query?.page ?? 1;
-    let limit = query?.limit ?? 10;
-    if (limit > 50) {
-      limit = 50;
-    }
+  // @Get()
+  // @ApiOkResponse({
+  //   type: InfinityPaginationResponse(Explaination),
+  // })
+  // async findAll(
+  //   @Query() query: FindAllExplainationsDto,
+  // ): Promise<InfinityPaginationResponseDto<Explaination>> {
+  //   const page = query?.page ?? 1;
+  //   let limit = query?.limit ?? 10;
+  //   if (limit > 50) {
+  //     limit = 50;
+  //   }
 
-    return infinityPagination(
-      await this.explainationsService.findAllWithPagination({
-        paginationOptions: {
-          page,
-          limit,
-        },
-      }),
-      { page, limit },
-    );
-  }
+  //   return infinityPagination(
+  //     await this.explainationsService.findAllWithPagination({
+  //       paginationOptions: {
+  //         page,
+  //         limit,
+  //       },
+  //     }),
+  //     { page, limit },
+  //   );
+  // }
 
   @Get(':id')
   @ApiParam({

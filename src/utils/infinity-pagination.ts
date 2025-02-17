@@ -1,12 +1,16 @@
-import { IPaginationOptions } from './types/pagination-options';
+import { IPaginationResponse } from './types/pagination-options';
 import { InfinityPaginationResponseDto } from './dto/infinity-pagination-response.dto';
 
 export const infinityPagination = <T>(
   data: T[],
-  options: IPaginationOptions,
+  options: IPaginationResponse,
 ): InfinityPaginationResponseDto<T> => {
+  const { limit, page, total } = options;
   return {
     data,
-    hasNextPage: data.length === options.limit,
+    limit,
+    page: page || 1,
+    pages: Math.ceil(total / options.limit),
+    total,
   };
 };

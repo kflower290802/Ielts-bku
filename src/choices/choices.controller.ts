@@ -7,7 +7,7 @@ import {
   Param,
   Delete,
   UseGuards,
-  Query,
+  // Query,
 } from '@nestjs/common';
 import { ChoicesService } from './choices.service';
 import { CreateChoiceDto } from './dto/create-choice.dto';
@@ -21,12 +21,12 @@ import {
 } from '@nestjs/swagger';
 import { Choice } from './domain/choice';
 import { AuthGuard } from '@nestjs/passport';
-import {
-  InfinityPaginationResponse,
-  InfinityPaginationResponseDto,
-} from '../utils/dto/infinity-pagination-response.dto';
-import { infinityPagination } from '../utils/infinity-pagination';
-import { FindAllChoicesDto } from './dto/find-all-choices.dto';
+// import {
+//   InfinityPaginationResponse,
+//   InfinityPaginationResponseDto,
+// } from '../utils/dto/infinity-pagination-response.dto';
+// import { infinityPagination } from '../utils/infinity-pagination';
+// import { FindAllChoicesDto } from './dto/find-all-choices.dto';
 
 @ApiTags('Choices')
 @ApiBearerAuth()
@@ -46,29 +46,29 @@ export class choicesController {
     return this.choicesService.create(createchoiceDto);
   }
 
-  @Get()
-  @ApiOkResponse({
-    type: InfinityPaginationResponse(Choice),
-  })
-  async findAll(
-    @Query() query: FindAllChoicesDto,
-  ): Promise<InfinityPaginationResponseDto<Choice>> {
-    const page = query?.page ?? 1;
-    let limit = query?.limit ?? 10;
-    if (limit > 50) {
-      limit = 50;
-    }
+  // @Get()
+  // @ApiOkResponse({
+  //   type: InfinityPaginationResponse(Choice),
+  // })
+  // async findAll(
+  //   @Query() query: FindAllChoicesDto,
+  // ): Promise<InfinityPaginationResponseDto<Choice>> {
+  //   const page = query?.page ?? 1;
+  //   let limit = query?.limit ?? 10;
+  //   if (limit > 50) {
+  //     limit = 50;
+  //   }
 
-    return infinityPagination(
-      await this.choicesService.findAllWithPagination({
-        paginationOptions: {
-          page,
-          limit,
-        },
-      }),
-      { page, limit },
-    );
-  }
+  //   return infinityPagination(
+  //     await this.choicesService.findAllWithPagination({
+  //       paginationOptions: {
+  //         page,
+  //         limit,
+  //       },
+  //     }),
+  //     { page, limit },
+  //   );
+  // }
 
   @Get(':id')
   @ApiParam({

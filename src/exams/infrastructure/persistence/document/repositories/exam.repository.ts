@@ -10,6 +10,8 @@ import { IPaginationOptions } from '../../../../../utils/types/pagination-option
 import { ExamStatus, ExamType } from '../../../../exams.type';
 import { UserExamSchemaClass } from '../../../../../user-exams/infrastructure/persistence/document/entities/user-exam.schema';
 import { UserSchemaClass } from '../../../../../users/infrastructure/persistence/document/entities/user.schema';
+import { InfinityPaginationResponseDto } from '../../../../../utils/dto/infinity-pagination-response.dto';
+import { infinityPagination } from '../../../../../utils/infinity-pagination';
 
 @Injectable()
 export class examDocumentRepository implements ExamRepository {
@@ -37,7 +39,7 @@ export class examDocumentRepository implements ExamRepository {
     status?: ExamStatus;
     userId: string;
     year: number;
-  }): Promise<Exam[]> {
+  }): Promise<InfinityPaginationResponseDto<Exam>> {
     const filters: any = {};
     const { limit, page } = paginationOptions;
     const skip = (page - 1) * limit;
@@ -126,10 +128,18 @@ export class examDocumentRepository implements ExamRepository {
     ]);
 
     const result = entityObjects[0]?.data || [];
-    return result.map((entityObject) => ({
-      ...ExamMapper.toDomain(entityObject),
-      status: entityObject.status,
-    }));
+    const total = entityObjects[0]?.metadata[0]?.total || 0;
+    return infinityPagination(
+      result.map((entityObject) => ({
+        ...ExamMapper.toDomain(entityObject),
+        status: entityObject.status,
+      })),
+      {
+        total,
+        page,
+        limit,
+      },
+    );
   }
 
   async findById(id: Exam['id']): Promise<NullableType<Exam>> {

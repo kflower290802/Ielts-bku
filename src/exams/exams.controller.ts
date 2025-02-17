@@ -29,7 +29,7 @@ import {
   InfinityPaginationResponse,
   InfinityPaginationResponseDto,
 } from '../utils/dto/infinity-pagination-response.dto';
-import { infinityPagination } from '../utils/infinity-pagination';
+// import { infinityPagination } from '../utils/infinity-pagination';
 import { FindAllExamsDto } from './dto/find-all-exams.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 
@@ -72,17 +72,14 @@ export class ExamsController {
       limit = 50;
     }
 
-    return infinityPagination(
-      await this.examsService.findAllWithPagination({
-        paginationOptions: {
-          page,
-          limit,
-        },
-        userId,
-        ...query,
-      }),
-      { page, limit },
-    );
+    return this.examsService.findAllWithPagination({
+      paginationOptions: {
+        page,
+        limit,
+      },
+      userId,
+      ...query,
+    });
   }
 
   @Get('year')

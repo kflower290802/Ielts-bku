@@ -7,7 +7,7 @@ import {
   Param,
   Delete,
   UseGuards,
-  Query,
+  // Query,
 } from '@nestjs/common';
 import { learnersService } from './learners.service';
 import { CreatelearnerDto } from './dto/create-learner.dto';
@@ -21,12 +21,12 @@ import {
 } from '@nestjs/swagger';
 import { learner } from './domain/learner';
 import { AuthGuard } from '@nestjs/passport';
-import {
-  InfinityPaginationResponse,
-  InfinityPaginationResponseDto,
-} from '../utils/dto/infinity-pagination-response.dto';
-import { infinityPagination } from '../utils/infinity-pagination';
-import { FindAlllearnersDto } from './dto/find-all-learners.dto';
+// import {
+//   InfinityPaginationResponse,
+//   InfinityPaginationResponseDto,
+// } from '../utils/dto/infinity-pagination-response.dto';
+// import { infinityPagination } from '../utils/infinity-pagination';
+// import { FindAlllearnersDto } from './dto/find-all-learners.dto';
 
 @ApiTags('Learners')
 @ApiBearerAuth()
@@ -46,29 +46,29 @@ export class learnersController {
     return this.learnersService.create(createlearnerDto);
   }
 
-  @Get()
-  @ApiOkResponse({
-    type: InfinityPaginationResponse(learner),
-  })
-  async findAll(
-    @Query() query: FindAlllearnersDto,
-  ): Promise<InfinityPaginationResponseDto<learner>> {
-    const page = query?.page ?? 1;
-    let limit = query?.limit ?? 10;
-    if (limit > 50) {
-      limit = 50;
-    }
+  // @Get()
+  // @ApiOkResponse({
+  //   type: InfinityPaginationResponse(learner),
+  // })
+  // async findAll(
+  //   @Query() query: FindAlllearnersDto,
+  // ): Promise<InfinityPaginationResponseDto<learner>> {
+  //   const page = query?.page ?? 1;
+  //   let limit = query?.limit ?? 10;
+  //   if (limit > 50) {
+  //     limit = 50;
+  //   }
 
-    return infinityPagination(
-      await this.learnersService.findAllWithPagination({
-        paginationOptions: {
-          page,
-          limit,
-        },
-      }),
-      { page, limit },
-    );
-  }
+  //   return infinityPagination(
+  //     await this.learnersService.findAllWithPagination({
+  //       paginationOptions: {
+  //         page,
+  //         limit,
+  //       },
+  //     }),
+  //     { page, limit },
+  //   );
+  // }
 
   @Get(':id')
   @ApiParam({

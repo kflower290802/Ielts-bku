@@ -12,6 +12,7 @@ import { IPaginationOptions } from '../utils/types/pagination-options';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { StatusEnum } from './infrastructure/persistence/document/entities/user.schema';
 import { Account } from '../accounts/domain/account';
+// import { InfinityPaginationResponseDto } from '../utils/dto/infinity-pagination-response.dto';
 
 @Injectable()
 export class UsersService {
@@ -53,7 +54,7 @@ export class UsersService {
     filterOptions?: FilterUserDto | null;
     sortOptions?: SortUserDto[] | null;
     paginationOptions: IPaginationOptions;
-  }): Promise<User[]> {
+  }) {
     return this.usersRepository.findManyWithPagination({
       filterOptions,
       sortOptions,

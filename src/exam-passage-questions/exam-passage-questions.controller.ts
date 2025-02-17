@@ -7,7 +7,7 @@ import {
   Param,
   Delete,
   // UseGuards,
-  Query,
+  // Query,
 } from '@nestjs/common';
 import { ExamPassageQuestionsService } from './exam-passage-questions.service';
 import { CreateExamPassageQuestionDto } from './dto/create-exam-passage-question.dto';
@@ -21,12 +21,12 @@ import {
 } from '@nestjs/swagger';
 import { ExamPassageQuestion } from './domain/exam-passage-question';
 // import { AuthGuard } from '@nestjs/passport';
-import {
-  InfinityPaginationResponse,
-  InfinityPaginationResponseDto,
-} from '../utils/dto/infinity-pagination-response.dto';
-import { infinityPagination } from '../utils/infinity-pagination';
-import { FindAllExamPassageQuestionsDto } from './dto/find-all-exam-passage-questions.dto';
+// import {
+//   InfinityPaginationResponse,
+//   InfinityPaginationResponseDto,
+// } from '../utils/dto/infinity-pagination-response.dto';
+// import { infinityPagination } from '../utils/infinity-pagination';
+// import { FindAllExamPassageQuestionsDto } from './dto/find-all-exam-passage-questions.dto';
 
 @ApiTags('Exampassagequestions')
 @ApiBearerAuth()
@@ -50,29 +50,29 @@ export class ExamPassageQuestionsController {
     );
   }
 
-  @Get()
-  @ApiOkResponse({
-    type: InfinityPaginationResponse(ExamPassageQuestion),
-  })
-  async findAll(
-    @Query() query: FindAllExamPassageQuestionsDto,
-  ): Promise<InfinityPaginationResponseDto<ExamPassageQuestion>> {
-    const page = query?.page ?? 1;
-    let limit = query?.limit ?? 10;
-    if (limit > 50) {
-      limit = 50;
-    }
+  // @Get()
+  // @ApiOkResponse({
+  //   type: InfinityPaginationResponse(ExamPassageQuestion),
+  // })
+  // async findAll(
+  //   @Query() query: FindAllExamPassageQuestionsDto,
+  // ): Promise<InfinityPaginationResponseDto<ExamPassageQuestion>> {
+  //   const page = query?.page ?? 1;
+  //   let limit = query?.limit ?? 10;
+  //   if (limit > 50) {
+  //     limit = 50;
+  //   }
 
-    return infinityPagination(
-      await this.examPassageQuestionsService.findAllWithPagination({
-        paginationOptions: {
-          page,
-          limit,
-        },
-      }),
-      { page, limit },
-    );
-  }
+  //   return infinityPagination(
+  //     await this.examPassageQuestionsService.findAllWithPagination({
+  //       paginationOptions: {
+  //         page,
+  //         limit,
+  //       },
+  //     }),
+  //     { page, limit },
+  //   );
+  // }
 
   @Get(':id')
   @ApiParam({

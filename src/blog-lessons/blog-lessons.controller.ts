@@ -7,7 +7,7 @@ import {
   Param,
   Delete,
   UseGuards,
-  Query,
+  // Query,
 } from '@nestjs/common';
 import { BlogLessonsService } from './blog-lessons.service';
 import { CreateBlogLessonDto } from './dto/create-blog-lesson.dto';
@@ -21,12 +21,12 @@ import {
 } from '@nestjs/swagger';
 import { BlogLesson } from './domain/blog-lesson';
 import { AuthGuard } from '@nestjs/passport';
-import {
-  InfinityPaginationResponse,
-  InfinityPaginationResponseDto,
-} from '../utils/dto/infinity-pagination-response.dto';
-import { infinityPagination } from '../utils/infinity-pagination';
-import { FindAllBlogLessonsDto } from './dto/find-all-blog-lessons.dto';
+// import {
+//   InfinityPaginationResponse,
+//   InfinityPaginationResponseDto,
+// } from '../utils/dto/infinity-pagination-response.dto';
+// import { infinityPagination } from '../utils/infinity-pagination';
+// import { FindAllBlogLessonsDto } from './dto/find-all-blog-lessons.dto';
 
 @ApiTags('Bloglessons')
 @ApiBearerAuth()
@@ -46,29 +46,29 @@ export class BlogLessonsController {
     return this.blogLessonsService.create(createBlogLessonDto);
   }
 
-  @Get()
-  @ApiOkResponse({
-    type: InfinityPaginationResponse(BlogLesson),
-  })
-  async findAll(
-    @Query() query: FindAllBlogLessonsDto,
-  ): Promise<InfinityPaginationResponseDto<BlogLesson>> {
-    const page = query?.page ?? 1;
-    let limit = query?.limit ?? 10;
-    if (limit > 50) {
-      limit = 50;
-    }
+  // @Get()
+  // @ApiOkResponse({
+  //   type: InfinityPaginationResponse(BlogLesson),
+  // })
+  // async findAll(
+  //   @Query() query: FindAllBlogLessonsDto,
+  // ): Promise<InfinityPaginationResponseDto<BlogLesson>> {
+  //   const page = query?.page ?? 1;
+  //   let limit = query?.limit ?? 10;
+  //   if (limit > 50) {
+  //     limit = 50;
+  //   }
 
-    return infinityPagination(
-      await this.blogLessonsService.findAllWithPagination({
-        paginationOptions: {
-          page,
-          limit,
-        },
-      }),
-      { page, limit },
-    );
-  }
+  //   return infinityPagination(
+  //     await this.blogLessonsService.findAllWithPagination({
+  //       paginationOptions: {
+  //         page,
+  //         limit,
+  //       },
+  //     }),
+  //     { page, limit },
+  //   );
+  // }
 
   @Get(':id')
   @ApiParam({

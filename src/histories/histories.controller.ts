@@ -7,7 +7,7 @@ import {
   Param,
   Delete,
   UseGuards,
-  Query,
+  // Query,
 } from '@nestjs/common';
 import { HistoriesService } from './histories.service';
 import { CreateHistoryDto } from './dto/create-history.dto';
@@ -21,12 +21,12 @@ import {
 } from '@nestjs/swagger';
 import { History } from './domain/history';
 import { AuthGuard } from '@nestjs/passport';
-import {
-  InfinityPaginationResponse,
-  InfinityPaginationResponseDto,
-} from '../utils/dto/infinity-pagination-response.dto';
-import { infinityPagination } from '../utils/infinity-pagination';
-import { FindAllHistoriesDto } from './dto/find-all-histories.dto';
+// import {
+//   InfinityPaginationResponse,
+//   InfinityPaginationResponseDto,
+// } from '../utils/dto/infinity-pagination-response.dto';
+// import { infinityPagination } from '../utils/infinity-pagination';
+// import { FindAllHistoriesDto } from './dto/find-all-histories.dto';
 
 @ApiTags('Histories')
 @ApiBearerAuth()
@@ -46,29 +46,29 @@ export class HistoriesController {
     return this.historiesService.create(createHistoryDto);
   }
 
-  @Get()
-  @ApiOkResponse({
-    type: InfinityPaginationResponse(History),
-  })
-  async findAll(
-    @Query() query: FindAllHistoriesDto,
-  ): Promise<InfinityPaginationResponseDto<History>> {
-    const page = query?.page ?? 1;
-    let limit = query?.limit ?? 10;
-    if (limit > 50) {
-      limit = 50;
-    }
+  // @Get()
+  // @ApiOkResponse({
+  //   type: InfinityPaginationResponse(History),
+  // })
+  // async findAll(
+  //   @Query() query: FindAllHistoriesDto,
+  // ): Promise<InfinityPaginationResponseDto<History>> {
+  //   const page = query?.page ?? 1;
+  //   let limit = query?.limit ?? 10;
+  //   if (limit > 50) {
+  //     limit = 50;
+  //   }
 
-    return infinityPagination(
-      await this.historiesService.findAllWithPagination({
-        paginationOptions: {
-          page,
-          limit,
-        },
-      }),
-      { page, limit },
-    );
-  }
+  //   return infinityPagination(
+  //     await this.historiesService.findAllWithPagination({
+  //       paginationOptions: {
+  //         page,
+  //         limit,
+  //       },
+  //     }),
+  //     { page, limit },
+  //   );
+  // }
 
   @Get(':id')
   @ApiParam({

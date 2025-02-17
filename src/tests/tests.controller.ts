@@ -7,7 +7,7 @@ import {
   Param,
   Delete,
   UseGuards,
-  Query,
+  // Query,
 } from '@nestjs/common';
 import { testsService } from './tests.service';
 import { CreatetestDto } from './dto/create-test.dto';
@@ -21,12 +21,12 @@ import {
 } from '@nestjs/swagger';
 import { test } from './domain/test';
 import { AuthGuard } from '@nestjs/passport';
-import {
-  InfinityPaginationResponse,
-  InfinityPaginationResponseDto,
-} from '../utils/dto/infinity-pagination-response.dto';
-import { infinityPagination } from '../utils/infinity-pagination';
-import { FindAlltestsDto } from './dto/find-all-tests.dto';
+// import {
+//   InfinityPaginationResponse,
+//   InfinityPaginationResponseDto,
+// } from '../utils/dto/infinity-pagination-response.dto';
+// import { infinityPagination } from '../utils/infinity-pagination';
+// import { FindAlltestsDto } from './dto/find-all-tests.dto';
 
 @ApiTags('Tests')
 @ApiBearerAuth()
@@ -46,29 +46,29 @@ export class testsController {
     return this.testsService.create(createtestDto);
   }
 
-  @Get()
-  @ApiOkResponse({
-    type: InfinityPaginationResponse(test),
-  })
-  async findAll(
-    @Query() query: FindAlltestsDto,
-  ): Promise<InfinityPaginationResponseDto<test>> {
-    const page = query?.page ?? 1;
-    let limit = query?.limit ?? 10;
-    if (limit > 50) {
-      limit = 50;
-    }
+  // @Get()
+  // @ApiOkResponse({
+  //   type: InfinityPaginationResponse(test),
+  // })
+  // async findAll(
+  //   @Query() query: FindAlltestsDto,
+  // ): Promise<InfinityPaginationResponseDto<test>> {
+  //   const page = query?.page ?? 1;
+  //   let limit = query?.limit ?? 10;
+  //   if (limit > 50) {
+  //     limit = 50;
+  //   }
 
-    return infinityPagination(
-      await this.testsService.findAllWithPagination({
-        paginationOptions: {
-          page,
-          limit,
-        },
-      }),
-      { page, limit },
-    );
-  }
+  //   return infinityPagination(
+  //     await this.testsService.findAllWithPagination({
+  //       paginationOptions: {
+  //         page,
+  //         limit,
+  //       },
+  //     }),
+  //     { page, limit },
+  //   );
+  // }
 
   @Get(':id')
   @ApiParam({

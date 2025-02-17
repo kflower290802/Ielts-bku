@@ -1,3 +1,4 @@
+import { InfinityPaginationResponseDto } from '../../../utils/dto/infinity-pagination-response.dto';
 import { DeepPartial } from '../../../utils/types/deep-partial.type';
 import { NullableType } from '../../../utils/types/nullable.type';
 import { IPaginationOptions } from '../../../utils/types/pagination-options';
@@ -21,7 +22,7 @@ export abstract class ExamRepository {
     status?: ExamStatus;
     userId: string;
     year?: number;
-  }): Promise<Exam[]>;
+  }): Promise<InfinityPaginationResponseDto<Exam>>;
 
   abstract findById(id: Exam['id']): Promise<NullableType<Exam>>;
 

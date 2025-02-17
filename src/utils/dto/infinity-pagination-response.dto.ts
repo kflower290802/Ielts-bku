@@ -3,7 +3,10 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class InfinityPaginationResponseDto<T> {
   data: T[];
-  hasNextPage: boolean;
+  limit: number;
+  page: number;
+  pages: number;
+  total: number;
 }
 
 export function InfinityPaginationResponse<T>(classReference: Type<T>) {
@@ -12,10 +15,28 @@ export function InfinityPaginationResponse<T>(classReference: Type<T>) {
     data!: T[];
 
     @ApiProperty({
-      type: Boolean,
-      example: true,
+      type: Number,
+      example: 10,
     })
-    hasNextPage: boolean;
+    pages: number;
+
+    @ApiProperty({
+      type: Number,
+      example: 1,
+    })
+    page: number;
+
+    @ApiProperty({
+      type: Number,
+      example: 10,
+    })
+    limit: number;
+
+    @ApiProperty({
+      type: Number,
+      example: 10,
+    })
+    total: number;
   }
 
   Object.defineProperty(Pagination, 'name', {

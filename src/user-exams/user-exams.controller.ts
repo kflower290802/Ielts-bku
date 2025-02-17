@@ -7,7 +7,7 @@ import {
   Param,
   Delete,
   UseGuards,
-  Query,
+  // Query,
 } from '@nestjs/common';
 import { UserExamsService } from './user-exams.service';
 import { CreateUserExamDto } from './dto/create-user-exam.dto';
@@ -21,12 +21,12 @@ import {
 } from '@nestjs/swagger';
 import { UserExam } from './domain/user-exam';
 import { AuthGuard } from '@nestjs/passport';
-import {
-  InfinityPaginationResponse,
-  InfinityPaginationResponseDto,
-} from '../utils/dto/infinity-pagination-response.dto';
-import { infinityPagination } from '../utils/infinity-pagination';
-import { FindAllUserExamsDto } from './dto/find-all-user-exams.dto';
+// import {
+//   InfinityPaginationResponse,
+//   InfinityPaginationResponseDto,
+// } from '../utils/dto/infinity-pagination-response.dto';
+// import { infinityPagination } from '../utils/infinity-pagination';
+// import { FindAllUserExamsDto } from './dto/find-all-user-exams.dto';
 
 @ApiTags('Userexams')
 @ApiBearerAuth()
@@ -46,29 +46,29 @@ export class UserExamsController {
     return this.userExamsService.create(createUserExamDto);
   }
 
-  @Get()
-  @ApiOkResponse({
-    type: InfinityPaginationResponse(UserExam),
-  })
-  async findAll(
-    @Query() query: FindAllUserExamsDto,
-  ): Promise<InfinityPaginationResponseDto<UserExam>> {
-    const page = query?.page ?? 1;
-    let limit = query?.limit ?? 10;
-    if (limit > 50) {
-      limit = 50;
-    }
+  // @Get()
+  // @ApiOkResponse({
+  //   type: InfinityPaginationResponse(UserExam),
+  // })
+  // async findAll(
+  //   @Query() query: FindAllUserExamsDto,
+  // ): Promise<InfinityPaginationResponseDto<UserExam>> {
+  //   const page = query?.page ?? 1;
+  //   let limit = query?.limit ?? 10;
+  //   if (limit > 50) {
+  //     limit = 50;
+  //   }
 
-    return infinityPagination(
-      await this.userExamsService.findAllWithPagination({
-        paginationOptions: {
-          page,
-          limit,
-        },
-      }),
-      { page, limit },
-    );
-  }
+  //   return infinityPagination(
+  //     await this.userExamsService.findAllWithPagination({
+  //       paginationOptions: {
+  //         page,
+  //         limit,
+  //       },
+  //     }),
+  //     { page, limit },
+  //   );
+  // }
 
   @Get(':id')
   @ApiParam({

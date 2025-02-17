@@ -7,7 +7,7 @@ import {
   Param,
   Delete,
   // UseGuards,
-  Query,
+  // Query,
   UseInterceptors,
   UploadedFile,
 } from '@nestjs/common';
@@ -23,12 +23,12 @@ import {
 } from '@nestjs/swagger';
 import { Blog } from './domain/blog';
 // import { AuthGuard } from '@nestjs/passport';
-import {
-  InfinityPaginationResponse,
-  InfinityPaginationResponseDto,
-} from '../utils/dto/infinity-pagination-response.dto';
-import { infinityPagination } from '../utils/infinity-pagination';
-import { FindAllBlogsDto } from './dto/find-all-blogs.dto';
+// import {
+//   InfinityPaginationResponse,
+//   InfinityPaginationResponseDto,
+// } from '../utils/dto/infinity-pagination-response.dto';
+// import { infinityPagination } from '../utils/infinity-pagination';
+// import { FindAllBlogsDto } from './dto/find-all-blogs.dto';
 import { Roles } from '../roles/roles.decorator';
 import { RoleEnum } from '../accounts/infrastructure/persistence/document/entities/account.schema';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -57,30 +57,30 @@ export class BlogsController {
     return this.blogsService.create({ ...createBlogDto, image });
   }
 
-  @Get()
-  @ApiOkResponse({
-    type: InfinityPaginationResponse(Blog),
-  })
-  // @Roles(RoleEnum.Admin)
-  async findAll(
-    @Query() query: FindAllBlogsDto,
-  ): Promise<InfinityPaginationResponseDto<Blog>> {
-    const page = query?.page ?? 1;
-    let limit = query?.limit ?? 10;
-    if (limit > 50) {
-      limit = 50;
-    }
+  // @Get()
+  // @ApiOkResponse({
+  //   type: InfinityPaginationResponse(Blog),
+  // })
+  // // @Roles(RoleEnum.Admin)
+  // async findAll(
+  //   @Query() query: FindAllBlogsDto,
+  // ): Promise<InfinityPaginationResponseDto<Blog>> {
+  //   const page = query?.page ?? 1;
+  //   let limit = query?.limit ?? 10;
+  //   if (limit > 50) {
+  //     limit = 50;
+  //   }
 
-    return infinityPagination(
-      await this.blogsService.findAllWithPagination({
-        paginationOptions: {
-          page,
-          limit,
-        },
-      }),
-      { page, limit },
-    );
-  }
+  //   return infinityPagination(
+  //     await this.blogsService.findAllWithPagination({
+  //       paginationOptions: {
+  //         page,
+  //         limit,
+  //       },
+  //     }),
+  //     { page, limit },
+  //   );
+  // }
 
   @Get(':id')
   @ApiParam({

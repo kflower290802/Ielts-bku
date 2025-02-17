@@ -7,7 +7,7 @@ import {
   Param,
   Delete,
   UseGuards,
-  Query,
+  // Query,
 } from '@nestjs/common';
 import { FlashCardsService } from './flash-cards.service';
 import { CreateFlashCardDto } from './dto/create-flash-card.dto';
@@ -21,12 +21,12 @@ import {
 } from '@nestjs/swagger';
 import { FlashCard } from './domain/flash-card';
 import { AuthGuard } from '@nestjs/passport';
-import {
-  InfinityPaginationResponse,
-  InfinityPaginationResponseDto,
-} from '../utils/dto/infinity-pagination-response.dto';
-import { infinityPagination } from '../utils/infinity-pagination';
-import { FindAllFlashCardsDto } from './dto/find-all-flash-cards.dto';
+// import {
+//   InfinityPaginationResponse,
+//   InfinityPaginationResponseDto,
+// } from '../utils/dto/infinity-pagination-response.dto';
+// import { infinityPagination } from '../utils/infinity-pagination';
+// import { FindAllFlashCardsDto } from './dto/find-all-flash-cards.dto';
 
 @ApiTags('Flashcards')
 @ApiBearerAuth()
@@ -46,29 +46,29 @@ export class FlashCardsController {
     return this.flashCardsService.create(createFlashCardDto);
   }
 
-  @Get()
-  @ApiOkResponse({
-    type: InfinityPaginationResponse(FlashCard),
-  })
-  async findAll(
-    @Query() query: FindAllFlashCardsDto,
-  ): Promise<InfinityPaginationResponseDto<FlashCard>> {
-    const page = query?.page ?? 1;
-    let limit = query?.limit ?? 10;
-    if (limit > 50) {
-      limit = 50;
-    }
+  // @Get()
+  // @ApiOkResponse({
+  //   type: InfinityPaginationResponse(FlashCard),
+  // })
+  // async findAll(
+  //   @Query() query: FindAllFlashCardsDto,
+  // ): Promise<InfinityPaginationResponseDto<FlashCard>> {
+  //   const page = query?.page ?? 1;
+  //   let limit = query?.limit ?? 10;
+  //   if (limit > 50) {
+  //     limit = 50;
+  //   }
 
-    return infinityPagination(
-      await this.flashCardsService.findAllWithPagination({
-        paginationOptions: {
-          page,
-          limit,
-        },
-      }),
-      { page, limit },
-    );
-  }
+  //   return infinityPagination(
+  //     await this.flashCardsService.findAllWithPagination({
+  //       paginationOptions: {
+  //         page,
+  //         limit,
+  //       },
+  //     }),
+  //     { page, limit },
+  //   );
+  // }
 
   @Get(':id')
   @ApiParam({

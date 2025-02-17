@@ -6,10 +6,12 @@ import { User } from '../../../../domain/user';
 import { UserRepository } from '../../user.repository';
 import { UserSchemaClass } from '../entities/user.schema';
 import { InjectModel } from '@nestjs/mongoose';
-import { FilterQuery, Model } from 'mongoose';
+import { FilterQuery, Model, Promise } from 'mongoose';
 import { UserMapper } from '../mappers/user.mapper';
 import { IPaginationOptions } from '../../../../../utils/types/pagination-options';
 import { RoleEnum } from '../../../../../accounts/infrastructure/persistence/document/entities/account.schema';
+import { InfinityPaginationResponseDto } from '../../../../../utils/dto/infinity-pagination-response.dto';
+import { infinityPagination } from '../../../../../utils/infinity-pagination';
 
 @Injectable()
 export class UsersDocumentRepository implements UserRepository {
@@ -33,13 +35,13 @@ export class UsersDocumentRepository implements UserRepository {
     filterOptions?: FilterUserDto | null;
     sortOptions?: SortUserDto[] | null;
     paginationOptions: IPaginationOptions;
-  }): Promise<User[]> {
+  }): Promise<InfinityPaginationResponseDto<User>> {
     const where: FilterQuery<UserSchemaClass> = {};
 
     if (filterOptions?.name) {
       where.name = { $regex: '.*' + filterOptions.name + '.*' };
     }
-
+    const { limit, page } = paginationOptions;
     const userObjects = await this.usersModel
       .find(where)
       .populate({
@@ -63,7 +65,13 @@ export class UsersDocumentRepository implements UserRepository {
       .skip((paginationOptions.page - 1) * paginationOptions.limit)
       .limit(paginationOptions.limit);
 
-    return userObjects.map((userObject) => UserMapper.toDomain(userObject));
+    const total = await this.usersModel.countDocuments(where);
+
+    return infinityPagination(userObjects.map(UserMapper.toDomain), {
+      total,
+      page,
+      limit,
+    });
   }
 
   async findById(id: User['id']): Promise<NullableType<User>> {

@@ -7,7 +7,7 @@ import {
   Param,
   Delete,
   UseGuards,
-  Query,
+  // Query,
 } from '@nestjs/common';
 import { schedulesService } from './schedules.service';
 import { CreatescheduleDto } from './dto/create-schedule.dto';
@@ -21,12 +21,12 @@ import {
 } from '@nestjs/swagger';
 import { schedule } from './domain/schedule';
 import { AuthGuard } from '@nestjs/passport';
-import {
-  InfinityPaginationResponse,
-  InfinityPaginationResponseDto,
-} from '../utils/dto/infinity-pagination-response.dto';
-import { infinityPagination } from '../utils/infinity-pagination';
-import { FindAllschedulesDto } from './dto/find-all-schedules.dto';
+// import {
+//   InfinityPaginationResponse,
+//   InfinityPaginationResponseDto,
+// } from '../utils/dto/infinity-pagination-response.dto';
+// import { infinityPagination } from '../utils/infinity-pagination';
+// import { FindAllschedulesDto } from './dto/find-all-schedules.dto';
 
 @ApiTags('Schedules')
 @ApiBearerAuth()
@@ -46,29 +46,29 @@ export class schedulesController {
     return this.schedulesService.create(createscheduleDto);
   }
 
-  @Get()
-  @ApiOkResponse({
-    type: InfinityPaginationResponse(schedule),
-  })
-  async findAll(
-    @Query() query: FindAllschedulesDto,
-  ): Promise<InfinityPaginationResponseDto<schedule>> {
-    const page = query?.page ?? 1;
-    let limit = query?.limit ?? 10;
-    if (limit > 50) {
-      limit = 50;
-    }
+  // @Get()
+  // @ApiOkResponse({
+  //   type: InfinityPaginationResponse(schedule),
+  // })
+  // async findAll(
+  //   @Query() query: FindAllschedulesDto,
+  // ): Promise<InfinityPaginationResponseDto<schedule>> {
+  //   const page = query?.page ?? 1;
+  //   let limit = query?.limit ?? 10;
+  //   if (limit > 50) {
+  //     limit = 50;
+  //   }
 
-    return infinityPagination(
-      await this.schedulesService.findAllWithPagination({
-        paginationOptions: {
-          page,
-          limit,
-        },
-      }),
-      { page, limit },
-    );
-  }
+  //   return infinityPagination(
+  //     await this.schedulesService.findAllWithPagination({
+  //       paginationOptions: {
+  //         page,
+  //         limit,
+  //       },
+  //     }),
+  //     { page, limit },
+  //   );
+  // }
 
   @Get(':id')
   @ApiParam({
