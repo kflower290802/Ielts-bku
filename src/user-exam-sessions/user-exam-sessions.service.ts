@@ -5,6 +5,7 @@ import { UserExamSessionRepository } from './infrastructure/persistence/user-exa
 import { IPaginationOptions } from '../utils/types/pagination-options';
 import { UserExamSession } from './domain/user-exam-session';
 import { UserExamsService } from '../user-exams/user-exams.service';
+import { UserExam } from '../user-exams/domain/user-exam';
 
 @Injectable()
 export class UserExamSessionsService {
@@ -26,6 +27,12 @@ export class UserExamSessionsService {
       userExam,
       ...rest,
     });
+  }
+
+  findByExamUserId(examUserId: UserExam['id']) {
+    return this.userExamSessionRepository.findLastSessionByUserExamId(
+      examUserId,
+    );
   }
 
   findAllWithPagination({
@@ -51,16 +58,9 @@ export class UserExamSessionsService {
 
   async update(
     id: UserExamSession['id'],
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     updateUserExamSessionDto: UpdateUserExamSessionDto,
   ) {
-    // Do not remove comment below.
-    // <updating-property />
-
-    return this.userExamSessionRepository.update(id, {
-      // Do not remove comment below.
-      // <updating-property-payload />
-    });
+    return this.userExamSessionRepository.update(id, updateUserExamSessionDto);
   }
 
   remove(id: UserExamSession['id']) {

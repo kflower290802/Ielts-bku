@@ -78,7 +78,6 @@ export class UsersDocumentRepository implements UserRepository {
     const userObject = await this.usersModel.findById(
       new mongoose.Types.ObjectId(id),
     );
-    console.log({ userObject });
     return userObject ? UserMapper.toDomain(userObject) : null;
   }
 

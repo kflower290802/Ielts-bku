@@ -26,7 +26,7 @@ export class UserExamsService {
     // Do not remove comment below.
     // <creating-property />
     const { userId, examId, ...rest } = createUserExamDto;
-    const user = await this.usersService.findByAccountId(userId);
+    const user = await this.usersService.findById(userId);
     if (!user) throw new BadRequestException('User not found');
 
     const exam = await this.examsService.findById(examId);
@@ -56,6 +56,10 @@ export class UserExamsService {
 
   findById(id: UserExam['id']) {
     return this.userExamRepository.findById(id);
+  }
+
+  findByUserIdAndExamId(userId: User['id'], examId: UserExam['id']) {
+    return this.userExamRepository.findByUserIdAndExamId(userId, examId);
   }
 
   findByIds(ids: UserExam['id'][]) {

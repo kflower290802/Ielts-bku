@@ -1,5 +1,5 @@
-import { AccountSchemaClass } from '../../../../../accounts/infrastructure/persistence/document/entities/account.schema';
-import { AccountMapper } from '../../../../../accounts/infrastructure/persistence/document/mappers/account.mapper';
+import { UserSchemaClass } from '../../../../../users/infrastructure/persistence/document/entities/user.schema';
+import { UserMapper } from '../../../../../users/infrastructure/persistence/document/mappers/user.mapper';
 import { Session } from '../../../../domain/session';
 import { SessionSchemaClass } from '../entities/session.schema';
 
@@ -8,8 +8,8 @@ export class SessionMapper {
     const domainEntity = new Session();
     domainEntity.id = raw._id.toString();
 
-    if (raw.account) {
-      domainEntity.account = AccountMapper.toDomain(raw.account);
+    if (raw.user) {
+      domainEntity.user = UserMapper.toDomain(raw.user);
     }
 
     domainEntity.hash = raw.hash;
@@ -19,13 +19,13 @@ export class SessionMapper {
     return domainEntity;
   }
   static toPersistence(domainEntity: Session): SessionSchemaClass {
-    const persistenceSchema = new AccountSchemaClass();
-    persistenceSchema._id = domainEntity.account.id.toString();
+    const persistenceSchema = new UserSchemaClass();
+    persistenceSchema._id = domainEntity.user.id.toString();
     const sessionEntity = new SessionSchemaClass();
     if (domainEntity.id && typeof domainEntity.id === 'string') {
       sessionEntity._id = domainEntity.id;
     }
-    sessionEntity.account = persistenceSchema;
+    sessionEntity.user = persistenceSchema;
     sessionEntity.hash = domainEntity.hash;
     sessionEntity.createdAt = domainEntity.createdAt;
     sessionEntity.updatedAt = domainEntity.updatedAt;

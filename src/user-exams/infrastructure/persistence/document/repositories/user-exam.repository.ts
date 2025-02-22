@@ -15,6 +15,22 @@ export class UserExamDocumentRepository implements UserExamRepository {
     @InjectModel(UserExamSchemaClass.name)
     private readonly userExamModel: Model<UserExamSchemaClass>,
   ) {}
+  async findByUserIdAndExamId(
+    userId: User['id'],
+    examId: UserExam['id'],
+  ): Promise<NullableType<UserExam>> {
+    const userExam = await this.userExamModel
+      .findOne({
+        user: {
+          _id: userId,
+        },
+        exam: {
+          _id: examId,
+        },
+      })
+      .sort({ createdAt: -1 });
+    return userExam ? UserExamMapper.toDomain(userExam) : null;
+  }
 
   async create(data: UserExam): Promise<UserExam> {
     const persistenceModel = UserExamMapper.toPersistence(data);

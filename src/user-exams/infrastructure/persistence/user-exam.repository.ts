@@ -27,4 +27,9 @@ export abstract class UserExamRepository {
   abstract remove(id: UserExam['id']): Promise<void>;
 
   abstract findByUserId(id: User['id']): Promise<NullableType<UserExam>>;
+
+  abstract findByUserIdAndExamId(
+    userId: User['id'],
+    examId: UserExam['id'],
+  ): Promise<NullableType<UserExam>>;
 }

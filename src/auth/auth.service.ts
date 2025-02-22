@@ -41,7 +41,6 @@ export class AuthService {
 
   async validateLogin(loginDto: AuthEmailLoginDto): Promise<LoginResponseDto> {
     const user = await this.usersService.findByEmail(loginDto.email);
-
     if (!user) {
       throw new UnprocessableEntityException({
         status: HttpStatus.UNPROCESSABLE_ENTITY,
@@ -75,12 +74,12 @@ export class AuthService {
       .digest('hex');
 
     const session = await this.sessionService.create({
-      account,
+      user,
       hash,
     });
 
     const { token, refreshToken, tokenExpires } = await this.getTokensData({
-      id: account.id,
+      id: user.id,
       role: account.role,
       sessionId: session.id,
       hash,
@@ -272,7 +271,6 @@ export class AuthService {
     userDto: AuthUpdateDto,
   ): Promise<NullableType<User>> {
     const account = await this.accountsService.findById(userJwtPayload.id);
-
     const currentUser = await this.usersService.findByAccountId(
       userJwtPayload.id,
     );
@@ -319,7 +317,7 @@ export class AuthService {
         });
       } else {
         await this.sessionService.deleteByUserIdWithExclude({
-          userId: account.id,
+          userId: currentUser.id,
           excludeSessionId: userJwtPayload.sessionId,
         });
       }
@@ -386,7 +384,7 @@ export class AuthService {
       .update(randomStringGenerator())
       .digest('hex');
 
-    const account = await this.accountsService.findById(session.account.id);
+    const account = await this.accountsService.findById(session.user.id);
 
     if (!account?.role) {
       throw new UnauthorizedException();
@@ -397,7 +395,7 @@ export class AuthService {
     });
 
     const { token, refreshToken, tokenExpires } = await this.getTokensData({
-      id: session.account.id,
+      id: session.user.id,
       role: account.role,
       sessionId: session.id,
       hash,

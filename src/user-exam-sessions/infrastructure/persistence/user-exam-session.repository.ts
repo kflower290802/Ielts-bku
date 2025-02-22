@@ -31,4 +31,8 @@ export abstract class UserExamSessionRepository {
   abstract getSessionsByUserExamId(
     userExamId: UserExam['id'],
   ): Promise<UserExamSession[]>;
+
+  abstract findLastSessionByUserExamId(
+    userExamId: UserExam['id'],
+  ): Promise<NullableType<UserExamSession>>;
 }

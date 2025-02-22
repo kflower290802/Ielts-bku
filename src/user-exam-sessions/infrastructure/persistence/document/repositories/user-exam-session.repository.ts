@@ -96,4 +96,17 @@ export class UserExamSessionDocumentRepository
     });
     return entityObjects.map(UserExamSessionMapper.toDomain);
   }
+
+  async findLastSessionByUserExamId(
+    userExamId: UserExam['id'],
+  ): Promise<NullableType<UserExamSession>> {
+    const entity = await this.userExamSessionModel
+      .findOne({
+        userExam: {
+          _id: userExamId,
+        },
+      })
+      .sort({ createdAt: -1 });
+    return entity ? UserExamSessionMapper.toDomain(entity) : null;
+  }
 }

@@ -32,7 +32,6 @@ export class BlogLessonsService {
     const lesson = await this.lessonsService.findById(lessonId);
 
     if (!lesson) throw new BadRequestException('Lesson not found!');
-    console.log({ blog, lesson });
     return this.blogLessonRepository.create({
       // Do not remove comment below.
       // <creating-property-payload />

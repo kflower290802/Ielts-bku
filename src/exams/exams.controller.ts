@@ -122,8 +122,31 @@ export class ExamsController {
   @ApiOkResponse({
     type: Exam,
   })
-  update(@Param('id') id: string, @Body() updateexamDto: UpdateExamDto) {
-    return this.examsService.update(id, updateexamDto);
+  update(@Param('id') id: string, @Body() updateExamDto: UpdateExamDto) {
+    return this.examsService.update(id, updateExamDto);
+  }
+
+  @Get('exam/:id')
+  @ApiParam({
+    name: 'id',
+    type: String,
+    required: true,
+  })
+  @UseGuards(AuthGuard('jwt'))
+  findExamData(@Param('id') id: string, @Request() request) {
+    const userId = request.user.id;
+    return this.examsService.getExamData(id, userId);
+  }
+  @Post('exit-exam/:id')
+  @ApiParam({
+    name: 'id',
+    type: String,
+    required: true,
+  })
+  @UseGuards(AuthGuard('jwt'))
+  exitExam(@Param('id') id: string, @Request() request) {
+    const userId = request.user.id;
+    return this.examsService.exitExam(id, userId);
   }
 
   @Delete(':id')

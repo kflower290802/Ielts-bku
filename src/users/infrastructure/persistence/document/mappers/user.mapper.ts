@@ -11,7 +11,9 @@ export class UserMapper {
     domainEntity.name = raw.name;
     domainEntity.address = raw.address;
     domainEntity.status = raw.status;
-    domainEntity.account = AccountMapper.toDomain(raw.account);
+    if (raw.account) {
+      domainEntity.account = AccountMapper.toDomain(raw.account);
+    }
     domainEntity.createdAt = raw.createdAt;
     domainEntity.updatedAt = raw.updatedAt;
     domainEntity.deletedAt = raw.deletedAt;
