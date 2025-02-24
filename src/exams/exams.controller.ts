@@ -17,6 +17,7 @@ import { CreateExamDto } from './dto/create-exam.dto';
 import { UpdateExamDto } from './dto/update-exam.dto';
 import {
   ApiBearerAuth,
+  ApiBody,
   ApiConsumes,
   ApiCreatedResponse,
   ApiOkResponse,
@@ -32,6 +33,7 @@ import {
 // import { infinityPagination } from '../utils/infinity-pagination';
 import { FindAllExamsDto } from './dto/find-all-exams.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { SubmitExamDto } from './dto/submit-exam.dto';
 
 @ApiTags('Exams')
 @ApiBearerAuth()
@@ -147,6 +149,23 @@ export class ExamsController {
   exitExam(@Param('id') id: string, @Request() request) {
     const userId = request.user.id;
     return this.examsService.exitExam(id, userId);
+  }
+
+  @Post('submit-exam/:id')
+  @ApiParam({
+    name: 'id',
+    type: String,
+    required: true,
+  })
+  @ApiBody({ type: [SubmitExamDto] })
+  @UseGuards(AuthGuard('jwt'))
+  submitExam(
+    @Param('id') id: string,
+    @Body() submitExamsDto: SubmitExamDto[],
+    @Request() request,
+  ) {
+    const userId = request.user.id;
+    return this.examsService.submitExam(id, userId, submitExamsDto);
   }
 
   @Delete(':id')

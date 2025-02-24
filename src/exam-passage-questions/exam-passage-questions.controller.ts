@@ -50,30 +50,6 @@ export class ExamPassageQuestionsController {
     );
   }
 
-  // @Get()
-  // @ApiOkResponse({
-  //   type: InfinityPaginationResponse(ExamPassageQuestion),
-  // })
-  // async findAll(
-  //   @Query() query: FindAllExamPassageQuestionsDto,
-  // ): Promise<InfinityPaginationResponseDto<ExamPassageQuestion>> {
-  //   const page = query?.page ?? 1;
-  //   let limit = query?.limit ?? 10;
-  //   if (limit > 50) {
-  //     limit = 50;
-  //   }
-
-  //   return infinityPagination(
-  //     await this.examPassageQuestionsService.findAllWithPagination({
-  //       paginationOptions: {
-  //         page,
-  //         limit,
-  //       },
-  //     }),
-  //     { page, limit },
-  //   );
-  // }
-
   @Get(':id')
   @ApiParam({
     name: 'id',

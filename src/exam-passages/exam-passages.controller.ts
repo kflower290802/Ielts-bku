@@ -20,14 +20,6 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { ExamPassage } from './domain/exam-passage';
-// import { AuthGuard } from '@nestjs/passport';
-// import {
-//   InfinityPaginationResponse,
-//   InfinityPaginationResponseDto,
-// } from '../utils/dto/infinity-pagination-response.dto';
-// import { infinityPagination } from '../utils/infinity-pagination';
-// import { FindAllExamPassagesDto } from './dto/find-all-exam-passages.dto';
-
 @ApiTags('Exampassages')
 @ApiBearerAuth()
 // @UseGuards(AuthGuard('jwt'))
@@ -45,30 +37,6 @@ export class ExamPassagesController {
   create(@Body() createExamPassageDto: CreateExamPassageDto) {
     return this.examPassagesService.create(createExamPassageDto);
   }
-
-  // @Get()
-  // @ApiOkResponse({
-  //   type: InfinityPaginationResponse(ExamPassage),
-  // })
-  // async findAll(
-  //   @Query() query: FindAllExamPassagesDto,
-  // ): Promise<InfinityPaginationResponseDto<ExamPassage>> {
-  //   const page = query?.page ?? 1;
-  //   let limit = query?.limit ?? 10;
-  //   if (limit > 50) {
-  //     limit = 50;
-  //   }
-
-  //   return infinityPagination(
-  //     await this.examPassagesService.findAllWithPagination({
-  //       paginationOptions: {
-  //         page,
-  //         limit,
-  //       },
-  //     }),
-  //     { page, limit },
-  //   );
-  // }
 
   @Get(':id')
   @ApiParam({

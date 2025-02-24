@@ -11,6 +11,7 @@ import { IPaginationOptions } from '../utils/types/pagination-options';
 import { ExamPassageQuestion } from './domain/exam-passage-question';
 import { ExamPassagesService } from '../exam-passages/exam-passages.service';
 import { ExamPassage } from '../exam-passages/domain/exam-passage';
+import { ExamPassageAnswersService } from '../exam-passage-answers/exam-passage-answers.service';
 
 @Injectable()
 export class ExamPassageQuestionsService {
@@ -18,23 +19,27 @@ export class ExamPassageQuestionsService {
     private readonly examPassageQuestionRepository: ExamPassageQuestionRepository,
     @Inject(forwardRef(() => ExamPassagesService))
     private readonly examPassageService: ExamPassagesService,
+    private readonly examPassageAnswersService: ExamPassageAnswersService,
   ) {}
 
   async create(createExamPassageQuestionDto: CreateExamPassageQuestionDto) {
-    // Do not remove comment below.
-    // <creating-property />
-
-    const { examPassageId, ...res } = createExamPassageQuestionDto;
+    const { examPassageId, answer, ...rest } = createExamPassageQuestionDto;
     const examPassage = await this.examPassageService.findById(examPassageId);
 
     if (!examPassage) throw new BadRequestException('Exam Passage not found');
 
-    return this.examPassageQuestionRepository.create({
-      // Do not remove comment below.
-      // <creating-property-payload />
+    const question = await this.examPassageQuestionRepository.create({
       examPassage,
-      ...res,
+      ...rest,
     });
+    const answerQuestion = await this.examPassageAnswersService.create({
+      question,
+      answer,
+    });
+    return {
+      ...question,
+      answer: answerQuestion,
+    };
   }
 
   findAllWithPagination({

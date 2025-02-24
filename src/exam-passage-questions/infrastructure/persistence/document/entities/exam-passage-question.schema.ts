@@ -25,9 +25,6 @@ export class ExamPassageQuestionSchemaClass extends EntityDocumentHelper {
   @Prop()
   question: string;
 
-  @Prop()
-  answer: string;
-
   @Prop({ default: now })
   createdAt: Date;
 

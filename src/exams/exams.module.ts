@@ -6,6 +6,7 @@ import { CloudinaryModule } from '../cloudinary/cloudinary.module';
 import { ExamPassagesModule } from '../exam-passages/exam-passages.module';
 import { UserExamsModule } from '../user-exams/user-exams.module';
 import { UserExamSessionsModule } from '../user-exam-sessions/user-exam-sessions.module';
+import { UserExamAnswersModule } from '../user-exam-answers/user-exam-answers.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { UserExamSessionsModule } from '../user-exam-sessions/user-exam-sessions
     forwardRef(() => ExamPassagesModule),
     forwardRef(() => UserExamsModule),
     UserExamSessionsModule,
+    UserExamAnswersModule,
   ],
   controllers: [ExamsController],
   providers: [ExamsService],

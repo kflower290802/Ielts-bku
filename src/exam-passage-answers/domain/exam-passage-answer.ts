@@ -1,18 +1,14 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { ExamPassageQuestion } from '../../exam-passage-questions/domain/exam-passage-question';
-import { UserExam } from '../../user-exams/domain/user-exam';
 
-export class UserExamAnswer {
+export class ExamPassageAnswer {
   @ApiProperty({
     type: String,
   })
   id: string;
 
   @ApiProperty()
-  userExam: UserExam;
-
-  @ApiProperty()
-  examPassageQuestion: ExamPassageQuestion;
+  question: ExamPassageQuestion;
 
   @ApiProperty()
   answer: string;

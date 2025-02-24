@@ -7,12 +7,13 @@ import {
   Param,
   Delete,
   UseGuards,
+  Request,
 } from '@nestjs/common';
 import { UserExamAnswersService } from './user-exam-answers.service';
-import { CreateUserExamAnswerDto } from './dto/create-user-exam-answer.dto';
 import { UpdateUserExamAnswerDto } from './dto/update-user-exam-answer.dto';
 import {
   ApiBearerAuth,
+  ApiBody,
   ApiCreatedResponse,
   ApiOkResponse,
   ApiParam,
@@ -20,8 +21,9 @@ import {
 } from '@nestjs/swagger';
 import { UserExamAnswer } from './domain/user-exam-answer';
 import { AuthGuard } from '@nestjs/passport';
+import { CreateUserExamAnswerDto } from './dto/create-user-exam-answer.dto';
 
-@ApiTags('Userexamanswers')
+@ApiTags('UserExamAnswers')
 @ApiBearerAuth()
 @UseGuards(AuthGuard('jwt'))
 @Controller({
@@ -36,9 +38,15 @@ export class UserExamAnswersController {
   @Post()
   @ApiCreatedResponse({
     type: UserExamAnswer,
+    isArray: true,
   })
-  create(@Body() createUserExamAnswerDto: CreateUserExamAnswerDto) {
-    return this.userExamAnswersService.create(createUserExamAnswerDto);
+  @ApiBody({ type: [CreateUserExamAnswerDto] })
+  create(
+    @Body() createUserExamAnswerDto: CreateUserExamAnswerDto[],
+    @Request() request,
+  ) {
+    const userId = request.user.id;
+    return this.userExamAnswersService.create(createUserExamAnswerDto, userId);
   }
 
   @Get(':id')

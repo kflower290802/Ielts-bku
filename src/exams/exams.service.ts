@@ -18,6 +18,7 @@ import { User } from '../users/domain/user';
 import { UserExamSessionsService } from '../user-exam-sessions/user-exam-sessions.service';
 import { UserExam } from '../user-exams/domain/user-exam';
 import { NullableType } from '../utils/types/nullable.type';
+import { UserExamAnswersService } from '../user-exam-answers/user-exam-answers.service';
 
 @Injectable()
 export class ExamsService {
@@ -29,6 +30,7 @@ export class ExamsService {
     @Inject(forwardRef(() => UserExamsService))
     private readonly userExamsService: UserExamsService,
     private readonly userExamSessionService: UserExamSessionsService,
+    private readonly userExamAnswersService: UserExamAnswersService,
   ) {}
 
   async create(createExamDto: CreateExamDto) {
@@ -147,15 +149,33 @@ export class ExamsService {
   }
 
   async getExamData(id: Exam['id'], userId: User['id']) {
-    const exam = await this.examRepository.findById(id);
+    const exam = this.findAllPassage(id);
     const userExam = await this.userExamsService.findByUserIdAndExamId(
       userId,
       id,
     );
     if (!userExam) throw new NotFoundException('User exam not found');
+    const answers = await this.userExamAnswersService.findByUserIdAndExamId(
+      userId,
+      id,
+    );
+    const answerMap = new Map(
+      answers.map((a) => [a.examPassageQuestion.id, a.answer]),
+    );
+
+    const mergedData = (await exam).examPassage.map((passage) => ({
+      ...passage,
+      questions: passage.questions.map((q) => {
+        return {
+          ...q,
+          answer: answerMap.get(q.id),
+        };
+      }),
+    }));
     const remainingTime = await this.getRemainingTime(userExam.id);
     return {
-      exam,
+      exam: mergedData,
+      answers,
       remainingTime,
     };
   }
@@ -186,5 +206,38 @@ export class ExamsService {
     await this.userExamsService.update(userExam.id, {
       progress: timeSpent / exam.time > 1 ? 100 : (timeSpent / exam.time) * 100,
     });
+  }
+
+  async submitExam(
+    id: Exam['id'],
+    userId: User['id'],
+    answers: { questionId: string; answer: string }[],
+  ) {
+    const exam = await this.examRepository.findById(id);
+    if (!exam) throw new NotFoundException('Exam not found');
+    const userExam = await this.userExamsService.findByUserIdAndExamId(
+      userId,
+      id,
+    );
+    if (!userExam) throw new NotFoundException('User exam not found');
+    const userExamSession = await this.userExamSessionService.findByExamUserId(
+      userExam.id,
+    );
+    if (!userExamSession)
+      throw new BadRequestException('This exam is not started!');
+    await this.userExamSessionService.update(userExamSession.id, {
+      endTime: new Date(),
+    });
+    await this.userExamsService.update(userExam.id, {
+      progress: 100,
+    });
+    await this.userExamAnswersService.create(
+      answers.map((a) => ({
+        examId: id,
+        examPassageQuestionId: a.questionId,
+        answer: a.answer,
+      })),
+      userId,
+    );
   }
 }

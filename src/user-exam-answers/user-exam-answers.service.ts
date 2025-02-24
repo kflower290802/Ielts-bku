@@ -1,28 +1,59 @@
-import { Injectable } from '@nestjs/common';
-import { CreateUserExamAnswerDto } from './dto/create-user-exam-answer.dto';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { UpdateUserExamAnswerDto } from './dto/update-user-exam-answer.dto';
 import { UserExamAnswerRepository } from './infrastructure/persistence/user-exam-answer.repository';
 import { IPaginationOptions } from '../utils/types/pagination-options';
 import { UserExamAnswer } from './domain/user-exam-answer';
+import { User } from '../users/domain/user';
+import { UserExamsService } from '../user-exams/user-exams.service';
+import { ExamPassageQuestionsService } from '../exam-passage-questions/exam-passage-questions.service';
+import { Exam } from '../exams/domain/exam';
+import { CreateUserExamAnswerDto } from './dto/create-user-exam-answer.dto';
 
 @Injectable()
 export class UserExamAnswersService {
   constructor(
-    // Dependencies here
     private readonly userExamAnswerRepository: UserExamAnswerRepository,
+    private readonly userExamsService: UserExamsService,
+    private readonly examPassageQuestionsService: ExamPassageQuestionsService,
   ) {}
 
   async create(
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    createUserExamAnswerDto: CreateUserExamAnswerDto,
+    createUserExamAnswersDto: CreateUserExamAnswerDto[],
+    userId: User['id'],
   ) {
-    // Do not remove comment below.
-    // <creating-property />
+    if (!createUserExamAnswersDto.length) return [];
+    return Promise.all(
+      createUserExamAnswersDto.map(async (createUserExamAnswerDto) => {
+        const { examId, examPassageQuestionId, answer } =
+          createUserExamAnswerDto;
+        const userExam = await this.userExamsService.findByUserIdAndExamId(
+          userId,
+          examId,
+        );
+        if (!userExam)
+          throw new BadRequestException('User does not have an exam');
 
-    return this.userExamAnswerRepository.create({
-      // Do not remove comment below.
-      // <creating-property-payload />
-    });
+        const examPassageQuestion =
+          await this.examPassageQuestionsService.findById(
+            examPassageQuestionId,
+          );
+
+        if (!examPassageQuestion)
+          throw new BadRequestException('Question not found');
+        const userExamAnswer =
+          await this.userExamAnswerRepository.findByUserExamAndExamPassageQuestion(
+            userExam.id,
+            examPassageQuestionId,
+          );
+
+        if (userExamAnswer) return userExamAnswer;
+        return this.userExamAnswerRepository.create({
+          userExam,
+          examPassageQuestion,
+          answer,
+        });
+      }),
+    );
   }
 
   findAllWithPagination({
@@ -44,6 +75,15 @@ export class UserExamAnswersService {
 
   findByIds(ids: UserExamAnswer['id'][]) {
     return this.userExamAnswerRepository.findByIds(ids);
+  }
+
+  async findByUserIdAndExamId(userId: User['id'], examId: Exam['id']) {
+    const userExam = await this.userExamsService.findByUserIdAndExamId(
+      userId,
+      examId,
+    );
+    if (!userExam) throw new BadRequestException('User does not have an exam');
+    return this.userExamAnswerRepository.findByUserExamId(userExam.id);
   }
 
   async update(

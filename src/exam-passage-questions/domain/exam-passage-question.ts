@@ -14,9 +14,6 @@ export class ExamPassageQuestion {
   question: string;
 
   @ApiProperty()
-  answer: string;
-
-  @ApiProperty()
   createdAt: Date;
 
   @ApiProperty()

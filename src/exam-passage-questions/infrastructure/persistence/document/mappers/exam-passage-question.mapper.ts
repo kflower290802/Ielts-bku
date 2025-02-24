@@ -13,7 +13,6 @@ export class ExamPassageQuestionMapper {
     examPassage.id = raw.examPassage._id.toString();
     domainEntity.examPassage = examPassage;
     domainEntity.question = raw.question;
-    domainEntity.answer = raw.answer;
     domainEntity.createdAt = raw.createdAt;
     domainEntity.updatedAt = raw.updatedAt;
 
@@ -27,7 +26,6 @@ export class ExamPassageQuestionMapper {
     if (domainEntity.id) {
       persistenceSchema._id = domainEntity.id;
     }
-    persistenceSchema.answer = domainEntity.answer;
     const examPassage = new ExamPassageSchemaClass();
     examPassage._id = domainEntity.examPassage.id;
     persistenceSchema.examPassage = examPassage;

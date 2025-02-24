@@ -7,6 +7,8 @@ import { UserExamAnswerRepository } from '../../user-exam-answer.repository';
 import { UserExamAnswer } from '../../../../domain/user-exam-answer';
 import { UserExamAnswerMapper } from '../mappers/user-exam-answer.mapper';
 import { IPaginationOptions } from '../../../../../utils/types/pagination-options';
+import { ExamPassageQuestion } from '../../../../../exam-passage-questions/domain/exam-passage-question';
+import { UserExam } from '../../../../../user-exams/domain/user-exam';
 
 @Injectable()
 export class UserExamAnswerDocumentRepository
@@ -83,5 +85,35 @@ export class UserExamAnswerDocumentRepository
 
   async remove(id: UserExamAnswer['id']): Promise<void> {
     await this.userExamAnswerModel.deleteOne({ _id: id });
+  }
+
+  async findByUserExamAndExamPassageQuestion(
+    userExamId: UserExam['id'],
+    examPassageQuestionId: ExamPassageQuestion['id'],
+  ): Promise<NullableType<UserExamAnswer>> {
+    const userExamAnswer = await this.userExamAnswerModel
+      .findOne({
+        userExam: {
+          _id: userExamId,
+        },
+        examPassageQuestion: {
+          _id: examPassageQuestionId,
+        },
+      })
+      .sort({ createdAt: -1 });
+
+    return userExamAnswer
+      ? UserExamAnswerMapper.toDomain(userExamAnswer)
+      : null;
+  }
+  async findByUserExamId(
+    userExamId: UserExam['id'],
+  ): Promise<UserExamAnswer[]> {
+    const userExamAnswers = await this.userExamAnswerModel.find({
+      userExam: {
+        _id: userExamId,
+      },
+    });
+    return userExamAnswers.map(UserExamAnswerMapper.toDomain);
   }
 }

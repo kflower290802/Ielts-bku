@@ -1,3 +1,5 @@
+import { ExamPassageQuestion } from '../../../exam-passage-questions/domain/exam-passage-question';
+import { UserExam } from '../../../user-exams/domain/user-exam';
 import { DeepPartial } from '../../../utils/types/deep-partial.type';
 import { NullableType } from '../../../utils/types/nullable.type';
 import { IPaginationOptions } from '../../../utils/types/pagination-options';
@@ -26,4 +28,13 @@ export abstract class UserExamAnswerRepository {
   ): Promise<UserExamAnswer | null>;
 
   abstract remove(id: UserExamAnswer['id']): Promise<void>;
+
+  abstract findByUserExamAndExamPassageQuestion(
+    userExamId: UserExam['id'],
+    examPassageQuestionId: ExamPassageQuestion['id'],
+  ): Promise<NullableType<UserExamAnswer>>;
+
+  abstract findByUserExamId(
+    userExam: UserExam['id'],
+  ): Promise<UserExamAnswer[]>;
 }

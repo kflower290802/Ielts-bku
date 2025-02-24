@@ -53,7 +53,6 @@ export class ExamPassagesService {
       },
     });
   }
-
   async findAllByExamId(id: Exam['id']) {
     const examPassages = await this.examPassageRepository.findByExamId(id);
     const examPassagesQuestions = examPassages.map(async (passage) => {
