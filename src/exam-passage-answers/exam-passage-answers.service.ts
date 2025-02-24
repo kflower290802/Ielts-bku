@@ -53,4 +53,8 @@ export class ExamPassageAnswersService {
   remove(id: ExamPassageAnswer['id']) {
     return this.examPassageAnswerRepository.remove(id);
   }
+
+  findByQuestionId(questionId: string) {
+    return this.examPassageAnswerRepository.findByQuestionId(questionId);
+  }
 }

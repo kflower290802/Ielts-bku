@@ -14,6 +14,9 @@ export class ExamPassageAnswer {
   answer: string;
 
   @ApiProperty()
+  isCorrect?: boolean;
+
+  @ApiProperty()
   createdAt: Date;
 
   @ApiProperty()

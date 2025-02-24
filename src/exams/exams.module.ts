@@ -7,6 +7,7 @@ import { ExamPassagesModule } from '../exam-passages/exam-passages.module';
 import { UserExamsModule } from '../user-exams/user-exams.module';
 import { UserExamSessionsModule } from '../user-exam-sessions/user-exam-sessions.module';
 import { UserExamAnswersModule } from '../user-exam-answers/user-exam-answers.module';
+import { ExamPassageAnswersModule } from '../exam-passage-answers/exam-passage-answers.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { UserExamAnswersModule } from '../user-exam-answers/user-exam-answers.mo
     forwardRef(() => UserExamsModule),
     UserExamSessionsModule,
     UserExamAnswersModule,
+    ExamPassageAnswersModule,
   ],
   controllers: [ExamsController],
   providers: [ExamsService],

@@ -86,4 +86,15 @@ export class ExamPassageAnswerDocumentRepository
   async remove(id: ExamPassageAnswer['id']): Promise<void> {
     await this.examPassageAnswerModel.deleteOne({ _id: id });
   }
+
+  findByQuestionId(
+    questionId: string,
+  ): Promise<NullableType<ExamPassageAnswer>> {
+    return this.examPassageAnswerModel.findOne({
+      question: {
+        _id: questionId,
+      },
+      isCorrect: true,
+    });
+  }
 }

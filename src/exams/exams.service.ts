@@ -19,6 +19,7 @@ import { UserExamSessionsService } from '../user-exam-sessions/user-exam-session
 import { UserExam } from '../user-exams/domain/user-exam';
 import { NullableType } from '../utils/types/nullable.type';
 import { UserExamAnswersService } from '../user-exam-answers/user-exam-answers.service';
+import { ExamPassageAnswersService } from '../exam-passage-answers/exam-passage-answers.service';
 
 @Injectable()
 export class ExamsService {
@@ -31,6 +32,7 @@ export class ExamsService {
     private readonly userExamsService: UserExamsService,
     private readonly userExamSessionService: UserExamSessionsService,
     private readonly userExamAnswersService: UserExamAnswersService,
+    private readonly examPassageAnswersService: ExamPassageAnswersService,
   ) {}
 
   async create(createExamDto: CreateExamDto) {
@@ -219,18 +221,19 @@ export class ExamsService {
       userId,
       id,
     );
+
     if (!userExam) throw new NotFoundException('User exam not found');
     const userExamSession = await this.userExamSessionService.findByExamUserId(
       userExam.id,
     );
+
     if (!userExamSession)
       throw new BadRequestException('This exam is not started!');
+
     await this.userExamSessionService.update(userExamSession.id, {
       endTime: new Date(),
     });
-    await this.userExamsService.update(userExam.id, {
-      progress: 100,
-    });
+
     await this.userExamAnswersService.create(
       answers.map((a) => ({
         examId: id,
@@ -239,5 +242,25 @@ export class ExamsService {
       })),
       userId,
     );
+    const summary = await Promise.all(
+      answers.map(async (a) => {
+        const answer = await this.examPassageAnswersService.findByQuestionId(
+          a.questionId,
+        );
+        return {
+          questionId: a.questionId,
+          isCorrect: answer?.answer.toLowerCase() === a.answer.toLowerCase(),
+          userAnswer: a.answer,
+          correctAnswer: answer?.answer,
+        };
+      }),
+    );
+    const correctScore = summary.filter((s) => s.isCorrect).length;
+    const score = (correctScore / summary.length) * 10;
+    await this.userExamsService.update(userExam.id, {
+      score,
+      progress: 100,
+    });
+    return summary;
   }
 }

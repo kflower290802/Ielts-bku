@@ -25,6 +25,9 @@ export class ExamPassageAnswerSchemaClass extends EntityDocumentHelper {
   @Prop({ required: true })
   answer: string;
 
+  @Prop({ default: false, type: Boolean })
+  isCorrect?: boolean;
+
   @Prop({ default: now })
   createdAt: Date;
 

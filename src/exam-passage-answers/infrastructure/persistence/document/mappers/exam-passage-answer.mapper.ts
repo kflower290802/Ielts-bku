@@ -11,6 +11,7 @@ export class ExamPassageAnswerMapper {
     const question = new ExamPassageQuestion();
     question.id = raw.question._id.toString();
     domainEntity.question = question;
+    domainEntity.isCorrect = raw.isCorrect;
     domainEntity.createdAt = raw.createdAt;
     domainEntity.updatedAt = raw.updatedAt;
     return domainEntity;
@@ -27,6 +28,7 @@ export class ExamPassageAnswerMapper {
     const question = new ExamPassageQuestionSchemaClass();
     question._id = domainEntity.question.id;
     persistenceSchema.question = question;
+    persistenceSchema.isCorrect = domainEntity.isCorrect;
     persistenceSchema.createdAt = domainEntity.createdAt;
     persistenceSchema.updatedAt = domainEntity.updatedAt;
 
