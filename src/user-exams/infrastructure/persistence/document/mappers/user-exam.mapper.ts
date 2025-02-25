@@ -1,7 +1,7 @@
-import { Exam } from '../../../../../exams/domain/exam';
 import { ExamSchemaClass } from '../../../../../exams/infrastructure/persistence/document/entities/exam.schema';
-import { User } from '../../../../../users/domain/user';
+import { ExamMapper } from '../../../../../exams/infrastructure/persistence/document/mappers/exam.mapper';
 import { UserSchemaClass } from '../../../../../users/infrastructure/persistence/document/entities/user.schema';
+import { UserMapper } from '../../../../../users/infrastructure/persistence/document/mappers/user.mapper';
 import { UserExam } from '../../../../domain/user-exam';
 import { UserExamSchemaClass } from '../entities/user-exam.schema';
 
@@ -9,14 +9,10 @@ export class UserExamMapper {
   public static toDomain(raw: UserExamSchemaClass): UserExam {
     const domainEntity = new UserExam();
     domainEntity.id = raw._id.toString();
-    const examEntity = new Exam();
-    examEntity.id = raw.exam._id.toString();
-    domainEntity.exam = examEntity;
+    domainEntity.exam = ExamMapper.toDomain(raw.exam);
     domainEntity.progress = raw.progress;
     domainEntity.score = raw.score;
-    const userEntity = new User();
-    userEntity.id = raw.user._id.toString();
-    domainEntity.user = userEntity;
+    domainEntity.user = UserMapper.toDomain(raw.user);
     domainEntity.createdAt = raw.createdAt;
     domainEntity.updatedAt = raw.updatedAt;
 

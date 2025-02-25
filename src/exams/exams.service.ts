@@ -177,7 +177,6 @@ export class ExamsService {
     const remainingTime = await this.getRemainingTime(userExam.id);
     return {
       exam: mergedData,
-      answers,
       remainingTime,
     };
   }
@@ -233,25 +232,13 @@ export class ExamsService {
     await this.userExamSessionService.update(userExamSession.id, {
       endTime: new Date(),
     });
-
-    await this.userExamAnswersService.create(
-      answers.map((a) => ({
-        examId: id,
-        examPassageQuestionId: a.questionId,
-        answer: a.answer,
-      })),
-      userId,
-    );
     const summary = await Promise.all(
       answers.map(async (a) => {
         const answer = await this.examPassageAnswersService.findByQuestionId(
           a.questionId,
         );
         return {
-          questionId: a.questionId,
           isCorrect: answer?.answer.toLowerCase() === a.answer.toLowerCase(),
-          userAnswer: a.answer,
-          correctAnswer: answer?.answer,
         };
       }),
     );
@@ -261,6 +248,43 @@ export class ExamsService {
       score,
       progress: 100,
     });
-    return summary;
+    await this.userExamAnswersService.create(
+      answers.map((a) => ({
+        examId: id,
+        examPassageQuestionId: a.questionId,
+        answer: a.answer,
+      })),
+      userId,
+    );
+    await this.userExamsService.update(userExam.id, {
+      score,
+      progress: 100,
+    });
+    return userExam.id;
+  }
+
+  async getExamSummaryByUserExam(userExamId: UserExam['id']) {
+    const userExam = await this.userExamsService.findById(userExamId);
+
+    if (!userExam) throw new NotFoundException('User exam not found');
+    const answers =
+      await this.userExamAnswersService.findByUserExamId(userExamId);
+    const summary = await Promise.all(
+      answers.map(async (a) => {
+        const answer = await this.examPassageAnswersService.findByQuestionId(
+          a.examPassageQuestion.id,
+        );
+        return {
+          questionId: a.examPassageQuestion.id,
+          isCorrect: answer?.answer.toLowerCase() === a.answer.toLowerCase(),
+          userAnswer: a.answer,
+          correctAnswer: answer?.answer,
+        };
+      }),
+    );
+    return {
+      summary,
+      score: userExam.score,
+    };
   }
 }

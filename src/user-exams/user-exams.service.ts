@@ -66,18 +66,8 @@ export class UserExamsService {
     return this.userExamRepository.findByIds(ids);
   }
 
-  async update(
-    id: UserExam['id'],
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    updateUserExamDto: UpdateUserExamDto,
-  ) {
-    // Do not remove comment below.
-    // <updating-property />
-
-    return this.userExamRepository.update(id, {
-      // Do not remove comment below.
-      // <updating-property-payload />
-    });
+  async update(id: UserExam['id'], updateUserExamDto: UpdateUserExamDto) {
+    return this.userExamRepository.update(id, updateUserExamDto);
   }
 
   remove(id: UserExam['id']) {

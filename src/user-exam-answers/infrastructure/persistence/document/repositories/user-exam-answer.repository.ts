@@ -109,11 +109,13 @@ export class UserExamAnswerDocumentRepository
   async findByUserExamId(
     userExamId: UserExam['id'],
   ): Promise<UserExamAnswer[]> {
-    const userExamAnswers = await this.userExamAnswerModel.find({
-      userExam: {
-        _id: userExamId,
-      },
-    });
+    const userExamAnswers = await this.userExamAnswerModel
+      .find({
+        userExam: {
+          _id: userExamId,
+        },
+      })
+      .populate<UserExamAnswer[]>('examPassageQuestion');
     return userExamAnswers.map(UserExamAnswerMapper.toDomain);
   }
 }

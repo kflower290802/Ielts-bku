@@ -38,16 +38,12 @@ export class ExamPassageAnswersService {
 
   async update(
     id: ExamPassageAnswer['id'],
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     updateExamPassageAnswerDto: UpdateExamPassageAnswerDto,
   ) {
-    // Do not remove comment below.
-    // <updating-property />
-
-    return this.examPassageAnswerRepository.update(id, {
-      // Do not remove comment below.
-      // <updating-property-payload />
-    });
+    return this.examPassageAnswerRepository.update(
+      id,
+      updateExamPassageAnswerDto,
+    );
   }
 
   remove(id: ExamPassageAnswer['id']) {

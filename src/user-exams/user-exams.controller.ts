@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   UseGuards,
+  Request,
   // Query,
 } from '@nestjs/common';
 import { UserExamsService } from './user-exams.service';
@@ -46,29 +47,19 @@ export class UserExamsController {
     return this.userExamsService.create(createUserExamDto);
   }
 
-  // @Get()
-  // @ApiOkResponse({
-  //   type: InfinityPaginationResponse(UserExam),
-  // })
-  // async findAll(
-  //   @Query() query: FindAllUserExamsDto,
-  // ): Promise<InfinityPaginationResponseDto<UserExam>> {
-  //   const page = query?.page ?? 1;
-  //   let limit = query?.limit ?? 10;
-  //   if (limit > 50) {
-  //     limit = 50;
-  //   }
-
-  //   return infinityPagination(
-  //     await this.userExamsService.findAllWithPagination({
-  //       paginationOptions: {
-  //         page,
-  //         limit,
-  //       },
-  //     }),
-  //     { page, limit },
-  //   );
-  // }
+  @Get('exam/:id')
+  @ApiParam({
+    name: 'id',
+    type: String,
+    required: true,
+  })
+  @ApiOkResponse({
+    type: UserExam,
+  })
+  findHistoryExam(@Request() request, @Param('id') id: string) {
+    const userId = request.user.id;
+    return this.userExamsService.findByUserIdAndExamId(userId, id);
+  }
 
   @Get(':id')
   @ApiParam({

@@ -151,14 +151,25 @@ export class ExamsController {
     return this.examsService.exitExam(id, userId);
   }
 
+  @Get('exam-summary/:id')
+  @ApiParam({
+    name: 'id',
+    type: String,
+    required: true,
+  })
+  @UseGuards(AuthGuard('jwt'))
+  getExamSummary(@Param('id') id: string) {
+    return this.examsService.getExamSummaryByUserExam(id);
+  }
+
   @Post('submit-exam/:id')
   @ApiParam({
     name: 'id',
     type: String,
     required: true,
   })
-  @ApiBody({ type: [SubmitExamDto] })
   @UseGuards(AuthGuard('jwt'))
+  @ApiBody({ type: [SubmitExamDto] })
   submitExam(
     @Param('id') id: string,
     @Body() submitExamsDto: SubmitExamDto[],

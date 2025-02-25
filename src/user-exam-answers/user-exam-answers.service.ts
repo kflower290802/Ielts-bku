@@ -8,6 +8,7 @@ import { UserExamsService } from '../user-exams/user-exams.service';
 import { ExamPassageQuestionsService } from '../exam-passage-questions/exam-passage-questions.service';
 import { Exam } from '../exams/domain/exam';
 import { CreateUserExamAnswerDto } from './dto/create-user-exam-answer.dto';
+import { UserExam } from '../user-exams/domain/user-exam';
 
 @Injectable()
 export class UserExamAnswersService {
@@ -45,8 +46,11 @@ export class UserExamAnswersService {
             userExam.id,
             examPassageQuestionId,
           );
-
-        if (userExamAnswer) return userExamAnswer;
+        if (userExamAnswer) {
+          return this.userExamAnswerRepository.update(userExamAnswer.id, {
+            answer,
+          });
+        }
         return this.userExamAnswerRepository.create({
           userExam,
           examPassageQuestion,
@@ -102,5 +106,9 @@ export class UserExamAnswersService {
 
   remove(id: UserExamAnswer['id']) {
     return this.userExamAnswerRepository.remove(id);
+  }
+
+  findByUserExamId(userExamId: UserExam['id']) {
+    return this.userExamAnswerRepository.findByUserExamId(userExamId);
   }
 }

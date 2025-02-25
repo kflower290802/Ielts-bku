@@ -28,6 +28,7 @@ export class UserExamDocumentRepository implements UserExamRepository {
           _id: examId,
         },
       })
+      .populate({ path: 'exam' })
       .sort({ createdAt: -1 });
     return userExam ? UserExamMapper.toDomain(userExam) : null;
   }

@@ -87,14 +87,17 @@ export class ExamPassageAnswerDocumentRepository
     await this.examPassageAnswerModel.deleteOne({ _id: id });
   }
 
-  findByQuestionId(
+  async findByQuestionId(
     questionId: string,
   ): Promise<NullableType<ExamPassageAnswer>> {
-    return this.examPassageAnswerModel.findOne({
-      question: {
-        _id: questionId,
-      },
-      isCorrect: true,
-    });
+    const entity = await this.examPassageAnswerModel
+      .findOne({
+        question: {
+          _id: questionId,
+        },
+        isCorrect: true,
+      })
+      .populate('question');
+    return entity ? ExamPassageAnswerMapper.toDomain(entity) : null;
   }
 }
