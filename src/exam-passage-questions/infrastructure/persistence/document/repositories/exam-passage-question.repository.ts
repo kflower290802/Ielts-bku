@@ -95,13 +95,11 @@ export class ExamPassageQuestionDocumentRepository
   async findByExamPassageId(
     id: ExamPassage['id'],
   ): Promise<ExamPassageQuestion[]> {
-    const examPassageQuestion = await this.examPassageQuestionModel
-      .find({
-        examPassage: {
-          _id: id,
-        },
-      })
-      .select('-answer');
+    const examPassageQuestion = await this.examPassageQuestionModel.find({
+      examPassage: {
+        _id: id,
+      },
+    });
     return examPassageQuestion.map(ExamPassageQuestionMapper.toDomain);
   }
 }

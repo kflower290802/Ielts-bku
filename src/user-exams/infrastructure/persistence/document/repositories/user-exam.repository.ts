@@ -56,7 +56,9 @@ export class UserExamDocumentRepository implements UserExamRepository {
   }
 
   async findById(id: UserExam['id']): Promise<NullableType<UserExam>> {
-    const entityObject = await this.userExamModel.findById(id);
+    const entityObject = await this.userExamModel
+      .findById(id)
+      .populate({ path: 'exam' });
     return entityObject ? UserExamMapper.toDomain(entityObject) : null;
   }
 

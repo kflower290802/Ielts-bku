@@ -22,12 +22,6 @@ import {
 } from '@nestjs/swagger';
 import { UserExam } from './domain/user-exam';
 import { AuthGuard } from '@nestjs/passport';
-// import {
-//   InfinityPaginationResponse,
-//   InfinityPaginationResponseDto,
-// } from '../utils/dto/infinity-pagination-response.dto';
-// import { infinityPagination } from '../utils/infinity-pagination';
-// import { FindAllUserExamsDto } from './dto/find-all-user-exams.dto';
 
 @ApiTags('Userexams')
 @ApiBearerAuth()

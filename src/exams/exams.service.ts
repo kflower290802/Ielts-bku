@@ -21,6 +21,7 @@ import { NullableType } from '../utils/types/nullable.type';
 import { UserExamAnswersService } from '../user-exam-answers/user-exam-answers.service';
 import { ExamPassageAnswersService } from '../exam-passage-answers/exam-passage-answers.service';
 import { ExamListenSectionsService } from '../exam-listen-sections/exam-listen-sections.service';
+import { UserExamListenAnswersService } from '../user-exam-listen-answers/user-exam-listen-answers.service';
 
 @Injectable()
 export class ExamsService {
@@ -36,6 +37,7 @@ export class ExamsService {
     private readonly examPassageAnswersService: ExamPassageAnswersService,
     @Inject(forwardRef(() => ExamListenSectionsService))
     private readonly examListenSectionsService: ExamListenSectionsService,
+    private readonly userExamListenAnswersService: UserExamListenAnswersService,
   ) {}
 
   async create(createExamDto: CreateExamDto) {
@@ -101,6 +103,9 @@ export class ExamsService {
 
   async findAllPassage(id: Exam['id']) {
     const exam = await this.examRepository.findById(id);
+
+    if (!exam) throw new NotFoundException('Exam not found');
+
     let examPassage = [] as any[];
     if (exam?.type === ExamType.Reading) {
       examPassage = await this.examPassagesService.findAllByExamId(id);
@@ -161,21 +166,33 @@ export class ExamsService {
   }
 
   async getExamData(id: Exam['id'], userId: User['id']) {
-    const exam = this.findAllPassage(id);
+    const exam = await this.findAllPassage(id);
     const userExam = await this.userExamsService.findByUserIdAndExamId(
       userId,
       id,
     );
+
     if (!userExam) throw new NotFoundException('User exam not found');
-    const answers = await this.userExamAnswersService.findByUserIdAndExamId(
-      userId,
-      id,
-    );
+    let answers: any[] = [];
+
+    if (exam.type === ExamType.Reading) {
+      answers = await this.userExamAnswersService.findByUserIdAndExamId(
+        userId,
+        id,
+      );
+    }
+    if (exam.type === ExamType.Listening) {
+      answers = await this.userExamListenAnswersService.findByUserIdAndExamId(
+        userId,
+        id,
+      );
+    }
+
     const answerMap = new Map(
       answers.map((a) => [a.examPassageQuestion.id, a.answer]),
     );
 
-    const mergedData = (await exam).examPassage.map((passage) => ({
+    const mergedData = exam.examPassage.map((passage) => ({
       ...passage,
       questions: passage.questions.map((q) => {
         return {
@@ -243,56 +260,110 @@ export class ExamsService {
     await this.userExamSessionService.update(userExamSession.id, {
       endTime: new Date(),
     });
-    const summary = await Promise.all(
-      answers.map(async (a) => {
-        const answer = await this.examPassageAnswersService.findByQuestionId(
-          a.questionId,
-        );
-        return {
-          isCorrect: answer?.answer.toLowerCase() === a.answer.toLowerCase(),
-        };
-      }),
-    );
+    let summary = [] as any[];
+    if (exam.type === ExamType.Reading) {
+      summary = await Promise.all(
+        answers.map(async (a) => {
+          const answer = await this.examPassageAnswersService.findByQuestionId(
+            a.questionId,
+          );
+          return {
+            isCorrect: answer?.answer.toLowerCase() === a.answer.toLowerCase(),
+          };
+        }),
+      );
+    }
+
+    if (exam.type === ExamType.Listening) {
+      summary = await Promise.all(
+        answers.map(async (a) => {
+          const answer =
+            await this.userExamListenAnswersService.findByQuestionId(
+              a.questionId,
+            );
+          return {
+            isCorrect: answer?.answer.toLowerCase() === a.answer.toLowerCase(),
+          };
+        }),
+      );
+    }
+
     const correctScore = summary.filter((s) => s.isCorrect).length;
     const score = (correctScore / summary.length) * 10;
     await this.userExamsService.update(userExam.id, {
       score,
       progress: 100,
     });
-    await this.userExamAnswersService.create(
-      answers.map((a) => ({
-        examId: id,
-        examPassageQuestionId: a.questionId,
-        answer: a.answer,
-      })),
-      userId,
-    );
-    await this.userExamsService.update(userExam.id, {
-      score,
-      progress: 100,
-    });
+    if (exam.type === ExamType.Reading) {
+      await this.userExamAnswersService.create(
+        answers.map((a) => ({
+          examId: id,
+          examPassageQuestionId: a.questionId,
+          answer: a.answer,
+        })),
+        userId,
+      );
+    }
+
+    if (exam.type === ExamType.Listening) {
+      await this.userExamListenAnswersService.create(
+        answers.map((a) => ({
+          userExamId: userExam.id,
+          examPassageQuestionId: a.questionId,
+          answer: a.answer,
+        })),
+      );
+    }
     return userExam.id;
   }
 
   async getExamSummaryByUserExam(userExamId: UserExam['id']) {
     const userExam = await this.userExamsService.findById(userExamId);
-
     if (!userExam) throw new NotFoundException('User exam not found');
-    const answers =
-      await this.userExamAnswersService.findByUserExamId(userExamId);
-    const summary = await Promise.all(
-      answers.map(async (a) => {
-        const answer = await this.examPassageAnswersService.findByQuestionId(
-          a.examPassageQuestion.id,
-        );
-        return {
-          questionId: a.examPassageQuestion.id,
-          isCorrect: answer?.answer.toLowerCase() === a.answer.toLowerCase(),
-          userAnswer: a.answer,
-          correctAnswer: answer?.answer,
-        };
-      }),
-    );
+    const exam = userExam.exam;
+    let answers = [] as any[];
+    if (exam.type === ExamType.Reading) {
+      answers = await this.userExamAnswersService.findByUserExamId(userExamId);
+    }
+    if (exam.type === ExamType.Listening) {
+      answers = await this.userExamListenAnswersService.findByUserIdAndExamId(
+        userExam.user.id,
+        userExam.exam.id,
+      );
+    }
+    let summary = [] as any[];
+    if (exam.type === ExamType.Reading) {
+      summary = await Promise.all(
+        answers.map(async (a) => {
+          const answer = await this.examPassageAnswersService.findByQuestionId(
+            a.examPassageQuestion.id,
+          );
+          return {
+            questionId: a.examPassageQuestion.id,
+            isCorrect: answer?.answer.toLowerCase() === a.answer.toLowerCase(),
+            userAnswer: a.answer,
+            correctAnswer: answer?.answer,
+          };
+        }),
+      );
+    }
+
+    if (exam.type === ExamType.Listening) {
+      summary = await Promise.all(
+        answers.map(async (a) => {
+          const answer =
+            await this.userExamListenAnswersService.findByQuestionId(
+              a.examPassageQuestion.id,
+            );
+          return {
+            questionId: a.examPassageQuestion.id,
+            isCorrect: answer?.answer.toLowerCase() === a.answer.toLowerCase(),
+            userAnswer: a.answer,
+            correctAnswer: answer?.answer,
+          };
+        }),
+      );
+    }
     return {
       summary,
       score: userExam.score,

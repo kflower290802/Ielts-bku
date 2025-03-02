@@ -70,11 +70,13 @@ export class ExamListenAnswerDocumentRepository
   }
 
   async findByQuestionId(questionId: string): Promise<ExamListenAnswer[]> {
-    const answers = await this.examListenAnswerModel.find({
-      examListenQuestion: {
-        _id: questionId,
-      },
-    });
+    const answers = await this.examListenAnswerModel
+      .find({
+        examListenQuestion: {
+          _id: questionId,
+        },
+      })
+      .select('-isCorrect');
     return answers.map(ExamListenAnswerMapper.toDomain);
   }
 }
