@@ -11,7 +11,15 @@ export class CreateExamDto {
   @IsNotEmpty()
   name: string;
 
-  @ApiProperty({ example: ExamType.Listening })
+  @ApiProperty({
+    example: ExamType.Listening,
+    enum: [
+      ExamType.Listening,
+      ExamType.Reading,
+      ExamType.Speaking,
+      ExamType.Writing,
+    ],
+  })
   @IsEnum([
     ExamType.Listening,
     ExamType.Reading,

@@ -30,7 +30,6 @@ import {
   InfinityPaginationResponse,
   InfinityPaginationResponseDto,
 } from '../utils/dto/infinity-pagination-response.dto';
-// import { infinityPagination } from '../utils/infinity-pagination';
 import { FindAllExamsDto } from './dto/find-all-exams.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { SubmitExamDto } from './dto/submit-exam.dto';

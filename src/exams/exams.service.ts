@@ -20,6 +20,7 @@ import { UserExam } from '../user-exams/domain/user-exam';
 import { NullableType } from '../utils/types/nullable.type';
 import { UserExamAnswersService } from '../user-exam-answers/user-exam-answers.service';
 import { ExamPassageAnswersService } from '../exam-passage-answers/exam-passage-answers.service';
+import { ExamListenSectionsService } from '../exam-listen-sections/exam-listen-sections.service';
 
 @Injectable()
 export class ExamsService {
@@ -33,6 +34,8 @@ export class ExamsService {
     private readonly userExamSessionService: UserExamSessionsService,
     private readonly userExamAnswersService: UserExamAnswersService,
     private readonly examPassageAnswersService: ExamPassageAnswersService,
+    @Inject(forwardRef(() => ExamListenSectionsService))
+    private readonly examListenSectionsService: ExamListenSectionsService,
   ) {}
 
   async create(createExamDto: CreateExamDto) {
@@ -98,7 +101,14 @@ export class ExamsService {
 
   async findAllPassage(id: Exam['id']) {
     const exam = await this.examRepository.findById(id);
-    const examPassage = await this.examPassagesService.findAllByExamId(id);
+    let examPassage = [] as any[];
+    if (exam?.type === ExamType.Reading) {
+      examPassage = await this.examPassagesService.findAllByExamId(id);
+    }
+    if (exam?.type === ExamType.Listening) {
+      examPassage =
+        await this.examListenSectionsService.findSectionsByExamId(id);
+    }
     return {
       ...exam,
       examPassage,
@@ -180,6 +190,7 @@ export class ExamsService {
       remainingTime,
     };
   }
+
   async exitExam(id: Exam['id'], userId: User['id']) {
     const exam = await this.examRepository.findById(id);
     if (!exam) throw new NotFoundException('Exam not found');

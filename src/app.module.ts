@@ -49,8 +49,17 @@ import { ExamPassageAnswersModule } from './exam-passage-answers/exam-passage-an
 
 import { UserExamAnswersModule } from './user-exam-answers/user-exam-answers.module';
 
+import { ExamListenSectionsModule } from './exam-listen-sections/exam-listen-sections.module';
+
+import { ExamListenQuestionsModule } from './exam-listen-questions/exam-listen-questions.module';
+
+import { ExamListenAnswersModule } from './exam-listen-answers/exam-listen-answers.module';
+
 @Module({
   imports: [
+    ExamListenAnswersModule,
+    ExamListenQuestionsModule,
+    ExamListenSectionsModule,
     UserExamAnswersModule,
     ExamPassageAnswersModule,
     UserExamAnswersModule,

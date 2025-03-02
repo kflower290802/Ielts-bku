@@ -8,6 +8,7 @@ import { UserExamsModule } from '../user-exams/user-exams.module';
 import { UserExamSessionsModule } from '../user-exam-sessions/user-exam-sessions.module';
 import { UserExamAnswersModule } from '../user-exam-answers/user-exam-answers.module';
 import { ExamPassageAnswersModule } from '../exam-passage-answers/exam-passage-answers.module';
+import { ExamListenSectionsModule } from '../exam-listen-sections/exam-listen-sections.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { ExamPassageAnswersModule } from '../exam-passage-answers/exam-passage-a
     UserExamSessionsModule,
     UserExamAnswersModule,
     ExamPassageAnswersModule,
+    forwardRef(() => ExamListenSectionsModule),
   ],
   controllers: [ExamsController],
   providers: [ExamsService],

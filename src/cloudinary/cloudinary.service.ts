@@ -17,4 +17,18 @@ export class CloudinaryService {
       toStream(file.buffer).pipe(upload);
     });
   }
+  async uploadAudio(file: Express.Multer.File): Promise<UploadApiResponse> {
+    return new Promise((resolve, reject) => {
+      const upload = v2.uploader.upload_stream(
+        { resource_type: 'video' },
+        (error, result) => {
+          if (error) reject(error);
+          if (result) {
+            resolve(result);
+          }
+        },
+      );
+      toStream(file.buffer).pipe(upload);
+    });
+  }
 }
