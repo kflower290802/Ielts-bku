@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   UseGuards,
+  Request,
 } from '@nestjs/common';
 import { UserExamListenAnswersService } from './user-exam-listen-answers.service';
 import { CreateUserExamListenAnswerDto } from './dto/create-user-exam-listen-answer.dto';
@@ -41,9 +42,12 @@ export class UserExamListenAnswersController {
   @ApiBody({ type: [CreateUserExamListenAnswerDto] })
   create(
     @Body() createUserExamListenAnswerDto: CreateUserExamListenAnswerDto[],
+    @Request() request,
   ) {
+    const userId = request.user.id;
     return this.userExamListenAnswersService.create(
       createUserExamListenAnswerDto,
+      userId,
     );
   }
 

@@ -5,7 +5,7 @@ export class CreateUserExamListenAnswerDto {
   @ApiProperty()
   @IsNotEmpty()
   @IsMongoId()
-  userExamId: string;
+  examId: string;
 
   @ApiProperty()
   @IsNotEmpty()

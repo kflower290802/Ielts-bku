@@ -23,6 +23,11 @@ export class UserExamAnswersService {
     userId: User['id'],
   ) {
     if (!createUserExamAnswersDto.length) return [];
+    const userExam = await this.userExamsService.findByUserIdAndExamId(
+      userId,
+      createUserExamAnswersDto[0].examId,
+    );
+    if (!userExam) throw new BadRequestException('User does not have an exam');
     return Promise.all(
       createUserExamAnswersDto.map(async (createUserExamAnswerDto) => {
         const { examId, examPassageQuestionId, answer } =

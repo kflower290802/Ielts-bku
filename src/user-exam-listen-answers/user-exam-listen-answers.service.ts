@@ -6,7 +6,6 @@ import { IPaginationOptions } from '../utils/types/pagination-options';
 import { UserExamListenAnswer } from './domain/user-exam-listen-answer';
 import { ExamListenSectionsService } from '../exam-listen-sections/exam-listen-sections.service';
 import { ExamListenSection } from '../exam-listen-sections/domain/exam-listen-section';
-import { UserExam } from '../user-exams/domain/user-exam';
 import { UserExamsService } from '../user-exams/user-exams.service';
 
 @Injectable()
@@ -17,15 +16,23 @@ export class UserExamListenAnswersService {
     private readonly userExamsService: UserExamsService,
   ) {}
 
-  create(createUserExamListenAnswerDto: CreateUserExamListenAnswerDto[]) {
+  async create(
+    createUserExamListenAnswerDto: CreateUserExamListenAnswerDto[],
+    userId: string,
+  ) {
+    if (!createUserExamListenAnswerDto.length) return [];
+    const userExam = await this.userExamsService.findByUserIdAndExamId(
+      userId,
+      createUserExamListenAnswerDto[0].examId,
+    );
+
+    if (!userExam) throw new NotFoundException('User not start this exam');
+
     return Promise.all(
       createUserExamListenAnswerDto.map((dto) => {
-        const { examPassageQuestionId, userExamId, answer } = dto;
+        const { examPassageQuestionId, answer } = dto;
         const examPassageQuestion = new ExamListenSection();
         examPassageQuestion.id = examPassageQuestionId;
-        const userExam = new UserExam();
-        userExam.id = userExamId;
-
         return this.userExamListenAnswerRepository.create({
           examPassageQuestion,
           answer,
@@ -79,9 +86,7 @@ export class UserExamListenAnswersService {
       userId,
       examId,
     );
-    console.log({ userId, examId });
     if (!userExam) throw new NotFoundException('User exam not found');
-    console.log({ userExam });
     return this.userExamListenAnswerRepository.findByUserExamId(userExam.id);
   }
 

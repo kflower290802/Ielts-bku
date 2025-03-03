@@ -308,10 +308,11 @@ export class ExamsService {
     if (exam.type === ExamType.Listening) {
       await this.userExamListenAnswersService.create(
         answers.map((a) => ({
-          userExamId: userExam.id,
+          examId: id,
           examPassageQuestionId: a.questionId,
           answer: a.answer,
         })),
+        userId,
       );
     }
     return userExam.id;
