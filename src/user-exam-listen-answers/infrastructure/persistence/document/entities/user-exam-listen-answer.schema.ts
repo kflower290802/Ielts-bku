@@ -31,7 +31,7 @@ export class UserExamListenAnswerSchemaClass extends EntityDocumentHelper {
   examPassageQuestion: ExamListenSectionSchemaClass;
 
   @Prop({
-    required: true,
+    required: false,
     default: '',
     type: String,
   })
