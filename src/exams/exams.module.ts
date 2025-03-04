@@ -10,6 +10,8 @@ import { UserExamAnswersModule } from '../user-exam-answers/user-exam-answers.mo
 import { ExamPassageAnswersModule } from '../exam-passage-answers/exam-passage-answers.module';
 import { ExamListenSectionsModule } from '../exam-listen-sections/exam-listen-sections.module';
 import { UserExamListenAnswersModule } from '../user-exam-listen-answers/user-exam-listen-answers.module';
+import { ExamSpeaksModule } from '../exam-speaks/exam-speaks.module';
+import { UserExamSpeakAnswersModule } from '../user-exam-speak-answers/user-exam-speak-answers.module';
 
 @Module({
   imports: [
@@ -22,6 +24,8 @@ import { UserExamListenAnswersModule } from '../user-exam-listen-answers/user-ex
     ExamPassageAnswersModule,
     forwardRef(() => ExamListenSectionsModule),
     UserExamListenAnswersModule,
+    ExamSpeaksModule,
+    UserExamSpeakAnswersModule,
   ],
   controllers: [ExamsController],
   providers: [ExamsService],

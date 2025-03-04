@@ -57,8 +57,14 @@ import { ExamListenAnswersModule } from './exam-listen-answers/exam-listen-answe
 
 import { UserExamListenAnswersModule } from './user-exam-listen-answers/user-exam-listen-answers.module';
 
+import { ExamSpeaksModule } from './exam-speaks/exam-speaks.module';
+
+import { UserExamSpeakAnswersModule } from './user-exam-speak-answers/user-exam-speak-answers.module';
+
 @Module({
   imports: [
+    UserExamSpeakAnswersModule,
+    ExamSpeaksModule,
     UserExamListenAnswersModule,
     ExamListenAnswersModule,
     ExamListenQuestionsModule,

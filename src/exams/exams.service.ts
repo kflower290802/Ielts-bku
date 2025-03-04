@@ -22,6 +22,8 @@ import { UserExamAnswersService } from '../user-exam-answers/user-exam-answers.s
 import { ExamPassageAnswersService } from '../exam-passage-answers/exam-passage-answers.service';
 import { ExamListenSectionsService } from '../exam-listen-sections/exam-listen-sections.service';
 import { UserExamListenAnswersService } from '../user-exam-listen-answers/user-exam-listen-answers.service';
+import { ExamSpeaksService } from '../exam-speaks/exam-speaks.service';
+import { UserExamSpeakAnswersService } from '../user-exam-speak-answers/user-exam-speak-answers.service';
 
 @Injectable()
 export class ExamsService {
@@ -38,6 +40,8 @@ export class ExamsService {
     @Inject(forwardRef(() => ExamListenSectionsService))
     private readonly examListenSectionsService: ExamListenSectionsService,
     private readonly userExamListenAnswersService: UserExamListenAnswersService,
+    private readonly examSpeakService: ExamSpeaksService,
+    private readonly userExamSpeakAnswersService: UserExamSpeakAnswersService,
   ) {}
 
   async create(createExamDto: CreateExamDto) {
@@ -114,6 +118,10 @@ export class ExamsService {
       examPassage =
         await this.examListenSectionsService.findSectionsByExamId(id);
     }
+    if (exam?.type === ExamType.Speaking) {
+      examPassage = await this.examSpeakService.findByExamId(id);
+    }
+    console.log({ examPassage });
     return {
       ...exam,
       examPassage,
@@ -187,20 +195,35 @@ export class ExamsService {
         id,
       );
     }
+    if (exam.type === ExamType.Speaking) {
+      answers = await this.userExamSpeakAnswersService.findByUserIdAndExamId(
+        userId,
+        id,
+      );
+    }
 
     const answerMap = new Map(
-      answers.map((a) => [a.examPassageQuestion.id, a.answer]),
+      answers.map((a) => [
+        a.examPassageQuestion ? a.examPassageQuestion.id : a.examSpeak.id,
+        a.answer,
+      ]),
     );
 
-    const mergedData = exam.examPassage.map((passage) => ({
-      ...passage,
-      questions: passage.questions.map((q) => {
-        return {
-          ...q,
-          answer: answerMap.get(q.id),
-        };
-      }),
-    }));
+    const mergedData = exam.examPassage.map((passage) => {
+      return {
+        ...passage,
+        questions:
+          exam.type === ExamType.Reading || exam.type === ExamType.Listening
+            ? passage.questions.map((q) => {
+                return {
+                  ...q,
+                  answer: answerMap.get(q.id),
+                };
+              })
+            : passage.question,
+        answer: answerMap.get(passage.id),
+      };
+    });
     const remainingTime = await this.getRemainingTime(userExam.id);
     return {
       exam: mergedData,

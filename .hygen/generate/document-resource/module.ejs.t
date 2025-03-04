@@ -8,7 +8,6 @@ import { Document<%= name %>PersistenceModule } from './infrastructure/persisten
 
 @Module({
   imports: [
-    // import modules, etc.
     Document<%= name %>PersistenceModule,
   ],
   controllers: [<%= h.inflection.transform(name, ['pluralize']) %>Controller],

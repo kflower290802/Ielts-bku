@@ -15,7 +15,6 @@ import { LessonsService } from '../lessons/lessons.service';
 @Injectable()
 export class BlogLessonsService {
   constructor(
-    // Dependencies here
     private readonly blogLessonRepository: BlogLessonRepository,
     private readonly blogsService: BlogsService,
     @Inject(forwardRef(() => LessonsService))

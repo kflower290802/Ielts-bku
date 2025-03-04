@@ -9,7 +9,6 @@ import { ChoicesService } from '../choices/choices.service';
 @Injectable()
 export class ExplainationsService {
   constructor(
-    // Dependencies here
     private readonly explainationRepository: ExplainationRepository,
     private readonly choicesService: ChoicesService,
   ) {}

@@ -7,10 +7,7 @@ import { learner } from './domain/learner';
 
 @Injectable()
 export class learnersService {
-  constructor(
-    // Dependencies here
-    private readonly learnerRepository: learnerRepository,
-  ) {}
+  constructor(private readonly learnerRepository: learnerRepository) {}
 
   async create(
     // eslint-disable-next-line @typescript-eslint/no-unused-vars

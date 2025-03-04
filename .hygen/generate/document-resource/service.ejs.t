@@ -11,7 +11,6 @@ import { <%= name %> } from './domain/<%= h.inflection.transform(name, ['undersc
 @Injectable()
 export class <%= h.inflection.transform(name, ['pluralize']) %>Service {
   constructor(
-    // Dependencies here
     private readonly <%= h.inflection.camelize(name, true) %>Repository: <%= name %>Repository,
   ) {}
 

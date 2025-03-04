@@ -7,10 +7,7 @@ import { schedule } from './domain/schedule';
 
 @Injectable()
 export class schedulesService {
-  constructor(
-    // Dependencies here
-    private readonly scheduleRepository: scheduleRepository,
-  ) {}
+  constructor(private readonly scheduleRepository: scheduleRepository) {}
 
   async create(
     // eslint-disable-next-line @typescript-eslint/no-unused-vars

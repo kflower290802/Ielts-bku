@@ -8,7 +8,6 @@ import { Subscription } from './domain/subscription';
 @Injectable()
 export class SubscriptionsService {
   constructor(
-    // Dependencies here
     private readonly subscriptionRepository: SubscriptionRepository,
   ) {}
 

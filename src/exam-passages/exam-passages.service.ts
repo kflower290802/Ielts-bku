@@ -16,7 +16,6 @@ import { ExamPassageQuestionsService } from '../exam-passage-questions/exam-pass
 @Injectable()
 export class ExamPassagesService {
   constructor(
-    // Dependencies here
     private readonly examPassageRepository: ExamPassageRepository,
     @Inject(forwardRef(() => ExamsService))
     private readonly examsService: ExamsService,

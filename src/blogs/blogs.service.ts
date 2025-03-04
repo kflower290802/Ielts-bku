@@ -9,7 +9,6 @@ import { CloudinaryService } from '../cloudinary/cloudinary.service';
 @Injectable()
 export class BlogsService {
   constructor(
-    // Dependencies here
     private readonly blogRepository: BlogRepository,
     private readonly cloudinaryService: CloudinaryService,
   ) {}

@@ -7,10 +7,7 @@ import { History } from './domain/history';
 
 @Injectable()
 export class HistoriesService {
-  constructor(
-    // Dependencies here
-    private readonly historyRepository: HistoryRepository,
-  ) {}
+  constructor(private readonly historyRepository: HistoryRepository) {}
 
   async create(createHistoryDto: CreateHistoryDto) {
     // Do not remove comment below.

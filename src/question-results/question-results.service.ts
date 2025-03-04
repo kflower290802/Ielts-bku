@@ -8,7 +8,6 @@ import { question_result } from './domain/question-result';
 @Injectable()
 export class question_resultsService {
   constructor(
-    // Dependencies here
     private readonly questionResultRepository: question_resultRepository,
   ) {}
 

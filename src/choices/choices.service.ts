@@ -7,10 +7,7 @@ import { Choice } from './domain/choice';
 
 @Injectable()
 export class ChoicesService {
-  constructor(
-    // Dependencies here
-    private readonly choiceRepository: ChoiceRepository,
-  ) {}
+  constructor(private readonly choiceRepository: ChoiceRepository) {}
 
   create(
     // eslint-disable-next-line @typescript-eslint/no-unused-vars

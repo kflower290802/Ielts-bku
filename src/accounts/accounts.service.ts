@@ -8,10 +8,7 @@ import bcrypt from 'bcryptjs';
 
 @Injectable()
 export class AccountsService {
-  constructor(
-    // Dependencies here
-    private readonly accountRepository: AccountRepository,
-  ) {}
+  constructor(private readonly accountRepository: AccountRepository) {}
 
   async create(createAccountDto: CreateAccountDto) {
     // Do not remove comment below.

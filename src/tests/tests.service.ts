@@ -7,10 +7,7 @@ import { test } from './domain/test';
 
 @Injectable()
 export class testsService {
-  constructor(
-    // Dependencies here
-    private readonly testRepository: testRepository,
-  ) {}
+  constructor(private readonly testRepository: testRepository) {}
 
   async create(
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
