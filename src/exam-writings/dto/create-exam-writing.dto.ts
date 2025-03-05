@@ -1,20 +1,20 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsMongoId, IsNotEmpty } from 'class-validator';
+import { IsMongoId, IsNotEmpty, IsString } from 'class-validator';
 
-export class CreateUserExamSpeakAnswerDto {
-  @ApiProperty()
-  @IsNotEmpty()
-  @IsMongoId()
-  examSpeakId: string;
-
+export class CreateExamWritingDto {
   @ApiProperty()
   @IsNotEmpty()
   @IsMongoId()
   examId: string;
 
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsString()
+  content: string;
+
   @ApiProperty({
     type: String,
     format: 'binary',
   })
-  answer: Express.Multer.File;
+  image: Express.Multer.File;
 }

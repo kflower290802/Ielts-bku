@@ -61,8 +61,14 @@ import { ExamSpeaksModule } from './exam-speaks/exam-speaks.module';
 
 import { UserExamSpeakAnswersModule } from './user-exam-speak-answers/user-exam-speak-answers.module';
 
+import { ExamWritingsModule } from './exam-writings/exam-writings.module';
+
+import { UserExamWritingsModule } from './user-exam-writings/user-exam-writings.module';
+
 @Module({
   imports: [
+    UserExamWritingsModule,
+    ExamWritingsModule,
     UserExamSpeakAnswersModule,
     ExamSpeaksModule,
     UserExamListenAnswersModule,

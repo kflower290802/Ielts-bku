@@ -24,6 +24,8 @@ import { ExamListenSectionsService } from '../exam-listen-sections/exam-listen-s
 import { UserExamListenAnswersService } from '../user-exam-listen-answers/user-exam-listen-answers.service';
 import { ExamSpeaksService } from '../exam-speaks/exam-speaks.service';
 import { UserExamSpeakAnswersService } from '../user-exam-speak-answers/user-exam-speak-answers.service';
+import { ExamWritingsService } from '../exam-writings/exam-writings.service';
+import { UserExamWritingsService } from '../user-exam-writings/user-exam-writings.service';
 
 @Injectable()
 export class ExamsService {
@@ -42,6 +44,8 @@ export class ExamsService {
     private readonly userExamListenAnswersService: UserExamListenAnswersService,
     private readonly examSpeakService: ExamSpeaksService,
     private readonly userExamSpeakAnswersService: UserExamSpeakAnswersService,
+    private readonly examWritingsService: ExamWritingsService,
+    private readonly userExamWritingsService: UserExamWritingsService,
   ) {}
 
   async create(createExamDto: CreateExamDto) {
@@ -121,7 +125,9 @@ export class ExamsService {
     if (exam?.type === ExamType.Speaking) {
       examPassage = await this.examSpeakService.findByExamId(id);
     }
-    console.log({ examPassage });
+    if (exam.type === ExamType.Writing) {
+      examPassage = await this.examWritingsService.findByExamId(id);
+    }
     return {
       ...exam,
       examPassage,
@@ -201,10 +207,20 @@ export class ExamsService {
         id,
       );
     }
+    if (exam.type === ExamType.Writing) {
+      answers = await this.userExamWritingsService.findByUserIdAndExamId(
+        userId,
+        id,
+      );
+    }
 
     const answerMap = new Map(
       answers.map((a) => [
-        a.examPassageQuestion ? a.examPassageQuestion.id : a.examSpeak.id,
+        a.examPassageQuestion
+          ? a.examPassageQuestion.id
+          : a.examSpeak
+            ? a.examSpeak.id
+            : a.examWriting.id,
         a.answer,
       ]),
     );

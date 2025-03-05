@@ -9,6 +9,7 @@ import {
   UseGuards,
   UseInterceptors,
   UploadedFile,
+  Request,
 } from '@nestjs/common';
 import { UserExamSpeakAnswersService } from './user-exam-speak-answers.service';
 import { CreateUserExamSpeakAnswerDto } from './dto/create-user-exam-speak-answer.dto';
@@ -45,13 +46,18 @@ export class UserExamSpeakAnswersController {
   @ApiConsumes('multipart/form-data')
   async create(
     @Body() createUserExamSpeakAnswerDto: CreateUserExamSpeakAnswerDto,
+    @Request() request,
     @UploadedFile()
     answer: Express.Multer.File,
   ) {
-    return this.userExamSpeakAnswersService.create({
-      ...createUserExamSpeakAnswerDto,
-      answer,
-    });
+    const userId = request.user.id;
+    return this.userExamSpeakAnswersService.create(
+      {
+        ...createUserExamSpeakAnswerDto,
+        answer,
+      },
+      userId,
+    );
   }
 
   // @Get(':id')

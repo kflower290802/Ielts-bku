@@ -22,9 +22,15 @@ export class UserExamSpeakAnswersService {
     private readonly examSpeaksService: ExamSpeaksService,
   ) {}
 
-  async create(createUserExamSpeakAnswerDto: CreateUserExamSpeakAnswerDto) {
-    const { userExamId, answer, examSpeakId } = createUserExamSpeakAnswerDto;
-    const userExam = await this.userExamsService.findById(userExamId);
+  async create(
+    createUserExamSpeakAnswerDto: CreateUserExamSpeakAnswerDto,
+    userId: string,
+  ) {
+    const { examId, answer, examSpeakId } = createUserExamSpeakAnswerDto;
+    const userExam = await this.userExamsService.findByUserIdAndExamId(
+      userId,
+      examId,
+    );
     const { secure_url } = await this.cloudinaryService.uploadAudio(answer);
     if (!userExam) throw new NotFoundException('User not start this exam');
     const examSpeak = await this.examSpeaksService.findById(examSpeakId);
