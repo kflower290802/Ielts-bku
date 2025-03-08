@@ -29,14 +29,24 @@ export class UserExamListenAnswersService {
     if (!userExam) throw new NotFoundException('User not start this exam');
 
     return Promise.all(
-      createUserExamListenAnswerDto.map((dto) => {
+      createUserExamListenAnswerDto.map(async (dto) => {
         const { examPassageQuestionId, answer } = dto;
         const examPassageQuestion = new ExamListenSection();
         examPassageQuestion.id = examPassageQuestionId;
-        return this.userExamListenAnswerRepository.create({
-          examPassageQuestion,
+        const userExamListen =
+          await this.userExamListenAnswerRepository.findByUserExamIdAndExamPassageQuestionId(
+            userExam.id,
+            examPassageQuestionId,
+          );
+        if (!userExamListen) {
+          return this.userExamListenAnswerRepository.create({
+            examPassageQuestion,
+            answer,
+            userExam,
+          });
+        }
+        return this.userExamListenAnswerRepository.update(userExamListen.id, {
           answer,
-          userExam,
         });
       }),
     );

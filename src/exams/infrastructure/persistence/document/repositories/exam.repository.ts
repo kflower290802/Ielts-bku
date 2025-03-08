@@ -8,8 +8,6 @@ import { Exam } from '../../../../domain/exam';
 import { ExamMapper } from '../mappers/exam.mapper';
 import { IPaginationOptions } from '../../../../../utils/types/pagination-options';
 import { ExamStatus, ExamType } from '../../../../exams.type';
-import { UserExamSchemaClass } from '../../../../../user-exams/infrastructure/persistence/document/entities/user-exam.schema';
-import { UserSchemaClass } from '../../../../../users/infrastructure/persistence/document/entities/user.schema';
 import { InfinityPaginationResponseDto } from '../../../../../utils/dto/infinity-pagination-response.dto';
 import { infinityPagination } from '../../../../../utils/infinity-pagination';
 
@@ -43,69 +41,62 @@ export class examDocumentRepository implements ExamRepository {
     const filters: any = {};
     const { limit, page } = paginationOptions;
     const skip = (page - 1) * limit;
+
     if (year) {
       filters.year = +year;
     }
-
     if (type) {
       filters.type = type;
     }
-    if (status === ExamStatus.NotStarted) {
-      filters.userExams = {
-        $not: {
-          $elemMatch: { user: new mongoose.Types.ObjectId(userId) },
-        },
-      };
-    }
-    if (status === ExamStatus.InProgress) {
-      filters.userExams = {
-        $elemMatch: {
-          user: new mongoose.Types.ObjectId(userId),
-          progress: { $lt: 100 },
-        },
-      };
-    }
-    if (status === ExamStatus.Completed) {
-      filters.userExams = {
-        $elemMatch: {
-          user: new mongoose.Types.ObjectId(userId),
-          progress: 100,
-        },
-      };
-    }
+
     const entityObjects = await this.examModel.aggregate([
       {
         $lookup: {
-          from: UserExamSchemaClass.name,
-          localField: '_id',
-          foreignField: UserSchemaClass.name,
+          from: 'userExams', // Tên collection của UserExam (kiểm tra chính xác trong database)
+          let: { examId: '$_id' },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $and: [
+                    { $eq: ['$exam', '$$examId'] }, // Liên kết với _id của Exam
+                    { $eq: ['$user', new mongoose.Types.ObjectId(userId)] }, // Lọc theo userId
+                  ],
+                },
+              },
+            },
+            { $sort: { createdAt: -1 } }, // Sắp xếp theo createdAt giảm dần để lấy bản ghi mới nhất
+          ],
           as: 'userExams',
         },
       },
       {
-        $match: filters,
+        $addFields: {
+          latestUserExam: { $arrayElemAt: ['$userExams', 0] }, // Lấy bản ghi UserExam mới nhất
+        },
+      },
+      {
+        $match: filters, // Áp dụng các bộ lọc như year, type
       },
       {
         $addFields: {
           status: {
             $cond: {
-              if: { $eq: [{ $size: '$userExams' }, 0] },
+              if: { $eq: ['$latestUserExam', null] },
               then: ExamStatus.NotStarted,
               else: {
-                $let: {
-                  vars: { userExam: { $arrayElemAt: ['$userExams', 0] } },
-                  in: {
-                    $cond: {
-                      if: { $lt: ['$$userExam.progress', 100] },
-                      then: ExamStatus.InProgress,
-                      else: ExamStatus.Completed,
-                    },
-                  },
+                $cond: {
+                  if: { $lt: ['$latestUserExam.progress', 100] },
+                  then: ExamStatus.InProgress,
+                  else: ExamStatus.Completed,
                 },
               },
             },
           },
         },
+      },
+      {
+        $match: status ? { status } : {},
       },
       {
         $project: {

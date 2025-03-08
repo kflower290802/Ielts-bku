@@ -161,6 +161,7 @@ export class ExamsService {
     let userExam: NullableType<UserExam> = null;
     userExam = await this.userExamsService.findByUserIdAndExamId(userId, id);
     if (!userExam) {
+      // first time
       userExam = await this.userExamsService.create({
         examId: id,
         userId,
@@ -171,10 +172,27 @@ export class ExamsService {
     const userExamSession = await this.userExamSessionService.findByExamUserId(
       userExam.id,
     );
-    if (!userExamSession || userExamSession.endTime) {
+    if ((!userExamSession || userExamSession.endTime) && userExam.score < 100) {
+      // continue from last session
       await this.userExamSessionService.create({
         startTime: new Date(),
         examUserId: userExam.id,
+      });
+    }
+    if (
+      (!userExamSession || userExamSession.endTime) &&
+      userExam.score === 100
+    ) {
+      // start new exam session
+      const newUserExam = await this.userExamsService.create({
+        examId: id,
+        userId,
+        progress: 0,
+        score: 0,
+      });
+      await this.userExamSessionService.create({
+        startTime: new Date(),
+        examUserId: newUserExam.id,
       });
     }
   }

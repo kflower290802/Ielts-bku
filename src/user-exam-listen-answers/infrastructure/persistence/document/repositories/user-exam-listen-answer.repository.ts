@@ -109,4 +109,19 @@ export class UserExamListenAnswerDocumentRepository
     });
     return entity ? UserExamListenAnswerMapper.toDomain(entity) : null;
   }
+
+  async findByUserExamIdAndExamPassageQuestionId(
+    userExamId: string,
+    examPassageQuestionId: string,
+  ): Promise<NullableType<UserExamListenAnswer>> {
+    const entity = await this.userExamListenAnswerModel.findOne({
+      userExam: {
+        _id: userExamId,
+      },
+      examPassageQuestion: {
+        _id: examPassageQuestionId,
+      },
+    });
+    return entity ? UserExamListenAnswerMapper.toDomain(entity) : null;
+  }
 }

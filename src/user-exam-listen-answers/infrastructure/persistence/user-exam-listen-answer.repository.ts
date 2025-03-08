@@ -36,4 +36,9 @@ export abstract class UserExamListenAnswerRepository {
   abstract findByQuestionId(
     questionId: string,
   ): Promise<NullableType<UserExamListenAnswer>>;
+
+  abstract findByUserExamIdAndExamPassageQuestionId(
+    userExamId: string,
+    examPassageQuestionId: string,
+  ): Promise<NullableType<UserExamListenAnswer>>;
 }
