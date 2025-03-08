@@ -1,15 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { NullableType } from '../../../../../utils/types/nullable.type';
 import { InjectModel } from '@nestjs/mongoose';
-import mongoose, { Model } from 'mongoose';
+import { Model } from 'mongoose';
 import { ExamSchemaClass } from '../entities/exam.schema';
 import { ExamRepository } from '../../exam.repository';
 import { Exam } from '../../../../domain/exam';
 import { ExamMapper } from '../mappers/exam.mapper';
 import { IPaginationOptions } from '../../../../../utils/types/pagination-options';
 import { ExamStatus, ExamType } from '../../../../exams.type';
-import { InfinityPaginationResponseDto } from '../../../../../utils/dto/infinity-pagination-response.dto';
-import { infinityPagination } from '../../../../../utils/infinity-pagination';
 
 @Injectable()
 export class examDocumentRepository implements ExamRepository {
@@ -26,10 +24,7 @@ export class examDocumentRepository implements ExamRepository {
   }
 
   async findAllWithPagination({
-    paginationOptions,
     type,
-    status,
-    userId,
     year,
   }: {
     paginationOptions: IPaginationOptions;
@@ -37,100 +32,16 @@ export class examDocumentRepository implements ExamRepository {
     status?: ExamStatus;
     userId: string;
     year: number;
-  }): Promise<InfinityPaginationResponseDto<Exam>> {
-    const filters: any = {};
-    const { limit, page } = paginationOptions;
-    const skip = (page - 1) * limit;
-
-    if (year) {
-      filters.year = +year;
-    }
+  }): Promise<Exam[]> {
+    const filter = {} as any;
     if (type) {
-      filters.type = type;
+      filter.type = type;
     }
-
-    const entityObjects = await this.examModel.aggregate([
-      {
-        $lookup: {
-          from: 'userExams', // Tên collection của UserExam (kiểm tra chính xác trong database)
-          let: { examId: '$_id' },
-          pipeline: [
-            {
-              $match: {
-                $expr: {
-                  $and: [
-                    { $eq: ['$exam', '$$examId'] }, // Liên kết với _id của Exam
-                    { $eq: ['$user', new mongoose.Types.ObjectId(userId)] }, // Lọc theo userId
-                  ],
-                },
-              },
-            },
-            { $sort: { createdAt: -1 } }, // Sắp xếp theo createdAt giảm dần để lấy bản ghi mới nhất
-          ],
-          as: 'userExams',
-        },
-      },
-      {
-        $addFields: {
-          latestUserExam: { $arrayElemAt: ['$userExams', 0] }, // Lấy bản ghi UserExam mới nhất
-        },
-      },
-      {
-        $match: filters, // Áp dụng các bộ lọc như year, type
-      },
-      {
-        $addFields: {
-          status: {
-            $cond: {
-              if: { $eq: ['$latestUserExam', null] },
-              then: ExamStatus.NotStarted,
-              else: {
-                $cond: {
-                  if: { $lt: ['$latestUserExam.progress', 100] },
-                  then: ExamStatus.InProgress,
-                  else: ExamStatus.Completed,
-                },
-              },
-            },
-          },
-        },
-      },
-      {
-        $match: status ? { status } : {},
-      },
-      {
-        $project: {
-          name: 1,
-          type: 1,
-          time: 1,
-          year: 1,
-          image: 1,
-          createdAt: 1,
-          updatedAt: 1,
-          status: 1,
-        },
-      },
-      {
-        $facet: {
-          metadata: [{ $count: 'total' }],
-          data: [{ $skip: skip }, { $limit: limit }],
-        },
-      },
-    ]);
-
-    const result = entityObjects[0]?.data || [];
-    const total = entityObjects[0]?.metadata[0]?.total || 0;
-    return infinityPagination(
-      result.map((entityObject) => ({
-        ...ExamMapper.toDomain(entityObject),
-        status: entityObject.status,
-      })),
-      {
-        total,
-        page,
-        limit,
-      },
-    );
+    if (year) {
+      filter.year = +year;
+    }
+    const entities = await this.examModel.find(filter);
+    return entities.map(ExamMapper.toDomain);
   }
 
   async findById(id: Exam['id']): Promise<NullableType<Exam>> {

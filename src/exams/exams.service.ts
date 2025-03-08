@@ -58,8 +58,7 @@ export class ExamsService {
     });
   }
 
-  findAllWithPagination({
-    paginationOptions,
+  async findAllWithPagination({
     type,
     status,
     userId,
@@ -71,16 +70,29 @@ export class ExamsService {
     userId: string;
     year?: number;
   }) {
-    return this.examRepository.findAllWithPagination({
-      paginationOptions: {
-        page: paginationOptions.page,
-        limit: paginationOptions.limit,
-      },
+    const exams = await this.examRepository.findAllWithPagination({
       type,
-      status,
-      userId,
       year,
     });
+    const examsStatus = await Promise.all(
+      exams.map(async (exam) => {
+        const userExam = await this.userExamsService.findByUserIdAndExamId(
+          userId,
+          exam.id,
+        );
+        return {
+          ...exam,
+          status: !userExam
+            ? ExamStatus.NotStarted
+            : userExam.progress < 100
+              ? ExamStatus.InProgress
+              : ExamStatus.Completed,
+        };
+      }),
+    );
+    return examsStatus.filter((exam) =>
+      status ? exam.status === status : true,
+    );
   }
 
   findById(id: Exam['id']) {

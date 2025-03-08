@@ -26,13 +26,30 @@ import {
 } from '@nestjs/swagger';
 import { Exam } from './domain/exam';
 import { AuthGuard } from '@nestjs/passport';
-import {
-  InfinityPaginationResponse,
-  InfinityPaginationResponseDto,
-} from '../utils/dto/infinity-pagination-response.dto';
+import { InfinityPaginationResponse } from '../utils/dto/infinity-pagination-response.dto';
 import { FindAllExamsDto } from './dto/find-all-exams.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { SubmitExamDto } from './dto/submit-exam.dto';
+
+function paginateData(data: any[], page = 1, limit = 10) {
+  // Tính toán vị trí bắt đầu và kết thúc của dữ liệu cần lấy
+  const startIndex = (page - 1) * limit;
+  const endIndex = startIndex + limit;
+
+  // Cắt dữ liệu theo trang
+  const paginatedData = data.slice(startIndex, endIndex);
+
+  // Tổng số trang
+  const totalPages = Math.ceil(data.length / limit);
+
+  return {
+    data: paginatedData,
+    page: page,
+    limit: limit,
+    total: data.length,
+    pages: totalPages,
+  };
+}
 
 @ApiTags('Exams')
 @ApiBearerAuth()
@@ -65,15 +82,14 @@ export class ExamsController {
   async findAll(
     @Query() query: FindAllExamsDto,
     @Request() request,
-  ): Promise<InfinityPaginationResponseDto<Exam>> {
+  ): Promise<any> {
     const userId = request.user.id;
     const page = query?.page ?? 1;
     let limit = query?.limit ?? 10;
     if (limit > 50) {
       limit = 50;
     }
-
-    return this.examsService.findAllWithPagination({
+    const exams = await this.examsService.findAllWithPagination({
       paginationOptions: {
         page,
         limit,
@@ -81,6 +97,7 @@ export class ExamsController {
       userId,
       ...query,
     });
+    return paginateData(exams, page, limit);
   }
 
   @Get('year')

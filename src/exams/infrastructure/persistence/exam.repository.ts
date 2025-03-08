@@ -1,9 +1,7 @@
-import { InfinityPaginationResponseDto } from '../../../utils/dto/infinity-pagination-response.dto';
 import { DeepPartial } from '../../../utils/types/deep-partial.type';
 import { NullableType } from '../../../utils/types/nullable.type';
-import { IPaginationOptions } from '../../../utils/types/pagination-options';
 import { Exam } from '../../domain/exam';
-import { ExamStatus, ExamType } from '../../exams.type';
+import { ExamType } from '../../exams.type';
 
 export abstract class ExamRepository {
   abstract create(
@@ -11,18 +9,12 @@ export abstract class ExamRepository {
   ): Promise<Exam>;
 
   abstract findAllWithPagination({
-    paginationOptions,
     type,
-    status,
-    userId,
     year,
   }: {
-    paginationOptions: IPaginationOptions;
     type?: ExamType;
-    status?: ExamStatus;
-    userId: string;
     year?: number;
-  }): Promise<InfinityPaginationResponseDto<Exam>>;
+  }): Promise<Exam[]>;
 
   abstract findById(id: Exam['id']): Promise<NullableType<Exam>>;
 
