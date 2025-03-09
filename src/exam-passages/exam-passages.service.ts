@@ -12,6 +12,7 @@ import { ExamPassage } from './domain/exam-passage';
 import { ExamsService } from '../exams/exams.service';
 import { Exam } from '../exams/domain/exam';
 import { ExamPassageQuestionsService } from '../exam-passage-questions/exam-passage-questions.service';
+import { ExamPassageAnswersService } from '../exam-passage-answers/exam-passage-answers.service';
 
 @Injectable()
 export class ExamPassagesService {
@@ -19,22 +20,17 @@ export class ExamPassagesService {
     private readonly examPassageRepository: ExamPassageRepository,
     @Inject(forwardRef(() => ExamsService))
     private readonly examsService: ExamsService,
-    // @Inject(forwardRef(() => ExamPassagesService))
     private readonly examPassageQuestionService: ExamPassageQuestionsService,
+    private readonly examPassageAnswersService: ExamPassageAnswersService,
   ) {}
 
   async create(createExamPassageDto: CreateExamPassageDto) {
-    // Do not remove comment below.
-    // <creating-property />
-
     const { examId, ...rest } = createExamPassageDto;
     const exam = await this.examsService.findById(examId);
 
     if (!exam) throw new BadRequestException('Exam not found!');
 
     return this.examPassageRepository.create({
-      // Do not remove comment below.
-      // <creating-property-payload />
       exam,
       ...rest,
     });
@@ -57,9 +53,18 @@ export class ExamPassagesService {
     const examPassagesQuestions = examPassages.map(async (passage) => {
       const questions =
         await this.examPassageQuestionService.findByExamPassageId(passage.id);
+      const questionWithAnswers = await Promise.all(
+        questions.map(async (question) => {
+          const answers =
+            await this.examPassageAnswersService.findAllByQuestionId(
+              question.id,
+            );
+          return { ...question, answers };
+        }),
+      );
       return {
         ...passage,
-        questions,
+        questions: questionWithAnswers,
       };
     });
     return Promise.all(examPassagesQuestions);

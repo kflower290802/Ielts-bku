@@ -22,6 +22,12 @@ export class ExamPassageQuestionSchemaClass extends EntityDocumentHelper {
   })
   examPassage: ExamPassageSchemaClass;
 
+  @Prop({ required: false })
+  leftContent?: string;
+
+  @Prop({ required: false })
+  rightContent?: string;
+
   @Prop()
   question: string;
 

@@ -11,6 +11,12 @@ export class ExamPassageQuestion {
   examPassage: ExamPassage;
 
   @ApiProperty()
+  leftContent?: string;
+
+  @ApiProperty()
+  rightContent?: string;
+
+  @ApiProperty()
   question: string;
 
   @ApiProperty()

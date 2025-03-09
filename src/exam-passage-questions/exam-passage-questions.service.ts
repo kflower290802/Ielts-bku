@@ -23,22 +23,30 @@ export class ExamPassageQuestionsService {
   ) {}
 
   async create(createExamPassageQuestionDto: CreateExamPassageQuestionDto) {
-    const { examPassageId, answer, ...rest } = createExamPassageQuestionDto;
+    const { examPassageId, answers, ...rest } = createExamPassageQuestionDto;
     const examPassage = await this.examPassageService.findById(examPassageId);
 
     if (!examPassage) throw new BadRequestException('Exam Passage not found');
-
     const question = await this.examPassageQuestionRepository.create({
       examPassage,
       ...rest,
     });
-    const answerQuestion = await this.examPassageAnswersService.create({
-      question,
-      answer,
-    });
+
+    const answerQuestions = await Promise.all(
+      answers.map(async (answer) => {
+        const { answer: title, isCorrect } = answer;
+        const answerQuestion = await this.examPassageAnswersService.create({
+          question,
+          answer: title,
+          isCorrect,
+        });
+        return answerQuestion;
+      }),
+    );
+
     return {
       ...question,
-      answer: answerQuestion,
+      answers: answerQuestions,
     };
   }
 

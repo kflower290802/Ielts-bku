@@ -100,4 +100,15 @@ export class ExamPassageAnswerDocumentRepository
       .populate('question');
     return entity ? ExamPassageAnswerMapper.toDomain(entity) : null;
   }
+
+  async findAllByQuestionId(questionId: string): Promise<ExamPassageAnswer[]> {
+    const entities = await this.examPassageAnswerModel
+      .find({
+        question: {
+          _id: questionId,
+        },
+      })
+      .select('-isCorrect');
+    return entities.map(ExamPassageAnswerMapper.toDomain);
+  }
 }

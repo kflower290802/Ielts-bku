@@ -53,4 +53,8 @@ export class ExamPassageAnswersService {
   findByQuestionId(questionId: string) {
     return this.examPassageAnswerRepository.findByQuestionId(questionId);
   }
+
+  findAllByQuestionId(questionId: string) {
+    return this.examPassageAnswerRepository.findAllByQuestionId(questionId);
+  }
 }

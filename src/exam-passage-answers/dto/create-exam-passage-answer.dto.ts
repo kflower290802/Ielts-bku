@@ -4,11 +4,9 @@ import { ExamPassageQuestion } from '../../exam-passage-questions/domain/exam-pa
 export class CreateExamPassageAnswerDto {
   @IsNotEmpty()
   question: ExamPassageQuestion;
-
   @IsNotEmpty()
   answer: string;
 
-  @IsNotEmpty()
   @IsBoolean()
   @IsOptional()
   isCorrect?: boolean;

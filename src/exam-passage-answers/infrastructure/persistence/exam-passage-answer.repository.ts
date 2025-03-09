@@ -32,4 +32,8 @@ export abstract class ExamPassageAnswerRepository {
   abstract findByQuestionId(
     questionId: string,
   ): Promise<NullableType<ExamPassageAnswer>>;
+
+  abstract findAllByQuestionId(
+    questionId: string,
+  ): Promise<ExamPassageAnswer[]>;
 }

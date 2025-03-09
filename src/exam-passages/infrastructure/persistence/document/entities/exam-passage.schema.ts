@@ -2,6 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { now, HydratedDocument } from 'mongoose';
 import { EntityDocumentHelper } from '../../../../../utils/document-entity-helper';
 import { ExamSchemaClass } from '../../../../../exams/infrastructure/persistence/document/entities/exam.schema';
+import { QuestionType } from '../../../../../utils/types/question.type';
 
 export type ExamPassageSchemaDocument =
   HydratedDocument<ExamPassageSchemaClass>;
@@ -27,6 +28,12 @@ export class ExamPassageSchemaClass extends EntityDocumentHelper {
 
   @Prop()
   passage: string;
+
+  @Prop()
+  type: QuestionType;
+
+  @Prop({ required: false })
+  blankPassage?: string;
 
   @Prop({ default: now })
   createdAt: Date;

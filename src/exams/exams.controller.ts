@@ -3,7 +3,6 @@ import {
   Get,
   Post,
   Body,
-  Patch,
   Param,
   Delete,
   UseGuards,
@@ -14,7 +13,6 @@ import {
 } from '@nestjs/common';
 import { ExamsService } from './exams.service';
 import { CreateExamDto } from './dto/create-exam.dto';
-import { UpdateExamDto } from './dto/update-exam.dto';
 import {
   ApiBearerAuth,
   ApiBody,
@@ -129,19 +127,6 @@ export class ExamsController {
   startExam(@Param('id') id: string, @Request() request) {
     const userId = request.user.id;
     return this.examsService.startExam(id, userId);
-  }
-
-  @Patch(':id')
-  @ApiParam({
-    name: 'id',
-    type: String,
-    required: true,
-  })
-  @ApiOkResponse({
-    type: Exam,
-  })
-  update(@Param('id') id: string, @Body() updateExamDto: UpdateExamDto) {
-    return this.examsService.update(id, updateExamDto);
   }
 
   @Get('exam/:id')

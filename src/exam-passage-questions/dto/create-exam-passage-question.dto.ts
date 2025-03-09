@@ -1,5 +1,25 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsString } from 'class-validator';
+import {
+  IsArray,
+  IsBoolean,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  ValidateNested,
+} from 'class-validator';
+import { Type } from 'class-transformer';
+
+class AnswerDto {
+  @ApiProperty({ description: 'The answer text' })
+  @IsString()
+  @IsNotEmpty()
+  answer: string;
+
+  @ApiProperty()
+  @IsBoolean()
+  @IsNotEmpty()
+  isCorrect: boolean;
+}
 
 export class CreateExamPassageQuestionDto {
   @ApiProperty()
@@ -8,12 +28,22 @@ export class CreateExamPassageQuestionDto {
   examPassageId: string;
 
   @ApiProperty()
-  @IsNotEmpty()
   @IsString()
   question: string;
 
   @ApiProperty()
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
-  answer: string;
+  leftContent?: string;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsString()
+  rightContent?: string;
+
+  @ApiProperty()
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => AnswerDto)
+  answers: AnswerDto[];
 }

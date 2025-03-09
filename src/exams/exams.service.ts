@@ -6,7 +6,6 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { CreateExamDto } from './dto/create-exam.dto';
-import { UpdateExamDto } from './dto/update-exam.dto';
 import { ExamRepository } from './infrastructure/persistence/exam.repository';
 import { IPaginationOptions } from '../utils/types/pagination-options';
 import { Exam } from './domain/exam';
@@ -103,20 +102,6 @@ export class ExamsService {
     return this.examRepository.findByIds(ids);
   }
 
-  async update(
-    id: Exam['id'],
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    updateExamDto: UpdateExamDto,
-  ) {
-    // Do not remove comment below.
-    // <updating-property />
-
-    return this.examRepository.update(id, {
-      // Do not remove comment below.
-      // <updating-property-payload />
-    });
-  }
-
   remove(id: Exam['id']) {
     return this.examRepository.remove(id);
   }
@@ -193,7 +178,7 @@ export class ExamsService {
     }
     if (
       (!userExamSession || userExamSession.endTime) &&
-      userExam.score === 100
+      userExam.progress === 100
     ) {
       // start new exam session
       const newUserExam = await this.userExamsService.create({
