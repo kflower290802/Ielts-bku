@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsMongoId, IsNotEmpty } from 'class-validator';
+import { IsMongoId, IsNotEmpty, IsString } from 'class-validator';
+import { QuestionType } from '../../utils/types/question.type';
 
 export class CreateExamListenSectionDto {
   @ApiProperty()
@@ -12,4 +13,9 @@ export class CreateExamListenSectionDto {
     format: 'binary',
   })
   audio: Express.Multer.File;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsString()
+  type: QuestionType;
 }

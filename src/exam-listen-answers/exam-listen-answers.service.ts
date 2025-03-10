@@ -60,4 +60,10 @@ export class ExamListenAnswersService {
   remove(id: ExamListenAnswer['id']) {
     return this.examListenAnswerRepository.remove(id);
   }
+
+  findCorrectAnswersByQuestionId(questionId: string) {
+    return this.examListenAnswerRepository.findCorrectAnswersByQuestionId(
+      questionId,
+    );
+  }
 }

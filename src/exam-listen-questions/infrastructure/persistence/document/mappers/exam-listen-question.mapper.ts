@@ -13,7 +13,6 @@ export class ExamListenQuestionMapper {
       raw.examListenSection,
     );
     domainEntity.question = raw.question;
-    domainEntity.type = raw.type;
     domainEntity.createdAt = raw.createdAt;
     domainEntity.updatedAt = raw.updatedAt;
 
@@ -31,7 +30,6 @@ export class ExamListenQuestionMapper {
     examListenSectionSchema._id = domainEntity.examListenSection.id;
     persistenceSchema.examListenSection = examListenSectionSchema;
     persistenceSchema.question = domainEntity.question;
-    persistenceSchema.type = domainEntity.type;
     persistenceSchema.createdAt = domainEntity.createdAt;
     persistenceSchema.updatedAt = domainEntity.updatedAt;
 

@@ -15,7 +15,7 @@ export class UserExamListenAnswer {
   examPassageQuestion: ExamListenSection;
 
   @ApiProperty()
-  answer: string;
+  answer: string | string[];
 
   @ApiProperty()
   createdAt: Date;

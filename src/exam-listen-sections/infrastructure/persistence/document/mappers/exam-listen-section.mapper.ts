@@ -11,6 +11,7 @@ export class ExamListenSectionMapper {
     if (raw.exam) {
       domainEntity.exam = ExamMapper.toDomain(raw.exam);
     }
+    domainEntity.type = raw.type;
     domainEntity.createdAt = raw.createdAt;
     domainEntity.updatedAt = raw.updatedAt;
 
@@ -28,6 +29,7 @@ export class ExamListenSectionMapper {
     const exam = new ExamSchemaClass();
     exam._id = domainEntity.exam.id;
     persistenceSchema.exam = exam;
+    persistenceSchema.type = domainEntity.type;
     persistenceSchema.createdAt = domainEntity.createdAt;
     persistenceSchema.updatedAt = domainEntity.updatedAt;
 

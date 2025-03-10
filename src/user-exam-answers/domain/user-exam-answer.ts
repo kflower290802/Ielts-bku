@@ -15,7 +15,7 @@ export class UserExamAnswer {
   examPassageQuestion: ExamPassageQuestion;
 
   @ApiProperty()
-  answer: string;
+  answer: string | string[];
 
   @ApiProperty()
   createdAt: Date;

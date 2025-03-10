@@ -25,11 +25,15 @@ export class ExamListenSectionsService {
   ) {}
 
   async create(createExamListenSectionDto: CreateExamListenSectionDto) {
-    const { audio, examId } = createExamListenSectionDto;
+    const { audio, examId, type } = createExamListenSectionDto;
     const exam = await this.examsService.findById(examId);
     if (!exam) throw new NotFoundException('Exam not found');
     const { secure_url } = await this.cloudinaryService.uploadAudio(audio);
-    return this.examListenSectionRepository.create({ exam, audio: secure_url });
+    return this.examListenSectionRepository.create({
+      exam,
+      audio: secure_url,
+      type,
+    });
   }
 
   async findSectionsByExamId(examId: Exam['id']) {

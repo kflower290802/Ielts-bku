@@ -1,5 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsMongoId, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import {
+  IsArray,
+  IsMongoId,
+  IsNotEmpty,
+  IsString,
+  ValidateIf,
+} from 'class-validator';
 
 export class CreateUserExamListenAnswerDto {
   @ApiProperty()
@@ -12,8 +18,14 @@ export class CreateUserExamListenAnswerDto {
   @IsMongoId()
   examPassageQuestionId: string;
 
-  @ApiProperty()
-  @IsOptional()
+  @ApiProperty({
+    type: [String],
+    description: 'Answer can be a string or an array of strings',
+  })
+  @ValidateIf((o) => typeof o.answer === 'string')
   @IsString()
-  answer: string;
+  @ValidateIf((o) => Array.isArray(o.answer))
+  @IsArray()
+  @IsString({ each: true })
+  answer: string | string[];
 }

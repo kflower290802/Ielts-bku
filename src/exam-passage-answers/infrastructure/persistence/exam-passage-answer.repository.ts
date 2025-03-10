@@ -29,9 +29,7 @@ export abstract class ExamPassageAnswerRepository {
 
   abstract remove(id: ExamPassageAnswer['id']): Promise<void>;
 
-  abstract findByQuestionId(
-    questionId: string,
-  ): Promise<NullableType<ExamPassageAnswer>>;
+  abstract findByQuestionId(questionId: string): Promise<ExamPassageAnswer[]>;
 
   abstract findAllByQuestionId(
     questionId: string,

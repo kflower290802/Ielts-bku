@@ -30,8 +30,8 @@ export class UserExamAnswerSchemaClass extends EntityDocumentHelper {
   })
   examPassageQuestion: ExamPassageQuestionSchemaClass;
 
-  @Prop({ required: false, type: String })
-  answer: string;
+  @Prop({ required: false, type: mongoose.Schema.Types.Mixed, default: '' })
+  answer: string | string[];
 
   @Prop({ default: now })
   createdAt: Date;

@@ -23,4 +23,8 @@ export abstract class ExamListenAnswerRepository {
   abstract remove(id: ExamListenAnswer['id']): Promise<void>;
 
   abstract findByQuestionId(questionId: string): Promise<ExamListenAnswer[]>;
+
+  abstract findCorrectAnswersByQuestionId(
+    questionId: string,
+  ): Promise<ExamListenAnswer[]>;
 }

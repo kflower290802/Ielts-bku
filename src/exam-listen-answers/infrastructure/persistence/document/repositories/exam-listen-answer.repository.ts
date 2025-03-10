@@ -70,13 +70,23 @@ export class ExamListenAnswerDocumentRepository
   }
 
   async findByQuestionId(questionId: string): Promise<ExamListenAnswer[]> {
-    const answers = await this.examListenAnswerModel
-      .find({
-        examListenQuestion: {
-          _id: questionId,
-        },
-      })
-      .select('-isCorrect');
+    const answers = await this.examListenAnswerModel.find({
+      examListenQuestion: {
+        _id: questionId,
+      },
+    });
+    return answers.map(ExamListenAnswerMapper.toDomain);
+  }
+
+  async findCorrectAnswersByQuestionId(
+    questionId: string,
+  ): Promise<ExamListenAnswer[]> {
+    const answers = await this.examListenAnswerModel.find({
+      examListenQuestion: {
+        _id: questionId,
+      },
+      isCorrect: true,
+    });
     return answers.map(ExamListenAnswerMapper.toDomain);
   }
 }

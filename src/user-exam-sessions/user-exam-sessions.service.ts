@@ -72,9 +72,8 @@ export class UserExamSessionsService {
       await this.userExamSessionRepository.getSessionsByUserExamId(userExamId);
     return sessions.reduce((total, session) => {
       const sessionTime =
-        ((session.endTime?.getTime() || new Date().getTime()) -
-          session.startTime.getTime()) /
-        60000;
+        (session.endTime?.getTime() || new Date().getTime()) -
+        session.startTime.getTime();
       return total + sessionTime;
     }, 0);
   }
