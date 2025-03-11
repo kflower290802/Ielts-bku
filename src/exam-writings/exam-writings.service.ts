@@ -17,6 +17,9 @@ export class ExamWritingsService {
     const { content, examId, image } = createExamWritingDto;
     const exam = new Exam();
     exam.id = examId;
+    if (!image) {
+      return this.examWritingRepository.create({ exam, content });
+    }
     const { secure_url } = await this.cloudinaryService.uploadImage(image);
     return this.examWritingRepository.create({
       exam,

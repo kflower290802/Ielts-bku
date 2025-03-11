@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsMongoId, IsNotEmpty, IsString } from 'class-validator';
+import { IsMongoId, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class CreateExamWritingDto {
   @ApiProperty()
@@ -15,6 +15,8 @@ export class CreateExamWritingDto {
   @ApiProperty({
     type: String,
     format: 'binary',
+    required: false,
   })
-  image: Express.Multer.File;
+  @IsOptional()
+  image?: Express.Multer.File;
 }

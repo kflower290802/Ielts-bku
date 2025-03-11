@@ -14,7 +14,7 @@ export class ExamWriting {
   content: string;
 
   @ApiProperty()
-  image: string;
+  image?: string;
 
   @ApiProperty()
   createdAt: Date;

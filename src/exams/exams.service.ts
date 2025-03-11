@@ -154,7 +154,6 @@ export class ExamsService {
       await this.userExamSessionService.getTotalTimeSpent(userExamId);
 
     const remainingTime = exam.time - totalTimeSpent;
-    console.log({ total: exam.time, totalTimeSpent });
     return remainingTime > 0 ? remainingTime : 0;
   }
 
