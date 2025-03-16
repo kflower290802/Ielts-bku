@@ -65,8 +65,11 @@ import { ExamWritingsModule } from './exam-writings/exam-writings.module';
 
 import { UserExamWritingsModule } from './user-exam-writings/user-exam-writings.module';
 
+import { ExamReadingTypesModule } from './exam-reading-types/exam-reading-types.module';
+
 @Module({
   imports: [
+    ExamReadingTypesModule,
     UserExamWritingsModule,
     ExamWritingsModule,
     UserExamSpeakAnswersModule,

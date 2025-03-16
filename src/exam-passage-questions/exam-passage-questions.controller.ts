@@ -1,32 +1,13 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-  // UseGuards,
-  // Query,
-} from '@nestjs/common';
+import { Controller, Post, Body } from '@nestjs/common';
 import { ExamPassageQuestionsService } from './exam-passage-questions.service';
 import { CreateExamPassageQuestionDto } from './dto/create-exam-passage-question.dto';
-import { UpdateExamPassageQuestionDto } from './dto/update-exam-passage-question.dto';
 import {
   ApiBearerAuth,
+  ApiBody,
   ApiCreatedResponse,
-  ApiOkResponse,
-  ApiParam,
   ApiTags,
 } from '@nestjs/swagger';
 import { ExamPassageQuestion } from './domain/exam-passage-question';
-// import { AuthGuard } from '@nestjs/passport';
-// import {
-//   InfinityPaginationResponse,
-//   InfinityPaginationResponseDto,
-// } from '../utils/dto/infinity-pagination-response.dto';
-// import { infinityPagination } from '../utils/infinity-pagination';
-// import { FindAllExamPassageQuestionsDto } from './dto/find-all-exam-passage-questions.dto';
 
 @ApiTags('Exampassagequestions')
 @ApiBearerAuth()
@@ -44,51 +25,10 @@ export class ExamPassageQuestionsController {
   @ApiCreatedResponse({
     type: ExamPassageQuestion,
   })
+  @ApiBody({ type: CreateExamPassageQuestionDto })
   create(@Body() createExamPassageQuestionDto: CreateExamPassageQuestionDto) {
     return this.examPassageQuestionsService.create(
       createExamPassageQuestionDto,
     );
-  }
-
-  @Get(':id')
-  @ApiParam({
-    name: 'id',
-    type: String,
-    required: true,
-  })
-  @ApiOkResponse({
-    type: ExamPassageQuestion,
-  })
-  findById(@Param('id') id: string) {
-    return this.examPassageQuestionsService.findById(id);
-  }
-
-  @Patch(':id')
-  @ApiParam({
-    name: 'id',
-    type: String,
-    required: true,
-  })
-  @ApiOkResponse({
-    type: ExamPassageQuestion,
-  })
-  update(
-    @Param('id') id: string,
-    @Body() updateExamPassageQuestionDto: UpdateExamPassageQuestionDto,
-  ) {
-    return this.examPassageQuestionsService.update(
-      id,
-      updateExamPassageQuestionDto,
-    );
-  }
-
-  @Delete(':id')
-  @ApiParam({
-    name: 'id',
-    type: String,
-    required: true,
-  })
-  remove(@Param('id') id: string) {
-    return this.examPassageQuestionsService.remove(id);
   }
 }

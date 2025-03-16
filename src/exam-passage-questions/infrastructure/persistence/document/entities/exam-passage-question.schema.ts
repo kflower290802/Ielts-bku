@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { now, HydratedDocument } from 'mongoose';
 import { EntityDocumentHelper } from '../../../../../utils/document-entity-helper';
-import { ExamPassageSchemaClass } from '../../../../../exam-passages/infrastructure/persistence/document/entities/exam-passage.schema';
+import { ExamReadingTypeSchemaClass } from '../../../../../exam-reading-types/infrastructure/persistence/document/entities/exam-reading-type.schema';
 
 export type ExamPassageQuestionSchemaDocument =
   HydratedDocument<ExamPassageQuestionSchemaClass>;
@@ -17,16 +17,10 @@ export type ExamPassageQuestionSchemaDocument =
 export class ExamPassageQuestionSchemaClass extends EntityDocumentHelper {
   @Prop({
     type: mongoose.Types.ObjectId,
-    ref: ExamPassageSchemaClass.name,
+    ref: ExamReadingTypeSchemaClass.name,
     required: true,
   })
-  examPassage: ExamPassageSchemaClass;
-
-  @Prop({ required: false })
-  leftContent?: string;
-
-  @Prop({ required: false })
-  rightContent?: string;
+  examReadingType: ExamReadingTypeSchemaClass;
 
   @Prop()
   question: string;

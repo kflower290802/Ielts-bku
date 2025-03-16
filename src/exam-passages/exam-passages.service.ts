@@ -13,6 +13,7 @@ import { ExamsService } from '../exams/exams.service';
 import { Exam } from '../exams/domain/exam';
 import { ExamPassageQuestionsService } from '../exam-passage-questions/exam-passage-questions.service';
 import { ExamPassageAnswersService } from '../exam-passage-answers/exam-passage-answers.service';
+import { ExamReadingTypesService } from '../exam-reading-types/exam-reading-types.service';
 
 @Injectable()
 export class ExamPassagesService {
@@ -20,8 +21,10 @@ export class ExamPassagesService {
     private readonly examPassageRepository: ExamPassageRepository,
     @Inject(forwardRef(() => ExamsService))
     private readonly examsService: ExamsService,
+    @Inject(forwardRef(() => ExamPassageQuestionsService))
     private readonly examPassageQuestionService: ExamPassageQuestionsService,
     private readonly examPassageAnswersService: ExamPassageAnswersService,
+    private readonly examReadingTypesService: ExamReadingTypesService,
   ) {}
 
   async create(createExamPassageDto: CreateExamPassageDto) {
@@ -51,21 +54,11 @@ export class ExamPassagesService {
   async findAllByExamId(id: Exam['id']) {
     const examPassages = await this.examPassageRepository.findByExamId(id);
     const examPassagesQuestions = examPassages.map(async (passage) => {
-      const questions =
-        await this.examPassageQuestionService.findByExamPassageId(passage.id);
-      const questionWithAnswers = await Promise.all(
-        questions.map(async (question) => {
-          const answers =
-            await this.examPassageAnswersService.findAllByQuestionId(
-              question.id,
-            );
-          return { ...question, answers };
-        }),
-      );
-      return {
-        ...passage,
-        questions: questionWithAnswers,
-      };
+      const examPassageTypes =
+        await this.examReadingTypesService.findByPassageIdWithQuestion(
+          passage.id,
+        );
+      return { ...passage, types: examPassageTypes };
     });
     return Promise.all(examPassagesQuestions);
   }

@@ -1,12 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import {
-  IsNotEmpty,
-  IsOptional,
-  IsString,
-  MaxLength,
-  MinLength,
-} from 'class-validator';
-import { QuestionType } from '../../utils/types/question.type';
+import { IsNotEmpty, IsString, MaxLength, MinLength } from 'class-validator';
 
 export class CreateExamPassageDto {
   @ApiProperty()
@@ -23,16 +16,6 @@ export class CreateExamPassageDto {
   @ApiProperty()
   @IsString()
   @IsNotEmpty()
-  type: QuestionType;
-
-  @ApiProperty()
-  @IsString()
-  @IsNotEmpty()
   @MinLength(1)
   passage: string;
-
-  @ApiProperty()
-  @IsString()
-  @IsOptional()
-  blankPassage?: string;
 }

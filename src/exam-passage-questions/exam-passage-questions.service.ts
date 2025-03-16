@@ -1,34 +1,31 @@
-import {
-  BadRequestException,
-  forwardRef,
-  Inject,
-  Injectable,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateExamPassageQuestionDto } from './dto/create-exam-passage-question.dto';
 import { UpdateExamPassageQuestionDto } from './dto/update-exam-passage-question.dto';
 import { ExamPassageQuestionRepository } from './infrastructure/persistence/exam-passage-question.repository';
-import { IPaginationOptions } from '../utils/types/pagination-options';
 import { ExamPassageQuestion } from './domain/exam-passage-question';
-import { ExamPassagesService } from '../exam-passages/exam-passages.service';
 import { ExamPassage } from '../exam-passages/domain/exam-passage';
 import { ExamPassageAnswersService } from '../exam-passage-answers/exam-passage-answers.service';
+import { ExamReadingTypesService } from '../exam-reading-types/exam-reading-types.service';
 
 @Injectable()
 export class ExamPassageQuestionsService {
   constructor(
     private readonly examPassageQuestionRepository: ExamPassageQuestionRepository,
-    @Inject(forwardRef(() => ExamPassagesService))
-    private readonly examPassageService: ExamPassagesService,
     private readonly examPassageAnswersService: ExamPassageAnswersService,
+    private readonly examReadingTypesService: ExamReadingTypesService,
   ) {}
 
   async create(createExamPassageQuestionDto: CreateExamPassageQuestionDto) {
-    const { examPassageId, answers, ...rest } = createExamPassageQuestionDto;
-    const examPassage = await this.examPassageService.findById(examPassageId);
+    const { answers, examReadingTypeId, ...rest } =
+      createExamPassageQuestionDto;
 
-    if (!examPassage) throw new BadRequestException('Exam Passage not found');
+    const examReadingType =
+      await this.examReadingTypesService.findById(examReadingTypeId);
+
+    if (!examReadingType) throw new NotFoundException('Type not found');
+
     const question = await this.examPassageQuestionRepository.create({
-      examPassage,
+      examReadingType,
       ...rest,
     });
 
@@ -48,19 +45,6 @@ export class ExamPassageQuestionsService {
       ...question,
       answers: answerQuestions,
     };
-  }
-
-  findAllWithPagination({
-    paginationOptions,
-  }: {
-    paginationOptions: IPaginationOptions;
-  }) {
-    return this.examPassageQuestionRepository.findAllWithPagination({
-      paginationOptions: {
-        page: paginationOptions.page,
-        limit: paginationOptions.limit,
-      },
-    });
   }
 
   findById(id: ExamPassageQuestion['id']) {
@@ -89,7 +73,7 @@ export class ExamPassageQuestionsService {
     return this.examPassageQuestionRepository.remove(id);
   }
 
-  findByExamPassageId(id: ExamPassage['id']) {
-    return this.examPassageQuestionRepository.findByExamPassageId(id);
+  findByExamTypeId(id: ExamPassage['id']) {
+    return this.examPassageQuestionRepository.findByExamTypeId(id);
   }
 }

@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { ExamPassage } from '../../exam-passages/domain/exam-passage';
+import { ExamReadingType } from '../../exam-reading-types/domain/exam-reading-type';
 
 export class ExamPassageQuestion {
   @ApiProperty({
@@ -8,13 +8,7 @@ export class ExamPassageQuestion {
   id: string;
 
   @ApiProperty()
-  examPassage: ExamPassage;
-
-  @ApiProperty()
-  leftContent?: string;
-
-  @ApiProperty()
-  rightContent?: string;
+  examReadingType: ExamReadingType;
 
   @ApiProperty()
   question: string;

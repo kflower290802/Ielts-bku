@@ -5,6 +5,7 @@ import { DocumentExamPassagePersistenceModule } from './infrastructure/persisten
 import { ExamsModule } from '../exams/exams.module';
 import { ExamPassageQuestionsModule } from '../exam-passage-questions/exam-passage-questions.module';
 import { ExamPassageAnswersModule } from '../exam-passage-answers/exam-passage-answers.module';
+import { ExamReadingTypesModule } from '../exam-reading-types/exam-reading-types.module';
 
 @Module({
   imports: [
@@ -12,6 +13,7 @@ import { ExamPassageAnswersModule } from '../exam-passage-answers/exam-passage-a
     forwardRef(() => ExamsModule),
     forwardRef(() => ExamPassageQuestionsModule),
     ExamPassageAnswersModule,
+    ExamReadingTypesModule,
   ],
   controllers: [ExamPassagesController],
   providers: [ExamPassagesService],

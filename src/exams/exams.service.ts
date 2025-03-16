@@ -247,14 +247,23 @@ export class ExamsService {
       return {
         ...passage,
         questions:
-          exam.type === ExamType.Reading || exam.type === ExamType.Listening
-            ? passage.questions.map((q) => {
-                return {
-                  ...q,
-                  answer: answerMap.get(q.id),
-                };
+          exam.type === ExamType.Reading
+            ? passage.types.map((type) => {
+                return type.questions.map((q) => {
+                  return {
+                    ...q,
+                    answer: answerMap.get(q.id),
+                  };
+                });
               })
-            : passage.question,
+            : exam.type === ExamType.Listening
+              ? passage.questions.map((q) => {
+                  return {
+                    ...q,
+                    answer: answerMap.get(q.id),
+                  };
+                })
+              : passage.question,
         answer: answerMap.get(passage.id),
       };
     });

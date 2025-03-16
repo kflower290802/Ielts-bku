@@ -12,8 +12,6 @@ export class ExamPassageMapper {
     domainEntity.exam = exam;
     domainEntity.passage = raw.passage;
     domainEntity.title = raw.title;
-    domainEntity.type = raw.type;
-    domainEntity.blankPassage = raw.blankPassage;
     domainEntity.createdAt = raw.createdAt;
     domainEntity.updatedAt = raw.updatedAt;
 
@@ -31,9 +29,7 @@ export class ExamPassageMapper {
     const exam = new ExamSchemaClass();
     exam._id = domainEntity.exam.id;
     persistenceSchema.exam = exam;
-    persistenceSchema.type = domainEntity.type;
     persistenceSchema.title = domainEntity.title;
-    persistenceSchema.blankPassage = domainEntity.blankPassage;
     persistenceSchema.createdAt = domainEntity.createdAt;
     persistenceSchema.updatedAt = domainEntity.updatedAt;
 
