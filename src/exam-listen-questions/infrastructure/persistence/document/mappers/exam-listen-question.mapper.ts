@@ -1,5 +1,5 @@
-import { ExamListenSectionSchemaClass } from '../../../../../exam-listen-sections/infrastructure/persistence/document/entities/exam-listen-section.schema';
-import { ExamListenSectionMapper } from '../../../../../exam-listen-sections/infrastructure/persistence/document/mappers/exam-listen-section.mapper';
+import { ExamListenType } from '../../../../../exam-listen-types/domain/exam-listen-type';
+import { ExamListenTypeSchemaClass } from '../../../../../exam-listen-types/infrastructure/persistence/document/entities/exam-listen-type.schema';
 import { ExamListenQuestion } from '../../../../domain/exam-listen-question';
 import { ExamListenQuestionSchemaClass } from '../entities/exam-listen-question.schema';
 
@@ -9,9 +9,9 @@ export class ExamListenQuestionMapper {
   ): ExamListenQuestion {
     const domainEntity = new ExamListenQuestion();
     domainEntity.id = raw._id.toString();
-    domainEntity.examListenSection = ExamListenSectionMapper.toDomain(
-      raw.examListenSection,
-    );
+    const examListenType = new ExamListenType();
+    examListenType.id = raw.examListenType._id.toString();
+    domainEntity.examListenType = examListenType;
     domainEntity.question = raw.question;
     domainEntity.createdAt = raw.createdAt;
     domainEntity.updatedAt = raw.updatedAt;
@@ -26,9 +26,10 @@ export class ExamListenQuestionMapper {
     if (domainEntity.id) {
       persistenceSchema._id = domainEntity.id;
     }
-    const examListenSectionSchema = new ExamListenSectionSchemaClass();
-    examListenSectionSchema._id = domainEntity.examListenSection.id;
-    persistenceSchema.examListenSection = examListenSectionSchema;
+    const examListenTypeSchema = new ExamListenTypeSchemaClass();
+
+    examListenTypeSchema._id = domainEntity.examListenType.id;
+    persistenceSchema.examListenType = examListenTypeSchema;
     persistenceSchema.question = domainEntity.question;
     persistenceSchema.createdAt = domainEntity.createdAt;
     persistenceSchema.updatedAt = domainEntity.updatedAt;

@@ -99,4 +99,13 @@ export class ExamListenQuestionDocumentRepository
     });
     return questions.map(ExamListenQuestionMapper.toDomain);
   }
+
+  async findByExamTypeId(id: string): Promise<ExamListenQuestion[]> {
+    const entities = await this.examListenQuestionModel.find({
+      examListenType: {
+        _id: id,
+      },
+    });
+    return entities.map(ExamListenQuestionMapper.toDomain);
+  }
 }

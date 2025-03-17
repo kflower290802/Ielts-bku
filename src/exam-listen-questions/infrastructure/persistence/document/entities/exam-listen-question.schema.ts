@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { now, HydratedDocument } from 'mongoose';
 import { EntityDocumentHelper } from '../../../../../utils/document-entity-helper';
-import { ExamListenSectionSchemaClass } from '../../../../../exam-listen-sections/infrastructure/persistence/document/entities/exam-listen-section.schema';
+import { ExamListenTypeSchemaClass } from '../../../../../exam-listen-types/infrastructure/persistence/document/entities/exam-listen-type.schema';
 
 export type ExamListenQuestionSchemaDocument =
   HydratedDocument<ExamListenQuestionSchemaClass>;
@@ -15,15 +15,15 @@ export type ExamListenQuestionSchemaDocument =
   collection: 'examListenQuestion',
 })
 export class ExamListenQuestionSchemaClass extends EntityDocumentHelper {
-  @Prop({ required: true, type: String })
+  @Prop({ required: false, type: String, default: '' })
   question: string;
 
   @Prop({
     required: true,
     type: mongoose.Types.ObjectId,
-    ref: ExamListenSectionSchemaClass.name,
+    ref: ExamListenTypeSchemaClass.name,
   })
-  examListenSection: ExamListenSectionSchemaClass;
+  examListenType: ExamListenTypeSchemaClass;
 
   @Prop({ default: now })
   createdAt: Date;

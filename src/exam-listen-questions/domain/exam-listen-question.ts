@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { ExamListenSection } from '../../exam-listen-sections/domain/exam-listen-section';
+import { ExamListenType } from '../../exam-listen-types/domain/exam-listen-type';
 
 export class ExamListenQuestion {
   @ApiProperty({
@@ -8,7 +8,7 @@ export class ExamListenQuestion {
   id: string;
 
   @ApiProperty()
-  examListenSection: ExamListenSection;
+  examListenType: ExamListenType;
 
   @ApiProperty()
   question: string;

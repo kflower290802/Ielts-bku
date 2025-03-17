@@ -35,6 +35,13 @@ export class CreateExamDto {
   })
   file: Express.Multer.File;
 
+  @ApiProperty({
+    type: String,
+    format: 'binary',
+    required: false,
+  })
+  audio?: Express.Multer.File;
+
   @ApiProperty({ example: 2024 })
   @Transform(({ value }) => +value)
   @IsNotEmpty()

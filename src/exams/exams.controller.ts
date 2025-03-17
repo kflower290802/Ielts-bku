@@ -8,8 +8,8 @@ import {
   UseGuards,
   Query,
   UseInterceptors,
-  UploadedFile,
   Request,
+  UploadedFiles,
 } from '@nestjs/common';
 import { ExamsService } from './exams.service';
 import { CreateExamDto } from './dto/create-exam.dto';
@@ -26,7 +26,7 @@ import { Exam } from './domain/exam';
 import { AuthGuard } from '@nestjs/passport';
 import { InfinityPaginationResponse } from '../utils/dto/infinity-pagination-response.dto';
 import { FindAllExamsDto } from './dto/find-all-exams.dto';
-import { FileInterceptor } from '@nestjs/platform-express';
+import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { SubmitExamDto } from './dto/submit-exam.dto';
 
 function paginateData(data: any[], page = 1, limit = 10) {
@@ -62,14 +62,24 @@ export class ExamsController {
   @ApiCreatedResponse({
     type: Exam,
   })
-  @UseInterceptors(FileInterceptor('file'))
+  @UseInterceptors(
+    FileFieldsInterceptor([
+      { name: 'audio', maxCount: 1 },
+      { name: 'file', maxCount: 1 },
+    ]),
+  )
   @ApiConsumes('multipart/form-data')
   create(
     @Body() createExamDto: CreateExamDto,
-    @UploadedFile()
-    file: Express.Multer.File,
+    @UploadedFiles()
+    files: { audio?: Express.Multer.File[]; file: Express.Multer.File[] },
   ) {
-    return this.examsService.create({ ...createExamDto, file });
+    const { file, audio } = files;
+    return this.examsService.create({
+      ...createExamDto,
+      file: file[0],
+      audio: audio ? audio[0] : undefined,
+    });
   }
 
   @Get()

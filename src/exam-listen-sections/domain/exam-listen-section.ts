@@ -1,6 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Exam } from '../../exams/domain/exam';
-import { QuestionType } from '../../utils/types/question.type';
 
 export class ExamListenSection {
   @ApiProperty({
@@ -10,12 +9,6 @@ export class ExamListenSection {
 
   @ApiProperty()
   exam: Exam;
-
-  @ApiProperty()
-  audio: string;
-
-  @ApiProperty()
-  type: QuestionType;
 
   @ApiProperty()
   createdAt: Date;

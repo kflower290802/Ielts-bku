@@ -34,9 +34,11 @@ export class ExamSchemaClass extends EntityDocumentHelper {
   @Prop({ required: true, type: Number })
   year: number;
 
-  @Prop({ required: true })
+  @Prop({ required: true, type: String })
   image: string;
 
+  @Prop({ required: false, type: String })
+  audio?: string;
   @Prop({ default: now })
   createdAt: Date;
 

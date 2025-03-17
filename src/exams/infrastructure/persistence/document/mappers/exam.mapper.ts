@@ -10,6 +10,7 @@ export class ExamMapper {
     domainEntity.time = raw.time;
     domainEntity.type = raw.type;
     domainEntity.year = raw.year;
+    domainEntity.audio = raw.audio;
     domainEntity.createdAt = raw.createdAt;
     domainEntity.updatedAt = raw.updatedAt;
 
@@ -24,6 +25,7 @@ export class ExamMapper {
     persistenceSchema.name = domainEntity.name;
     persistenceSchema.image = domainEntity.image;
     persistenceSchema.time = domainEntity.time;
+    persistenceSchema.audio = domainEntity.audio;
     persistenceSchema.type = domainEntity.type;
     persistenceSchema.year = domainEntity.year;
     persistenceSchema.createdAt = domainEntity.createdAt;

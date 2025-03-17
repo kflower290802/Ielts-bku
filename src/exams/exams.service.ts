@@ -52,12 +52,18 @@ export class ExamsService {
   ) {}
 
   async create(createExamDto: CreateExamDto) {
-    const { secure_url } = await this.cloudinaryService.uploadImage(
-      createExamDto.file,
+    const [{ secure_url: image }, responseAudio] = await Promise.all(
+      createExamDto.audio
+        ? [
+            this.cloudinaryService.uploadImage(createExamDto.file),
+            this.cloudinaryService.uploadAudio(createExamDto.audio),
+          ]
+        : [this.cloudinaryService.uploadImage(createExamDto.file)],
     );
     return this.examRepository.create({
       ...createExamDto,
-      image: secure_url,
+      image,
+      audio: responseAudio?.secure_url ?? undefined,
     });
   }
 
@@ -120,8 +126,7 @@ export class ExamsService {
       examPassage = await this.examPassagesService.findAllByExamId(id);
     }
     if (exam?.type === ExamType.Listening) {
-      examPassage =
-        await this.examListenSectionsService.findSectionsByExamId(id);
+      examPassage = await this.examListenSectionsService.findAllByExamId(id);
     }
     if (exam?.type === ExamType.Speaking) {
       examPassage = await this.examSpeakService.findByExamId(id);
@@ -246,31 +251,27 @@ export class ExamsService {
     const mergedData = exam.examPassage.map((passage) => {
       return {
         ...passage,
-        questions:
-          exam.type === ExamType.Reading
-            ? passage.types.map((type) => {
-                return type.questions.map((q) => {
-                  return {
-                    ...q,
-                    answer: answerMap.get(q.id),
-                  };
-                });
+        types:
+          exam.type === ExamType.Reading || exam.type === ExamType.Listening
+            ? passage.types.map((types) => {
+                return {
+                  questions: types.questions.map((q) => {
+                    return {
+                      ...q,
+                      answer: answerMap.get(q.id) || '',
+                    };
+                  }),
+                  type: types.type,
+                };
               })
-            : exam.type === ExamType.Listening
-              ? passage.questions.map((q) => {
-                  return {
-                    ...q,
-                    answer: answerMap.get(q.id),
-                  };
-                })
-              : passage.question,
-        answer: answerMap.get(passage.id),
+            : passage.question,
       };
     });
     const remainingTime = await this.getRemainingTime(userExam.id);
     return {
       exam: mergedData,
       remainingTime,
+      audio: exam.audio,
     };
   }
 

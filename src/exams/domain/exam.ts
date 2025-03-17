@@ -20,6 +20,9 @@ export class Exam {
   image: string;
 
   @ApiProperty()
+  audio?: string;
+
+  @ApiProperty()
   year: number;
 
   @ApiProperty()
