@@ -262,6 +262,7 @@ export class ExamsService {
                     };
                   }),
                   type: types.type,
+                  content: types.content,
                 };
               })
             : passage.question,
