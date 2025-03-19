@@ -19,8 +19,11 @@ export class CreateExamReadingTypeDto {
   @IsEnum(Object.values(QuestionType))
   type: QuestionType;
 
-  @ApiProperty()
+  @ApiProperty({ required: false })
   @IsString()
   @IsOptional()
   content?: string;
+
+  @ApiProperty({ type: String, format: 'binary', required: false })
+  image?: Express.Multer.File;
 }

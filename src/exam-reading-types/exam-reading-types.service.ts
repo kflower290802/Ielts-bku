@@ -11,6 +11,7 @@ import { ExamReadingType } from './domain/exam-reading-type';
 import { ExamPassagesService } from '../exam-passages/exam-passages.service';
 import { ExamPassageQuestionsService } from '../exam-passage-questions/exam-passage-questions.service';
 import { ExamPassageAnswersService } from '../exam-passage-answers/exam-passage-answers.service';
+import { CloudinaryService } from '../cloudinary/cloudinary.service';
 
 @Injectable()
 export class ExamReadingTypesService {
@@ -21,14 +22,22 @@ export class ExamReadingTypesService {
     @Inject(forwardRef(() => ExamPassageQuestionsService))
     private readonly examPassageQuestionsService: ExamPassageQuestionsService,
     private readonly examPassageAnswersService: ExamPassageAnswersService,
+    private readonly cloudinaryService: CloudinaryService,
   ) {}
 
   async create(createExamReadingTypeDto: CreateExamReadingTypeDto) {
-    const { examPassageId, ...rest } = createExamReadingTypeDto;
+    const { examPassageId, image, ...rest } = createExamReadingTypeDto;
     const examPassage = await this.examPassageService.findById(examPassageId);
     if (!examPassage) throw new NotFoundException('Passage not found');
+    if (!image)
+      return this.examReadingTypeRepository.create({
+        examPassage,
+        ...rest,
+      });
+    const { secure_url } = await this.cloudinaryService.uploadImage(image);
     return this.examReadingTypeRepository.create({
       examPassage,
+      image: secure_url,
       ...rest,
     });
   }

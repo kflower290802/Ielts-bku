@@ -12,6 +12,7 @@ export class ExamReadingTypeMapper {
     domainEntity.examPassage = examPassage;
     domainEntity.type = raw.type;
     domainEntity.content = raw.content;
+    domainEntity.image = raw.image;
     domainEntity.createdAt = raw.createdAt;
     domainEntity.updatedAt = raw.updatedAt;
 
@@ -29,6 +30,7 @@ export class ExamReadingTypeMapper {
     examPassage._id = domainEntity.examPassage.id;
     persistenceSchema.examPassage = examPassage;
     persistenceSchema.type = domainEntity.type;
+    persistenceSchema.image = domainEntity.image;
     persistenceSchema.content = domainEntity.content;
     persistenceSchema.createdAt = domainEntity.createdAt;
     persistenceSchema.updatedAt = domainEntity.updatedAt;

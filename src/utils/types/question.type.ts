@@ -6,4 +6,5 @@ export enum QuestionType {
   HeadingPosition = 'heading-position',
   BlankPassageDrag = 'blank-passage-drag',
   BlankPassageTextbox = 'blank-passage-textbox',
+  BlankPassageImageTextbox = 'blank-passage-image-textbox',
 }

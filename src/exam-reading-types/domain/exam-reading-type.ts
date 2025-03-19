@@ -18,6 +18,9 @@ export class ExamReadingType {
   content?: string;
 
   @ApiProperty()
+  image?: string;
+
+  @ApiProperty()
   createdAt: Date;
 
   @ApiProperty()

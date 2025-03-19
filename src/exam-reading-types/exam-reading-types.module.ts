@@ -5,6 +5,7 @@ import { DocumentExamReadingTypePersistenceModule } from './infrastructure/persi
 import { ExamPassagesModule } from '../exam-passages/exam-passages.module';
 import { ExamPassageQuestionsModule } from '../exam-passage-questions/exam-passage-questions.module';
 import { ExamPassageAnswersModule } from '../exam-passage-answers/exam-passage-answers.module';
+import { CloudinaryModule } from '../cloudinary/cloudinary.module';
 
 @Module({
   imports: [
@@ -12,6 +13,7 @@ import { ExamPassageAnswersModule } from '../exam-passage-answers/exam-passage-a
     forwardRef(() => ExamPassagesModule),
     forwardRef(() => ExamPassageQuestionsModule),
     ExamPassageAnswersModule,
+    CloudinaryModule,
   ],
   controllers: [ExamReadingTypesController],
   providers: [ExamReadingTypesService],
