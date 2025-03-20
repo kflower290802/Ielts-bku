@@ -254,6 +254,7 @@ export class ExamsService {
         types:
           exam.type === ExamType.Reading || exam.type === ExamType.Listening
             ? passage.types.map((types) => {
+                console.log('types', types);
                 return {
                   questions: types.questions.map((q) => {
                     return {
@@ -263,6 +264,7 @@ export class ExamsService {
                   }),
                   type: types.type,
                   content: types.content,
+                  image: types.image,
                 };
               })
             : passage.question,

@@ -1,13 +1,17 @@
-import { Controller, Post, Body, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  UseInterceptors,
+  UploadedFile,
+} from '@nestjs/common';
 import { PracticesService } from './practices.service';
 import { CreatePracticeDto } from './dto/create-practice.dto';
-import { ApiBearerAuth, ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
+import { ApiConsumes, ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
 import { Practice } from './domain/practice';
-import { AuthGuard } from '@nestjs/passport';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @ApiTags('Practices')
-@ApiBearerAuth()
-@UseGuards(AuthGuard('jwt'))
 @Controller({
   path: 'practices',
   version: '1',
@@ -19,7 +23,12 @@ export class PracticesController {
   @ApiCreatedResponse({
     type: Practice,
   })
-  create(@Body() createPracticeDto: CreatePracticeDto) {
-    return this.practicesService.create(createPracticeDto);
+  @UseInterceptors(FileInterceptor('image'))
+  @ApiConsumes('multipart/form-data')
+  create(
+    @Body() createPracticeDto: CreatePracticeDto,
+    @UploadedFile() image: Express.Multer.File,
+  ) {
+    return this.practicesService.create({ ...createPracticeDto, image });
   }
 }

@@ -1,24 +1,29 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreatePracticeDto } from './dto/create-practice.dto';
 import { UpdatePracticeDto } from './dto/update-practice.dto';
 import { PracticeRepository } from './infrastructure/persistence/practice.repository';
 import { IPaginationOptions } from '../utils/types/pagination-options';
 import { Practice } from './domain/practice';
+import { TopicsService } from '../topics/topics.service';
+import { CloudinaryService } from '../cloudinary/cloudinary.service';
 
 @Injectable()
 export class PracticesService {
-  constructor(private readonly practiceRepository: PracticeRepository) {}
+  constructor(
+    private readonly practiceRepository: PracticeRepository,
+    private readonly topicsService: TopicsService,
+    private readonly cloudinaryService: CloudinaryService,
+  ) {}
 
-  async create(
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    createPracticeDto: CreatePracticeDto,
-  ) {
-    // Do not remove comment below.
-    // <creating-property />
-
+  async create(createPracticeDto: CreatePracticeDto) {
+    const { topicId, image, ...rest } = createPracticeDto;
+    const topic = await this.topicsService.findById(topicId);
+    if (!topic) throw new NotFoundException('Topic not found');
+    const { secure_url } = await this.cloudinaryService.uploadImage(image);
     return this.practiceRepository.create({
-      // Do not remove comment below.
-      // <creating-property-payload />
+      topic,
+      image: secure_url,
+      ...rest,
     });
   }
 

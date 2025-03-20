@@ -17,11 +17,6 @@ import { SessionModule } from './session/session.module';
 import { MailerModule } from './mailer/mailer.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { MongooseConfigService } from './database/mongoose-config.service';
-
-const infrastructureDatabaseModule = MongooseModule.forRootAsync({
-  useClass: MongooseConfigService,
-});
-
 import { AccountsModule } from './accounts/accounts.module';
 
 import { SubscriptionsModule } from './subscriptions/subscriptions.module';
@@ -73,10 +68,17 @@ import { PracticesModule } from './practices/practices.module';
 
 import { TopicsModule } from './topics/topics.module';
 
+const infrastructureDatabaseModule = MongooseModule.forRootAsync({
+  useClass: MongooseConfigService,
+});
+
+import { PraticeReadingsModule } from './pratice-readings/pratice-readings.module';
+
 @Module({
   imports: [
-    TopicsModule,
+    PraticeReadingsModule,
     PracticesModule,
+    TopicsModule,
     ExamListenTypesModule,
     ExamReadingTypesModule,
     UserExamWritingsModule,
