@@ -69,8 +69,14 @@ import { ExamReadingTypesModule } from './exam-reading-types/exam-reading-types.
 
 import { ExamListenTypesModule } from './exam-listen-types/exam-listen-types.module';
 
+import { PracticesModule } from './practices/practices.module';
+
+import { TopicsModule } from './topics/topics.module';
+
 @Module({
   imports: [
+    TopicsModule,
+    PracticesModule,
     ExamListenTypesModule,
     ExamReadingTypesModule,
     UserExamWritingsModule,
