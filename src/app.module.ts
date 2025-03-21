@@ -74,8 +74,11 @@ const infrastructureDatabaseModule = MongooseModule.forRootAsync({
 
 import { PracticeReadingsModule } from './practice-readings/practice-readings.module';
 
+import { PracticeReadingTypesModule } from './practice-reading-types/practice-reading-types.module';
+
 @Module({
   imports: [
+    PracticeReadingTypesModule,
     PracticeReadingsModule,
     PracticesModule,
     TopicsModule,
