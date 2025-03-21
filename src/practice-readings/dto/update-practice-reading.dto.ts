@@ -2,8 +2,8 @@
 // import { Allow } from 'class-validator';
 
 import { PartialType } from '@nestjs/swagger';
-import { CreatePraticeReadingDto } from './create-pratice-reading.dto';
+import { CreatePracticeReadingDto } from './create-practice-reading.dto';
 
-export class UpdatePraticeReadingDto extends PartialType(
-  CreatePraticeReadingDto,
+export class UpdatePracticeReadingDto extends PartialType(
+  CreatePracticeReadingDto,
 ) {}
