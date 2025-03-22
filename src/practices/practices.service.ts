@@ -14,6 +14,7 @@ import { UserPracticesService } from '../user-practices/user-practices.service';
 import { PracticeType } from './pratices.type';
 import { PracticeReadingsService } from '../practice-readings/practice-readings.service';
 import { ExamStatus } from '../exams/exams.type';
+import { QuestionType } from '../utils/types/question.type';
 
 @Injectable()
 export class PracticesService {
@@ -44,11 +45,13 @@ export class PracticesService {
     status,
     topic,
     type,
+    questionType,
   }: {
     userId: string;
     status?: ExamStatus;
     topic?: string;
     type?: PracticeType;
+    questionType?: QuestionType;
   }) {
     const practices = await this.practiceRepository.findAllWithPagination({
       topic,
@@ -61,8 +64,13 @@ export class PracticesService {
             practice.id,
             userId,
           );
+        const isIncludes = await this.practiceReadingsService.isIncludesTypes(
+          practice.id,
+          questionType,
+        );
         return {
           ...practice,
+          include: isIncludes,
           status: !userExam
             ? ExamStatus.NotStarted
             : !userExam.isCompleted
@@ -71,7 +79,10 @@ export class PracticesService {
         };
       }),
     );
-    return practicesStatus.filter((practice) => practice.status !== status);
+    return practicesStatus.filter(
+      (practice) =>
+        (status ? practice.status === status : true) && practice.include,
+    );
   }
 
   findById(id: Practice['id']) {
