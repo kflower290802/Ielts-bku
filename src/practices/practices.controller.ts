@@ -8,6 +8,7 @@ import {
   Param,
   Request,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import { PracticesService } from './practices.service';
 import { CreatePracticeDto } from './dto/create-practice.dto';
@@ -15,11 +16,15 @@ import {
   ApiBearerAuth,
   ApiConsumes,
   ApiCreatedResponse,
+  ApiOkResponse,
   ApiTags,
 } from '@nestjs/swagger';
 import { Practice } from './domain/practice';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { AuthGuard } from '@nestjs/passport';
+import { InfinityPaginationResponse } from '../utils/dto/infinity-pagination-response.dto';
+import { FindAllPracticesDto } from './dto/find-all-practices.dto';
+import { paginateData } from '../utils/paginate';
 
 @ApiTags('Practices')
 @Controller({
@@ -50,9 +55,29 @@ export class PracticesController {
     return this.practicesService.startPractice(id, userId);
   }
 
+  @Get()
+  @ApiOkResponse({
+    type: InfinityPaginationResponse(Practice),
+  })
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'))
+  async findAll(@Query() query: FindAllPracticesDto, @Request() request) {
+    const userId = request.user.id;
+    const page = query?.page ?? 1;
+    let limit = query?.limit ?? 10;
+    if (limit > 50) {
+      limit = 50;
+    }
+    const practices = await this.practicesService.findAllWithPagination({
+      userId,
+      ...query,
+    });
+    return paginateData(practices, page, limit);
+  }
+
   @Get(':id')
-  // @ApiBearerAuth()
-  // @UseGuards(AuthGuard('jwt'))
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'))
   getPractice(@Param('id') id: string, @Request() request) {
     const userId = request.user?.id;
     return this.practicesService.getUserPractice(id, userId);

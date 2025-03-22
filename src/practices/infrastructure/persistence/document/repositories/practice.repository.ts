@@ -6,7 +6,7 @@ import { PracticeSchemaClass } from '../entities/practice.schema';
 import { PracticeRepository } from '../../practice.repository';
 import { Practice } from '../../../../domain/practice';
 import { PracticeMapper } from '../mappers/practice.mapper';
-import { IPaginationOptions } from '../../../../../utils/types/pagination-options';
+import { PracticeType } from '../../../../pratices.type';
 
 @Injectable()
 export class PracticeDocumentRepository implements PracticeRepository {
@@ -22,19 +22,21 @@ export class PracticeDocumentRepository implements PracticeRepository {
     return PracticeMapper.toDomain(entityObject);
   }
 
-  async findAllWithPagination({
-    paginationOptions,
-  }: {
-    paginationOptions: IPaginationOptions;
+  async findAllWithPagination(filterOptions: {
+    topic?: string;
+    type?: PracticeType;
   }): Promise<Practice[]> {
-    const entityObjects = await this.practiceModel
-      .find()
-      .skip((paginationOptions.page - 1) * paginationOptions.limit)
-      .limit(paginationOptions.limit);
-
-    return entityObjects.map((entityObject) =>
-      PracticeMapper.toDomain(entityObject),
-    );
+    const filters = {} as any;
+    if (filterOptions.topic) {
+      filters.topic = {
+        _id: filterOptions.topic,
+      };
+    }
+    if (filterOptions.type) {
+      filters.type = filterOptions.type;
+    }
+    const entities = await this.practiceModel.find(filters);
+    return entities.map(PracticeMapper.toDomain);
   }
 
   async findById(id: Practice['id']): Promise<NullableType<Practice>> {

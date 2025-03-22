@@ -6,7 +6,6 @@ import {
 } from '@nestjs/common';
 import { CreatePracticeDto } from './dto/create-practice.dto';
 import { PracticeRepository } from './infrastructure/persistence/practice.repository';
-import { IPaginationOptions } from '../utils/types/pagination-options';
 import { Practice } from './domain/practice';
 import { TopicsService } from '../topics/topics.service';
 import { CloudinaryService } from '../cloudinary/cloudinary.service';
@@ -14,6 +13,7 @@ import { UsersService } from '../users/users.service';
 import { UserPracticesService } from '../user-practices/user-practices.service';
 import { PracticeType } from './pratices.type';
 import { PracticeReadingsService } from '../practice-readings/practice-readings.service';
+import { ExamStatus } from '../exams/exams.type';
 
 @Injectable()
 export class PracticesService {
@@ -39,17 +39,39 @@ export class PracticesService {
     });
   }
 
-  findAllWithPagination({
-    paginationOptions,
+  async findAllWithPagination({
+    userId,
+    status,
+    topic,
+    type,
   }: {
-    paginationOptions: IPaginationOptions;
+    userId: string;
+    status?: ExamStatus;
+    topic?: string;
+    type?: PracticeType;
   }) {
-    return this.practiceRepository.findAllWithPagination({
-      paginationOptions: {
-        page: paginationOptions.page,
-        limit: paginationOptions.limit,
-      },
+    const practices = await this.practiceRepository.findAllWithPagination({
+      topic,
+      type,
     });
+    const practicesStatus = await Promise.all(
+      practices.map(async (practice) => {
+        const userExam =
+          await this.userPracticesService.findByPracticeIdAndUserId(
+            practice.id,
+            userId,
+          );
+        return {
+          ...practice,
+          status: !userExam
+            ? ExamStatus.NotStarted
+            : !userExam.isCompleted
+              ? ExamStatus.InProgress
+              : ExamStatus.Completed,
+        };
+      }),
+    );
+    return practicesStatus.filter((practice) => practice.status !== status);
   }
 
   findById(id: Practice['id']) {

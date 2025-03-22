@@ -1,17 +1,16 @@
 import { DeepPartial } from '../../../utils/types/deep-partial.type';
 import { NullableType } from '../../../utils/types/nullable.type';
-import { IPaginationOptions } from '../../../utils/types/pagination-options';
 import { Practice } from '../../domain/practice';
+import { PracticeType } from '../../pratices.type';
 
 export abstract class PracticeRepository {
   abstract create(
     data: Omit<Practice, 'id' | 'createdAt' | 'updatedAt'>,
   ): Promise<Practice>;
 
-  abstract findAllWithPagination({
-    paginationOptions,
-  }: {
-    paginationOptions: IPaginationOptions;
+  abstract findAllWithPagination(filterOptions: {
+    topic?: string;
+    type?: PracticeType;
   }): Promise<Practice[]>;
 
   abstract findById(id: Practice['id']): Promise<NullableType<Practice>>;
