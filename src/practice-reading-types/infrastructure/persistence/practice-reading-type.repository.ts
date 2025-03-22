@@ -28,4 +28,6 @@ export abstract class PracticeReadingTypeRepository {
   ): Promise<PracticeReadingType | null>;
 
   abstract remove(id: PracticeReadingType['id']): Promise<void>;
+
+  abstract findByPracticeReadingId(id: string): Promise<PracticeReadingType[]>;
 }

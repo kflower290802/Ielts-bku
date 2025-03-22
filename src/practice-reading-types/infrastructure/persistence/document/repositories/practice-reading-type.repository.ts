@@ -90,4 +90,13 @@ export class PracticeReadingTypeDocumentRepository
   async remove(id: PracticeReadingType['id']): Promise<void> {
     await this.practiceReadingTypeModel.deleteOne({ _id: id });
   }
+
+  async findByPracticeReadingId(id: string): Promise<PracticeReadingType[]> {
+    const practiceReadingTypes = await this.practiceReadingTypeModel.find({
+      practiceReading: {
+        _id: id,
+      },
+    });
+    return practiceReadingTypes.map(PracticeReadingTypeMapper.toDomain);
+  }
 }

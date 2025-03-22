@@ -1,17 +1,26 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  forwardRef,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreatePracticeReadingDto } from './dto/create-practice-reading.dto';
 import { UpdatePracticeReadingDto } from './dto/update-practice-reading.dto';
 import { PracticeReadingRepository } from './infrastructure/persistence/practice-reading.repository';
 import { PracticeReading } from './domain/practice-reading';
 import { CloudinaryService } from '../cloudinary/cloudinary.service';
 import { PracticesService } from '../practices/practices.service';
+import { PracticeReadingTypesService } from '../practice-reading-types/practice-reading-types.service';
 
 @Injectable()
 export class PracticeReadingsService {
   constructor(
     private readonly practiceReadingRepository: PracticeReadingRepository,
     private readonly cloudinaryService: CloudinaryService,
+    @Inject(forwardRef(() => PracticesService))
     private readonly practicesService: PracticesService,
+    @Inject(forwardRef(() => PracticeReadingTypesService))
+    private readonly practiceReadingTypesService: PracticeReadingTypesService,
   ) {}
 
   async create(createPracticeReadingDto: CreatePracticeReadingDto) {
@@ -24,6 +33,19 @@ export class PracticeReadingsService {
       practice,
       image: secure_url,
     });
+  }
+
+  async getPracticeData(id: string) {
+    const practiceReading =
+      await this.practiceReadingRepository.findByPracticeId(id);
+    if (!practiceReading)
+      throw new NotFoundException('Practice reading not found');
+    const practiceReadingId = practiceReading.id;
+    const types =
+      await this.practiceReadingTypesService.findByPracticeReadingId(
+        practiceReadingId,
+      );
+    return { practiceReading, types };
   }
 
   findById(id: PracticeReading['id']) {

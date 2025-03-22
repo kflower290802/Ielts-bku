@@ -1,11 +1,19 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  forwardRef,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreatePracticeDto } from './dto/create-practice.dto';
-import { UpdatePracticeDto } from './dto/update-practice.dto';
 import { PracticeRepository } from './infrastructure/persistence/practice.repository';
 import { IPaginationOptions } from '../utils/types/pagination-options';
 import { Practice } from './domain/practice';
 import { TopicsService } from '../topics/topics.service';
 import { CloudinaryService } from '../cloudinary/cloudinary.service';
+import { UsersService } from '../users/users.service';
+import { UserPracticesService } from '../user-practices/user-practices.service';
+import { PracticeType } from './pratices.type';
+import { PracticeReadingsService } from '../practice-readings/practice-readings.service';
 
 @Injectable()
 export class PracticesService {
@@ -13,6 +21,10 @@ export class PracticesService {
     private readonly practiceRepository: PracticeRepository,
     private readonly topicsService: TopicsService,
     private readonly cloudinaryService: CloudinaryService,
+    private readonly usersService: UsersService,
+    private readonly userPracticesService: UserPracticesService,
+    @Inject(forwardRef(() => PracticeReadingsService))
+    private readonly practiceReadingsService: PracticeReadingsService,
   ) {}
 
   async create(createPracticeDto: CreatePracticeDto) {
@@ -47,22 +59,33 @@ export class PracticesService {
   findByIds(ids: Practice['id'][]) {
     return this.practiceRepository.findByIds(ids);
   }
-
-  async update(
-    id: Practice['id'],
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    updatePracticeDto: UpdatePracticeDto,
-  ) {
-    // Do not remove comment below.
-    // <updating-property />
-
-    return this.practiceRepository.update(id, {
-      // Do not remove comment below.
-      // <updating-property-payload />
+  async startPractice(id: string, userId: string) {
+    const user = await this.usersService.findById(userId);
+    if (!user) throw new NotFoundException('User not found');
+    const practice = await this.practiceRepository.findById(id);
+    if (!practice) throw new NotFoundException('Practice not found');
+    await this.userPracticesService.create({
+      user,
+      practice,
     });
+    return;
   }
 
-  remove(id: Practice['id']) {
-    return this.practiceRepository.remove(id);
+  async getUserPractice(id: string, userId: string) {
+    console.log({ userId });
+    const practice = await this.practiceRepository.findById(id);
+    if (!practice) throw new NotFoundException('Practice not found');
+    let practiceData = {} as any;
+    if (practice.type === PracticeType.Reading) {
+      practiceData = await this.practiceReadingsService.getPracticeData(id);
+    }
+    return practiceData;
+  }
+
+  async submitPractice(id: string, userId: string) {
+    const userPractice =
+      await this.userPracticesService.findByPracticeIdAndUserId(id, userId);
+    if (!userPractice) throw new NotFoundException('User practice  not found');
+    return this.userPracticesService.update(id, { isCompleted: true });
   }
 }

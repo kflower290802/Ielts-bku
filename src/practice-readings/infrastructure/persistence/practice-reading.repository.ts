@@ -26,4 +26,6 @@ export abstract class PracticeReadingRepository {
   ): Promise<PracticeReading | null>;
 
   abstract remove(id: PracticeReading['id']): Promise<void>;
+
+  abstract findByPracticeId(id: string): Promise<NullableType<PracticeReading>>;
 }

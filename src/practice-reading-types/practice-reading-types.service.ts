@@ -1,15 +1,23 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  forwardRef,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreatePracticeReadingTypeDto } from './dto/create-practice-reading-type.dto';
 import { UpdatePracticeReadingTypeDto } from './dto/update-practice-reading-type.dto';
 import { PracticeReadingTypeRepository } from './infrastructure/persistence/practice-reading-type.repository';
 import { PracticeReadingType } from './domain/practice-reading-type';
 import { PracticeReadingsService } from '../practice-readings/practice-readings.service';
+import { PracticeReadingQuestionsService } from '../practice-reading-questions/practice-reading-questions.service';
 
 @Injectable()
 export class PracticeReadingTypesService {
   constructor(
     private readonly practiceReadingTypeRepository: PracticeReadingTypeRepository,
+    @Inject(forwardRef(() => PracticeReadingsService))
     private readonly practiceReadingsService: PracticeReadingsService,
+    private readonly practiceReadingQuestionsService: PracticeReadingQuestionsService,
   ) {}
 
   async create(createPracticeReadingTypeDto: CreatePracticeReadingTypeDto) {
@@ -30,6 +38,18 @@ export class PracticeReadingTypesService {
 
   findByIds(ids: PracticeReadingType['id'][]) {
     return this.practiceReadingTypeRepository.findByIds(ids);
+  }
+
+  async findByPracticeReadingId(id: string) {
+    const types =
+      await this.practiceReadingTypeRepository.findByPracticeReadingId(id);
+    return Promise.all(
+      types.map(async (type) => {
+        const questions =
+          await this.practiceReadingQuestionsService.findByTypeId(type.id);
+        return { type: type.type, questions };
+      }),
+    );
   }
 
   async update(

@@ -76,8 +76,17 @@ import { PracticeReadingsModule } from './practice-readings/practice-readings.mo
 
 import { PracticeReadingTypesModule } from './practice-reading-types/practice-reading-types.module';
 
+import { PracticeReadingQuestionsModule } from './practice-reading-questions/practice-reading-questions.module';
+
+import { PracticeReadingAnswersModule } from './practice-reading-answers/practice-reading-answers.module';
+
+import { UserPracticesModule } from './user-practices/user-practices.module';
+
 @Module({
   imports: [
+    UserPracticesModule,
+    PracticeReadingAnswersModule,
+    PracticeReadingQuestionsModule,
     PracticeReadingTypesModule,
     PracticeReadingsModule,
     PracticesModule,
