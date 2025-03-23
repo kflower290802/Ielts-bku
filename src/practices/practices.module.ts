@@ -9,6 +9,7 @@ import { UserPracticesModule } from '../user-practices/user-practices.module';
 import { PracticeReadingsModule } from '../practice-readings/practice-readings.module';
 import { PracticeListensModule } from '../practice-listens/practice-listens.module';
 import { PracticeWritingsModule } from '../practice-writings/practice-writings.module';
+import { PracticeSpeakingQuestionsModule } from '../practice-speaking-questions/practice-speaking-questions.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { PracticeWritingsModule } from '../practice-writings/practice-writings.m
     forwardRef(() => PracticeReadingsModule),
     PracticeListensModule,
     PracticeWritingsModule,
+    PracticeSpeakingQuestionsModule,
   ],
   controllers: [PracticesController],
   providers: [PracticesService],

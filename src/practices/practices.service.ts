@@ -17,6 +17,7 @@ import { ExamStatus } from '../exams/exams.type';
 import { QuestionType } from '../utils/types/question.type';
 import { PracticeListensService } from '../practice-listens/practice-listens.service';
 import { PracticeWritingsService } from '../practice-writings/practice-writings.service';
+import { PracticeSpeakingQuestionsService } from '../practice-speaking-questions/practice-speaking-questions.service';
 
 @Injectable()
 export class PracticesService {
@@ -30,6 +31,7 @@ export class PracticesService {
     private readonly practiceReadingsService: PracticeReadingsService,
     private readonly practiceListensService: PracticeListensService,
     private readonly practiceWritingsService: PracticeWritingsService,
+    private readonly practiceSpeakingQuestionsService: PracticeSpeakingQuestionsService,
   ) {}
 
   async create(createPracticeDto: CreatePracticeDto) {
@@ -127,6 +129,10 @@ export class PracticesService {
         id,
         userId,
       );
+    }
+    if (practice.type === PracticeType.Speaking) {
+      practiceData =
+        await this.practiceSpeakingQuestionsService.getPracticeData(id, userId);
     }
     return practiceData;
   }
