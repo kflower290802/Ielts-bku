@@ -90,8 +90,11 @@ import { PracticeListenQuestionsModule } from './practice-listen-questions/pract
 
 import { PracticeListenAnswersModule } from './practice-listen-answers/practice-listen-answers.module';
 
+import { PracticeWritingsModule } from './practice-writings/practice-writings.module';
+
 @Module({
   imports: [
+    PracticeWritingsModule,
     PracticeListenAnswersModule,
     PracticeListenQuestionsModule,
     PracticeListenTypesModule,

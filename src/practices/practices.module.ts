@@ -8,6 +8,7 @@ import { UsersModule } from '../users/users.module';
 import { UserPracticesModule } from '../user-practices/user-practices.module';
 import { PracticeReadingsModule } from '../practice-readings/practice-readings.module';
 import { PracticeListensModule } from '../practice-listens/practice-listens.module';
+import { PracticeWritingsModule } from '../practice-writings/practice-writings.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { PracticeListensModule } from '../practice-listens/practice-listens.modu
     UserPracticesModule,
     forwardRef(() => PracticeReadingsModule),
     PracticeListensModule,
+    PracticeWritingsModule,
   ],
   controllers: [PracticesController],
   providers: [PracticesService],
