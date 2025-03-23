@@ -86,8 +86,14 @@ import { PracticeListensModule } from './practice-listens/practice-listens.modul
 
 import { PracticeListenTypesModule } from './practice-listen-types/practice-listen-types.module';
 
+import { PracticeListenQuestionsModule } from './practice-listen-questions/practice-listen-questions.module';
+
+import { PracticeListenAnswersModule } from './practice-listen-answers/practice-listen-answers.module';
+
 @Module({
   imports: [
+    PracticeListenAnswersModule,
+    PracticeListenQuestionsModule,
     PracticeListenTypesModule,
     PracticeListensModule,
     UserPracticesModule,

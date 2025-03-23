@@ -15,6 +15,9 @@ export class PracticeListenType {
   practiceListen: PracticeListen;
 
   @ApiProperty()
+  content?: string;
+
+  @ApiProperty()
   createdAt: Date;
 
   @ApiProperty()

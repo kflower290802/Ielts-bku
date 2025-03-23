@@ -1,6 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { QuestionType } from '../../utils/types/question.type';
-import { IsEnum, IsMongoId, IsNotEmpty } from 'class-validator';
+import {
+  IsEnum,
+  IsMongoId,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 
 export class CreatePracticeListenTypeDto {
   @ApiProperty()
@@ -12,4 +18,9 @@ export class CreatePracticeListenTypeDto {
   @IsNotEmpty()
   @IsMongoId()
   practiceListenId: string;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsString()
+  content?: string;
 }

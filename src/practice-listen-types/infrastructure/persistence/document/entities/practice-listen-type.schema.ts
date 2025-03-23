@@ -26,6 +26,9 @@ export class PracticeListenTypeSchemaClass extends EntityDocumentHelper {
   })
   practiceListen: PracticeListenSchemaClass;
 
+  @Prop({ required: false })
+  content?: string;
+
   @Prop({ default: now })
   createdAt: Date;
 

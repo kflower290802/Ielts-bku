@@ -13,6 +13,7 @@ export class PracticeListenTypeMapper {
     practiceListen.id = raw.practiceListen._id.toString();
     domainEntity.practiceListen = practiceListen;
     domainEntity.type = raw.type;
+    domainEntity.content = raw.content;
     domainEntity.createdAt = raw.createdAt;
     domainEntity.updatedAt = raw.updatedAt;
 
@@ -30,6 +31,7 @@ export class PracticeListenTypeMapper {
     practiceListen._id = domainEntity.practiceListen.id;
     persistenceSchema.practiceListen = practiceListen;
     persistenceSchema.type = domainEntity.type;
+    persistenceSchema.content = domainEntity.content;
     persistenceSchema.createdAt = domainEntity.createdAt;
     persistenceSchema.updatedAt = domainEntity.updatedAt;
 
