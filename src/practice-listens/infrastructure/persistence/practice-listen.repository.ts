@@ -26,4 +26,6 @@ export abstract class PracticeListenRepository {
   ): Promise<PracticeListen | null>;
 
   abstract remove(id: PracticeListen['id']): Promise<void>;
+
+  abstract findByPracticeId(id: string): Promise<NullableType<PracticeListen>>;
 }

@@ -90,4 +90,15 @@ export class PracticeListenTypeDocumentRepository
   async remove(id: PracticeListenType['id']): Promise<void> {
     await this.practiceListenTypeModel.deleteOne({ _id: id });
   }
+
+  async findByPracticeListenId(
+    id: PracticeListenType['id'],
+  ): Promise<PracticeListenType[]> {
+    const types = await this.practiceListenTypeModel.find({
+      practiceListen: {
+        _id: id,
+      },
+    });
+    return types.map(PracticeListenTypeMapper.toDomain);
+  }
 }

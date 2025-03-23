@@ -32,4 +32,6 @@ export abstract class PracticeListenAnswerRepository {
   abstract createMany(
     data: Omit<PracticeListenAnswer, 'id' | 'createdAt' | 'updatedAt'>[],
   ): Promise<PracticeListenAnswer[]>;
+
+  abstract findByQuestionId(id: string): Promise<PracticeListenAnswer[]>;
 }

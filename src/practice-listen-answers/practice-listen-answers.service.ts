@@ -18,4 +18,8 @@ export class PracticeListenAnswersService {
       createPracticeReadingAnswerDto,
     );
   }
+
+  findByQuestionId(id: string) {
+    return this.practiceListenAnswerRepository.findByQuestionId(id);
+  }
 }

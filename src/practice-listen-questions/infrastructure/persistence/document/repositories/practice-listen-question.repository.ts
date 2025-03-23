@@ -93,4 +93,13 @@ export class PracticeListenQuestionDocumentRepository
   async remove(id: PracticeListenQuestion['id']): Promise<void> {
     await this.practiceListenQuestionModel.deleteOne({ _id: id });
   }
+
+  async findByTypeId(id: string): Promise<PracticeListenQuestion[]> {
+    const entities = await this.practiceListenQuestionModel.find({
+      type: {
+        _id: id,
+      },
+    });
+    return entities.map(PracticeListenQuestionMapper.toDomain);
+  }
 }

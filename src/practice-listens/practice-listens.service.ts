@@ -1,16 +1,17 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreatePracticeListenDto } from './dto/create-practice-listen.dto';
-import { UpdatePracticeListenDto } from './dto/update-practice-listen.dto';
 import { PracticeListenRepository } from './infrastructure/persistence/practice-listen.repository';
 import { PracticeListen } from './domain/practice-listen';
 import { CloudinaryService } from '../cloudinary/cloudinary.service';
 import { Practice } from '../practices/domain/practice';
+import { PracticeListenTypesService } from '../practice-listen-types/practice-listen-types.service';
 
 @Injectable()
 export class PracticeListensService {
   constructor(
     private readonly practiceListenRepository: PracticeListenRepository,
     private readonly cloudinaryService: CloudinaryService,
+    private readonly practiceListenTypesService: PracticeListenTypesService,
   ) {}
 
   async create(createPracticeListenDto: CreatePracticeListenDto) {
@@ -31,21 +32,14 @@ export class PracticeListensService {
     return this.practiceListenRepository.findByIds(ids);
   }
 
-  async update(
-    id: PracticeListen['id'],
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    updatePracticeListenDto: UpdatePracticeListenDto,
-  ) {
-    // Do not remove comment below.
-    // <updating-property />
-
-    return this.practiceListenRepository.update(id, {
-      // Do not remove comment below.
-      // <updating-property-payload />
-    });
-  }
-
-  remove(id: PracticeListen['id']) {
-    return this.practiceListenRepository.remove(id);
+  async getPracticeData(id: string, userId: string) {
+    console.log(userId);
+    const practiceListen =
+      await this.practiceListenRepository.findByPracticeId(id);
+    if (!practiceListen) throw new NotFoundException('Practice not found');
+    const types = await this.practiceListenTypesService.findByPracticeListenId(
+      practiceListen.id,
+    );
+    return { practiceListen, types };
   }
 }

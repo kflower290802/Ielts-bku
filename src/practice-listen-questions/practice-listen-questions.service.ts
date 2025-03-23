@@ -35,4 +35,16 @@ export class PracticeListenQuestionsService {
   findByIds(ids: PracticeListenQuestion['id'][]) {
     return this.practiceListenQuestionRepository.findByIds(ids);
   }
+
+  async findByTypeId(id: string) {
+    const questions =
+      await this.practiceListenQuestionRepository.findByTypeId(id);
+    return Promise.all(
+      questions.map(async (question) => {
+        const answers =
+          await this.practiceListenAnswersService.findByQuestionId(question.id);
+        return { ...question, answers };
+      }),
+    );
+  }
 }

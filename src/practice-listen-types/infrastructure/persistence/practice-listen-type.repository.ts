@@ -28,4 +28,8 @@ export abstract class PracticeListenTypeRepository {
   ): Promise<PracticeListenType | null>;
 
   abstract remove(id: PracticeListenType['id']): Promise<void>;
+
+  abstract findByPracticeListenId(
+    id: PracticeListenType['id'],
+  ): Promise<PracticeListenType[]>;
 }

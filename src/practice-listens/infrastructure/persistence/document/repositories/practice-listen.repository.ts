@@ -84,4 +84,13 @@ export class PracticeListenDocumentRepository
   async remove(id: PracticeListen['id']): Promise<void> {
     await this.practiceListenModel.deleteOne({ _id: id });
   }
+
+  async findByPracticeId(id: string): Promise<NullableType<PracticeListen>> {
+    const entity = await this.practiceListenModel.findOne({
+      practice: {
+        _id: id,
+      },
+    });
+    return entity ? PracticeListenMapper.toDomain(entity) : null;
+  }
 }

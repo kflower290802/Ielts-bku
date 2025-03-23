@@ -15,6 +15,7 @@ import { PracticeType } from './pratices.type';
 import { PracticeReadingsService } from '../practice-readings/practice-readings.service';
 import { ExamStatus } from '../exams/exams.type';
 import { QuestionType } from '../utils/types/question.type';
+import { PracticeListensService } from '../practice-listens/practice-listens.service';
 
 @Injectable()
 export class PracticesService {
@@ -26,6 +27,7 @@ export class PracticesService {
     private readonly userPracticesService: UserPracticesService,
     @Inject(forwardRef(() => PracticeReadingsService))
     private readonly practiceReadingsService: PracticeReadingsService,
+    private readonly practiceListensService: PracticeListensService,
   ) {}
 
   async create(createPracticeDto: CreatePracticeDto) {
@@ -111,6 +113,12 @@ export class PracticesService {
     let practiceData = {} as any;
     if (practice.type === PracticeType.Reading) {
       practiceData = await this.practiceReadingsService.getPracticeData(id);
+    }
+    if (practice.type === PracticeType.Listening) {
+      practiceData = await this.practiceListensService.getPracticeData(
+        id,
+        userId,
+      );
     }
     return practiceData;
   }

@@ -101,4 +101,12 @@ export class PracticeListenAnswerDocumentRepository
       await this.practiceListenAnswerModel.insertMany(persistenceModels);
     return createdEntities.map(PracticeListenAnswerMapper.toDomain);
   }
+  async findByQuestionId(id: string): Promise<PracticeListenAnswer[]> {
+    const entities = await this.practiceListenAnswerModel
+      .find({
+        question: { _id: id },
+      })
+      .select('-isCorrect');
+    return entities.map(PracticeListenAnswerMapper.toDomain);
+  }
 }

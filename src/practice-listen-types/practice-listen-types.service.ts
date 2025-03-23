@@ -5,11 +5,13 @@ import { PracticeListenTypeRepository } from './infrastructure/persistence/pract
 import { IPaginationOptions } from '../utils/types/pagination-options';
 import { PracticeListenType } from './domain/practice-listen-type';
 import { PracticeListen } from '../practice-listens/domain/practice-listen';
+import { PracticeListenQuestionsService } from '../practice-listen-questions/practice-listen-questions.service';
 
 @Injectable()
 export class PracticeListenTypesService {
   constructor(
     private readonly practiceListenTypeRepository: PracticeListenTypeRepository,
+    private readonly practiceListenQuestionsService: PracticeListenQuestionsService,
   ) {}
 
   async create(createPracticeListenTypeDto: CreatePracticeListenTypeDto) {
@@ -59,5 +61,17 @@ export class PracticeListenTypesService {
 
   remove(id: PracticeListenType['id']) {
     return this.practiceListenTypeRepository.remove(id);
+  }
+
+  async findByPracticeListenId(id: string) {
+    const types =
+      await this.practiceListenTypeRepository.findByPracticeListenId(id);
+    return Promise.all(
+      types.map(async (type) => {
+        const questions =
+          await this.practiceListenQuestionsService.findByTypeId(type.id);
+        return { type: type.type, questions };
+      }),
+    );
   }
 }

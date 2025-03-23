@@ -7,6 +7,7 @@ import { CloudinaryModule } from '../cloudinary/cloudinary.module';
 import { UsersModule } from '../users/users.module';
 import { UserPracticesModule } from '../user-practices/user-practices.module';
 import { PracticeReadingsModule } from '../practice-readings/practice-readings.module';
+import { PracticeListensModule } from '../practice-listens/practice-listens.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { PracticeReadingsModule } from '../practice-readings/practice-readings.m
     UsersModule,
     UserPracticesModule,
     forwardRef(() => PracticeReadingsModule),
+    PracticeListensModule,
   ],
   controllers: [PracticesController],
   providers: [PracticesService],
