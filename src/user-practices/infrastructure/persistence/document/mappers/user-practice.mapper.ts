@@ -15,6 +15,7 @@ export class UserPracticeMapper {
     const user = new User();
     domainEntity.isCompleted = raw.isCompleted;
     user.id = raw.user._id.toString();
+    domainEntity.user = user;
     domainEntity.createdAt = raw.createdAt;
     domainEntity.updatedAt = raw.updatedAt;
 

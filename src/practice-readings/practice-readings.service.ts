@@ -12,6 +12,8 @@ import { CloudinaryService } from '../cloudinary/cloudinary.service';
 import { PracticesService } from '../practices/practices.service';
 import { PracticeReadingTypesService } from '../practice-reading-types/practice-reading-types.service';
 import { QuestionType } from '../utils/types/question.type';
+import { UserPracticeReadingAnswersService } from '../user-practice-reading-answers/user-practice-reading-answers.service';
+import { UserPracticesService } from '../user-practices/user-practices.service';
 
 @Injectable()
 export class PracticeReadingsService {
@@ -22,6 +24,8 @@ export class PracticeReadingsService {
     private readonly practicesService: PracticesService,
     @Inject(forwardRef(() => PracticeReadingTypesService))
     private readonly practiceReadingTypesService: PracticeReadingTypesService,
+    private readonly userPracticeReadingAnswersService: UserPracticeReadingAnswersService,
+    private readonly userPracticesService: UserPracticesService,
   ) {}
 
   async create(createPracticeReadingDto: CreatePracticeReadingDto) {
@@ -36,7 +40,7 @@ export class PracticeReadingsService {
     });
   }
 
-  async getPracticeData(id: string) {
+  async getPracticeData(id: string, userId: string) {
     const practiceReading =
       await this.practiceReadingRepository.findByPracticeId(id);
     if (!practiceReading)
@@ -46,7 +50,28 @@ export class PracticeReadingsService {
       await this.practiceReadingTypesService.findByPracticeReadingId(
         practiceReadingId,
       );
-    return { practiceReading, types };
+
+    const userPractice =
+      await this.userPracticesService.findUnCompletedUserPracticeByPracticeIdAndUserId(
+        id,
+        userId,
+      );
+    if (!userPractice) throw new NotFoundException('User practice not found');
+    const answers =
+      await this.userPracticeReadingAnswersService.findByUserPracticeId(
+        userPractice.id,
+      );
+
+    const typesAnswers = types.map((type) => ({
+      ...type,
+      questions: type.questions.map((question) => ({
+        ...question,
+        answer:
+          answers.find((answer) => answer.question.id === question.id)
+            ?.answer || '',
+      })),
+    }));
+    return { practiceReading, types: typesAnswers };
   }
 
   async isIncludesTypes(id: string, type?: QuestionType) {

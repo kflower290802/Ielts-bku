@@ -31,4 +31,14 @@ export abstract class UserPracticeRepository {
     practiceId: string,
     userId: string,
   ): Promise<NullableType<UserPractice>>;
+
+  abstract findUnCompletedUserPracticeByPracticeIdAndUserId(
+    practice: string,
+    userId: string,
+  ): Promise<NullableType<UserPractice>>;
+
+  abstract findCompletedUserPracticeByPracticeIdAndUserId(
+    practice: string,
+    userId: string,
+  ): Promise<NullableType<UserPractice>>;
 }

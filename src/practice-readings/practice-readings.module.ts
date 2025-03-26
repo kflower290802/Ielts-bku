@@ -5,6 +5,8 @@ import { DocumentPracticeReadingPersistenceModule } from './infrastructure/persi
 import { CloudinaryModule } from '../cloudinary/cloudinary.module';
 import { PracticesModule } from '../practices/practices.module';
 import { PracticeReadingTypesModule } from '../practice-reading-types/practice-reading-types.module';
+import { UserPracticeReadingAnswersModule } from '../user-practice-reading-answers/user-practice-reading-answers.module';
+import { UserPracticesModule } from '../user-practices/user-practices.module';
 
 @Module({
   imports: [
@@ -12,6 +14,8 @@ import { PracticeReadingTypesModule } from '../practice-reading-types/practice-r
     CloudinaryModule,
     forwardRef(() => PracticesModule),
     forwardRef(() => PracticeReadingTypesModule),
+    UserPracticeReadingAnswersModule,
+    UserPracticesModule,
   ],
   controllers: [PracticeReadingsController],
   providers: [PracticeReadingsService],

@@ -31,4 +31,8 @@ export class PracticeReadingAnswersService {
   findByQuestionId(id: string) {
     return this.practiceReadingAnswerRepository.findByQuestionId(id);
   }
+
+  findByCorrectQuestionId(id: string) {
+    return this.practiceReadingAnswerRepository.findByCorrectQuestionId(id);
+  }
 }

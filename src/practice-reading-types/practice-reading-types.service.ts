@@ -47,7 +47,7 @@ export class PracticeReadingTypesService {
       types.map(async (type) => {
         const questions =
           await this.practiceReadingQuestionsService.findByTypeId(type.id);
-        return { type: type.type, questions };
+        return { type: type.type, questions, content: type.content };
       }),
     );
   }

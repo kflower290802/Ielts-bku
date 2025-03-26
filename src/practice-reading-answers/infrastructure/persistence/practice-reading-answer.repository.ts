@@ -34,4 +34,8 @@ export abstract class PracticeReadingAnswerRepository {
   abstract remove(id: PracticeReadingAnswer['id']): Promise<void>;
 
   abstract findByQuestionId(id: string): Promise<PracticeReadingAnswer[]>;
+
+  abstract findByCorrectQuestionId(
+    id: string,
+  ): Promise<PracticeReadingAnswer[]>;
 }

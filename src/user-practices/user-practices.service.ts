@@ -39,4 +39,21 @@ export class UserPracticesService {
       userId,
     );
   }
+
+  findCompletedByPracticeIdAndUserId(practiceId: string, userId: string) {
+    return this.userPracticeRepository.findCompletedUserPracticeByPracticeIdAndUserId(
+      practiceId,
+      userId,
+    );
+  }
+
+  findUnCompletedUserPracticeByPracticeIdAndUserId(
+    practiceId: string,
+    userId: string,
+  ) {
+    return this.userPracticeRepository.findUnCompletedUserPracticeByPracticeIdAndUserId(
+      practiceId,
+      userId,
+    );
+  }
 }

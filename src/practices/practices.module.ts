@@ -10,6 +10,8 @@ import { PracticeReadingsModule } from '../practice-readings/practice-readings.m
 import { PracticeListensModule } from '../practice-listens/practice-listens.module';
 import { PracticeWritingsModule } from '../practice-writings/practice-writings.module';
 import { PracticeSpeakingQuestionsModule } from '../practice-speaking-questions/practice-speaking-questions.module';
+import { UserPracticeReadingAnswersModule } from '../user-practice-reading-answers/user-practice-reading-answers.module';
+import { PracticeReadingAnswersModule } from '../practice-reading-answers/practice-reading-answers.module';
 
 @Module({
   imports: [
@@ -22,6 +24,8 @@ import { PracticeSpeakingQuestionsModule } from '../practice-speaking-questions/
     PracticeListensModule,
     PracticeWritingsModule,
     PracticeSpeakingQuestionsModule,
+    UserPracticeReadingAnswersModule,
+    PracticeReadingAnswersModule,
   ],
   controllers: [PracticesController],
   providers: [PracticesService],

@@ -14,6 +14,7 @@ import { PracticesService } from './practices.service';
 import { CreatePracticeDto } from './dto/create-practice.dto';
 import {
   ApiBearerAuth,
+  ApiBody,
   ApiConsumes,
   ApiCreatedResponse,
   ApiOkResponse,
@@ -25,6 +26,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { InfinityPaginationResponse } from '../utils/dto/infinity-pagination-response.dto';
 import { FindAllPracticesDto } from './dto/find-all-practices.dto';
 import { paginateData } from '../utils/paginate';
+import { SubmitPracticeDto } from './dto/submit-practice.dto';
 
 @ApiTags('Practices')
 @Controller({
@@ -86,8 +88,30 @@ export class PracticesController {
   @Post('submit/:id')
   @ApiBearerAuth()
   @UseGuards(AuthGuard('jwt'))
-  submitPractice(@Param('id') id: string, @Request() request) {
+  @ApiBody({ isArray: true, type: [SubmitPracticeDto] })
+  submitPractice(
+    @Param('id') id: string,
+    @Request() request,
+    @Body() submitPracticeDto: SubmitPracticeDto[],
+  ) {
     const userId = request.user.id;
-    return this.practicesService.submitPractice(id, userId);
+    return this.practicesService.submitPractice(id, userId, submitPracticeDto);
+  }
+
+  @Get('summary/:id')
+  getPracticeSummary(@Param('id') id: string) {
+    return this.practicesService.getSummaryByPracticeId(id);
+  }
+
+  @Post('/exit/:id')
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'))
+  exitPractice(
+    @Param('id') id: string,
+    @Request() request,
+    @Body() submitPracticeDto: SubmitPracticeDto[],
+  ) {
+    const userId = request.user.id;
+    return this.practicesService.exitPractice(id, userId, submitPracticeDto);
   }
 }

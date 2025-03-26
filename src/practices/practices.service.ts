@@ -18,6 +18,12 @@ import { QuestionType } from '../utils/types/question.type';
 import { PracticeListensService } from '../practice-listens/practice-listens.service';
 import { PracticeWritingsService } from '../practice-writings/practice-writings.service';
 import { PracticeSpeakingQuestionsService } from '../practice-speaking-questions/practice-speaking-questions.service';
+import { UserPracticeReadingAnswersService } from '../user-practice-reading-answers/user-practice-reading-answers.service';
+import { SubmitPracticeDto } from './dto/submit-practice.dto';
+import { PracticeReadingQuestion } from '../practice-reading-questions/domain/practice-reading-question';
+import { PracticeReadingAnswersService } from '../practice-reading-answers/practice-reading-answers.service';
+import isEqual from 'lodash/isEqual';
+import sortBy from 'lodash/sortBy';
 
 @Injectable()
 export class PracticesService {
@@ -32,6 +38,8 @@ export class PracticesService {
     private readonly practiceListensService: PracticeListensService,
     private readonly practiceWritingsService: PracticeWritingsService,
     private readonly practiceSpeakingQuestionsService: PracticeSpeakingQuestionsService,
+    private readonly userPracticeReadingAnswersService: UserPracticeReadingAnswersService,
+    private readonly practiceReadingAnswersService: PracticeReadingAnswersService,
   ) {}
 
   async create(createPracticeDto: CreatePracticeDto) {
@@ -99,6 +107,14 @@ export class PracticesService {
     return this.practiceRepository.findByIds(ids);
   }
   async startPractice(id: string, userId: string) {
+    const userPractice =
+      await this.userPracticesService.findUnCompletedUserPracticeByPracticeIdAndUserId(
+        id,
+        userId,
+      );
+    if (userPractice) {
+      return;
+    }
     const user = await this.usersService.findById(userId);
     if (!user) throw new NotFoundException('User not found');
     const practice = await this.practiceRepository.findById(id);
@@ -111,12 +127,21 @@ export class PracticesService {
   }
 
   async getUserPractice(id: string, userId: string) {
-    console.log({ userId });
     const practice = await this.practiceRepository.findById(id);
     if (!practice) throw new NotFoundException('Practice not found');
     let practiceData = {} as any;
+    const userPractice =
+      await this.userPracticesService.findUnCompletedUserPracticeByPracticeIdAndUserId(
+        id,
+        userId,
+      );
+    if (!userPractice) throw new NotFoundException('User Practice not found');
+
     if (practice.type === PracticeType.Reading) {
-      practiceData = await this.practiceReadingsService.getPracticeData(id);
+      practiceData = await this.practiceReadingsService.getPracticeData(
+        id,
+        userId,
+      );
     }
     if (practice.type === PracticeType.Listening) {
       practiceData = await this.practiceListensService.getPracticeData(
@@ -137,10 +162,93 @@ export class PracticesService {
     return practiceData;
   }
 
-  async submitPractice(id: string, userId: string) {
+  async submitPractice(
+    id: string,
+    userId: string,
+    answers: SubmitPracticeDto[],
+  ) {
+    const practice = await this.practiceRepository.findById(id);
+    if (!practice) throw new NotFoundException('Practice not found');
     const userPractice =
-      await this.userPracticesService.findByPracticeIdAndUserId(id, userId);
+      await this.userPracticesService.findUnCompletedUserPracticeByPracticeIdAndUserId(
+        id,
+        userId,
+      );
     if (!userPractice) throw new NotFoundException('User practice  not found');
-    return this.userPracticesService.update(id, { isCompleted: true });
+    const answerQuestions = answers.map((a) => {
+      const { answer, questionId } = a;
+      const question = new PracticeReadingQuestion();
+      question.id = questionId;
+      return { answer, question, userPractice };
+    });
+    await this.userPracticeReadingAnswersService.createMany(answerQuestions);
+    await this.userPracticesService.update(userPractice.id, {
+      isCompleted: true,
+    });
+    return userPractice.id;
+  }
+
+  async getSummaryByPracticeId(userPracticeId: string) {
+    const userPractice =
+      await this.userPracticesService.findById(userPracticeId);
+    if (!userPractice) throw new NotFoundException('User practice  not found');
+    const practice = await this.practiceRepository.findById(
+      userPractice.practice.id,
+    );
+    if (!practice) throw new NotFoundException('practice not found');
+    let summary = [] as any[];
+    let answers = [] as any[];
+
+    if (practice.type === PracticeType.Reading) {
+      answers =
+        await this.userPracticeReadingAnswersService.findByUserPracticeId(
+          userPractice.id,
+        );
+    }
+
+    if (practice.type === PracticeType.Reading) {
+      summary = await Promise.all(
+        answers.map(async (a) => {
+          const answers =
+            await this.practiceReadingAnswersService.findByCorrectQuestionId(
+              a.question.id,
+            );
+          const correctAnswer = answers.map((answer) =>
+            answer.answer.toLowerCase(),
+          );
+          const userAnswer = Array.isArray(a.answer)
+            ? a.answer.map((answer) => answer.toLowerCase())
+            : [a.answer.toLowerCase()];
+          return {
+            questionId: a.question.id,
+            isCorrect: isEqual(sortBy(correctAnswer), sortBy(userAnswer)),
+            userAnswer: a.answer,
+            correctAnswer,
+          };
+        }),
+      );
+    }
+    const correctScore = summary.filter((s) => s.isCorrect).length;
+    const score = (correctScore / summary.length) * 10;
+    return {
+      score,
+      summary,
+    };
+  }
+
+  async exitPractice(id: string, userId: string, answers: SubmitPracticeDto[]) {
+    const userPractice =
+      await this.userPracticesService.findUnCompletedUserPracticeByPracticeIdAndUserId(
+        id,
+        userId,
+      );
+    if (!userPractice) throw new NotFoundException('user practice not found');
+    const answerQuestions = answers.map((a) => {
+      const { answer, questionId } = a;
+      const question = new PracticeReadingQuestion();
+      question.id = questionId;
+      return { answer, question, userPractice };
+    });
+    await this.userPracticeReadingAnswersService.createMany(answerQuestions);
   }
 }

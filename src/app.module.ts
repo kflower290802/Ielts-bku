@@ -94,8 +94,11 @@ import { PracticeWritingsModule } from './practice-writings/practice-writings.mo
 
 import { PracticeSpeakingQuestionsModule } from './practice-speaking-questions/practice-speaking-questions.module';
 
+import { UserPracticeReadingAnswersModule } from './user-practice-reading-answers/user-practice-reading-answers.module';
+
 @Module({
   imports: [
+    UserPracticeReadingAnswersModule,
     PracticeSpeakingQuestionsModule,
     PracticeWritingsModule,
     PracticeListenAnswersModule,

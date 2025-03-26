@@ -59,8 +59,9 @@ export class UserPracticeDocumentRepository implements UserPracticeRepository {
     delete clonedPayload.id;
 
     const filter = { _id: id.toString() };
-    const entity = await this.userPracticeModel.findOne(filter);
-
+    const entity = await this.userPracticeModel
+      .findOne(filter)
+      .populate('user');
     if (!entity) {
       throw new Error('Record not found');
     }
@@ -85,14 +86,56 @@ export class UserPracticeDocumentRepository implements UserPracticeRepository {
     practiceId: string,
     userId: string,
   ): Promise<NullableType<UserPractice>> {
-    const entity = await this.userPracticeModel.findOne({
-      user: {
-        _id: userId,
-      },
-      practice: {
-        _id: practiceId,
-      },
-    });
+    const entity = await this.userPracticeModel
+      .findOne({
+        user: {
+          _id: userId,
+        },
+        practice: {
+          _id: practiceId,
+        },
+      })
+      .sort({ createdAt: -1 });
+    return entity ? UserPracticeMapper.toDomain(entity) : null;
+  }
+
+  async findUnCompletedUserPracticeByPracticeIdAndUserId(
+    practiceId: string,
+    userId: string,
+  ): Promise<NullableType<UserPractice>> {
+    const entity = await this.userPracticeModel
+      .findOne({
+        user: {
+          _id: userId,
+        },
+        practice: {
+          _id: practiceId,
+        },
+        isCompleted: false,
+      })
+      .sort({ createdAt: -1 })
+      .populate('user')
+      .populate('practice');
+    return entity ? UserPracticeMapper.toDomain(entity) : null;
+  }
+
+  async findCompletedUserPracticeByPracticeIdAndUserId(
+    practice: string,
+    userId: string,
+  ): Promise<NullableType<UserPractice>> {
+    const entity = await this.userPracticeModel
+      .findOne({
+        user: {
+          _id: userId,
+        },
+        practice: {
+          _id: practice,
+        },
+        isCompleted: true,
+      })
+      .sort({ createdAt: -1 })
+      .populate('user')
+      .populate('practice');
     return entity ? UserPracticeMapper.toDomain(entity) : null;
   }
 }

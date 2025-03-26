@@ -15,6 +15,9 @@ export class PracticeReadingType {
   practiceReading: PracticeReading;
 
   @ApiProperty()
+  content?: string;
+
+  @ApiProperty()
   createdAt: Date;
 
   @ApiProperty()
