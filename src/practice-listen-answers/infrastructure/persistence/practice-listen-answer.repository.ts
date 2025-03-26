@@ -34,4 +34,6 @@ export abstract class PracticeListenAnswerRepository {
   ): Promise<PracticeListenAnswer[]>;
 
   abstract findByQuestionId(id: string): Promise<PracticeListenAnswer[]>;
+
+  abstract findByCorrectQuestionId(id: string): Promise<PracticeListenAnswer[]>;
 }

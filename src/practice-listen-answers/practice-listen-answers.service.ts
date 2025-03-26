@@ -22,4 +22,8 @@ export class PracticeListenAnswersService {
   findByQuestionId(id: string) {
     return this.practiceListenAnswerRepository.findByQuestionId(id);
   }
+
+  findByCorrectQuestionId(id: string) {
+    return this.practiceListenAnswerRepository.findByCorrectQuestionId(id);
+  }
 }

@@ -12,6 +12,8 @@ import { PracticeWritingsModule } from '../practice-writings/practice-writings.m
 import { PracticeSpeakingQuestionsModule } from '../practice-speaking-questions/practice-speaking-questions.module';
 import { UserPracticeReadingAnswersModule } from '../user-practice-reading-answers/user-practice-reading-answers.module';
 import { PracticeReadingAnswersModule } from '../practice-reading-answers/practice-reading-answers.module';
+import { UserPracticeListenAnswersModule } from '../user-practice-listen-answers/user-practice-listen-answers.module';
+import { PracticeListenAnswersModule } from '../practice-listen-answers/practice-listen-answers.module';
 
 @Module({
   imports: [
@@ -26,6 +28,8 @@ import { PracticeReadingAnswersModule } from '../practice-reading-answers/practi
     PracticeSpeakingQuestionsModule,
     UserPracticeReadingAnswersModule,
     PracticeReadingAnswersModule,
+    UserPracticeListenAnswersModule,
+    PracticeListenAnswersModule,
   ],
   controllers: [PracticesController],
   providers: [PracticesService],

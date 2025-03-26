@@ -109,4 +109,14 @@ export class PracticeListenAnswerDocumentRepository
       .select('-isCorrect');
     return entities.map(PracticeListenAnswerMapper.toDomain);
   }
+
+  async findByCorrectQuestionId(id: string): Promise<PracticeListenAnswer[]> {
+    const entities = await this.practiceListenAnswerModel.find({
+      question: {
+        _id: id,
+      },
+      isCorrect: true,
+    });
+    return entities.map(PracticeListenAnswerMapper.toDomain);
+  }
 }
