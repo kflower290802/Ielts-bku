@@ -19,7 +19,6 @@ import { PracticeListensService } from '../practice-listens/practice-listens.ser
 import { PracticeWritingsService } from '../practice-writings/practice-writings.service';
 import { PracticeSpeakingQuestionsService } from '../practice-speaking-questions/practice-speaking-questions.service';
 import { UserPracticeReadingAnswersService } from '../user-practice-reading-answers/user-practice-reading-answers.service';
-import { SubmitPracticeDto } from './dto/submit-practice.dto';
 import { PracticeReadingQuestion } from '../practice-reading-questions/domain/practice-reading-question';
 import { PracticeReadingAnswersService } from '../practice-reading-answers/practice-reading-answers.service';
 import isEqual from 'lodash/isEqual';
@@ -27,6 +26,7 @@ import sortBy from 'lodash/sortBy';
 import { PracticeListenQuestion } from '../practice-listen-questions/domain/practice-listen-question';
 import { UserPracticeListenAnswersService } from '../user-practice-listen-answers/user-practice-listen-answers.service';
 import { PracticeListenAnswersService } from '../practice-listen-answers/practice-listen-answers.service';
+import { UserPracticeWritingAnswersService } from '../user-practice-writing-answers/user-practice-writing-answers.service';
 
 @Injectable()
 export class PracticesService {
@@ -45,6 +45,7 @@ export class PracticesService {
     private readonly practiceReadingAnswersService: PracticeReadingAnswersService,
     private readonly userPracticeListenAnswersService: UserPracticeListenAnswersService,
     private readonly practiceListenAnswersService: PracticeListenAnswersService,
+    private readonly userPracticeWritingAnswersService: UserPracticeWritingAnswersService,
   ) {}
 
   async create(createPracticeDto: CreatePracticeDto) {
@@ -167,11 +168,7 @@ export class PracticesService {
     return practiceData;
   }
 
-  async submitPractice(
-    id: string,
-    userId: string,
-    answers: SubmitPracticeDto[],
-  ) {
+  async submitPractice(id: string, userId: string, answers: any) {
     const practice = await this.practiceRepository.findById(id);
     if (!practice) throw new NotFoundException('Practice not found');
     const userPractice =
@@ -199,6 +196,14 @@ export class PracticesService {
       });
       await this.userPracticeListenAnswersService.createMany(answerQuestions);
     }
+
+    if (practice.type === PracticeType.Writing) {
+      await this.userPracticeWritingAnswersService.create({
+        userPractice,
+        answer: answers.answer,
+      });
+    }
+
     await this.userPracticesService.update(userPractice.id, {
       isCompleted: true,
     });
@@ -215,7 +220,7 @@ export class PracticesService {
     );
     if (!practice) throw new NotFoundException('practice not found');
     let summary = [] as any[];
-    let answers = [] as any[];
+    let answers = [] as any;
 
     if (practice.type === PracticeType.Reading) {
       answers =
@@ -227,6 +232,13 @@ export class PracticesService {
     if (practice.type === PracticeType.Listening) {
       answers =
         await this.userPracticeListenAnswersService.findByUserPracticeId(
+          userPractice.id,
+        );
+    }
+
+    if (practice.type === PracticeType.Writing) {
+      answers =
+        await this.userPracticeWritingAnswersService.findByUserPracticeId(
           userPractice.id,
         );
     }
@@ -275,6 +287,9 @@ export class PracticesService {
         }),
       );
     }
+    if (practice.type === PracticeType.Speaking) {
+      return answers;
+    }
     const correctScore = summary.filter((s) => s.isCorrect).length;
     const score = (correctScore / summary.length) * 10;
     return {
@@ -283,7 +298,7 @@ export class PracticesService {
     };
   }
 
-  async exitPractice(id: string, userId: string, answers: SubmitPracticeDto[]) {
+  async exitPractice(id: string, userId: string, answers: any) {
     const userPractice =
       await this.userPracticesService.findUnCompletedUserPracticeByPracticeIdAndUserId(
         id,
@@ -311,6 +326,12 @@ export class PracticesService {
         return { answer, question, userPractice };
       });
       await this.userPracticeListenAnswersService.createMany(answerQuestions);
+    }
+    if (practice.type === PracticeType.Writing) {
+      await this.userPracticeWritingAnswersService.create({
+        userPractice,
+        answer: answers.answer,
+      });
     }
   }
 }

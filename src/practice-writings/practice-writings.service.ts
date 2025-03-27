@@ -6,12 +6,16 @@ import { IPaginationOptions } from '../utils/types/pagination-options';
 import { PracticeWriting } from './domain/practice-writing';
 import { CloudinaryService } from '../cloudinary/cloudinary.service';
 import { Practice } from '../practices/domain/practice';
+import { UserPracticeWritingAnswersService } from '../user-practice-writing-answers/user-practice-writing-answers.service';
+import { UserPracticesService } from '../user-practices/user-practices.service';
 
 @Injectable()
 export class PracticeWritingsService {
   constructor(
     private readonly practiceWritingRepository: PracticeWritingRepository,
     private readonly cloudinaryService: CloudinaryService,
+    private readonly userPracticeWritingAnswersService: UserPracticeWritingAnswersService,
+    private readonly userPracticesService: UserPracticesService,
   ) {}
 
   async create(createPracticeWritingDto: CreatePracticeWritingDto) {
@@ -72,9 +76,18 @@ export class PracticeWritingsService {
   }
 
   async getPracticeData(id: string, userId: string) {
-    console.log(userId);
     const practice = await this.practiceWritingRepository.findByPracticeId(id);
     if (!practice) throw new NotFoundException('Practice not found');
-    return practice;
+    const userPractice =
+      await this.userPracticesService.findUnCompletedUserPracticeByPracticeIdAndUserId(
+        id,
+        userId,
+      );
+    if (!userPractice) throw new NotFoundException('User practice not found');
+    const answer =
+      await this.userPracticeWritingAnswersService.findByUserPracticeId(
+        userPractice.id,
+      );
+    return { ...practice, answer };
   }
 }

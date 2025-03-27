@@ -98,8 +98,11 @@ import { UserPracticeReadingAnswersModule } from './user-practice-reading-answer
 
 import { UserPracticeListenAnswersModule } from './user-practice-listen-answers/user-practice-listen-answers.module';
 
+import { UserPracticeWritingAnswersModule } from './user-practice-writing-answers/user-practice-writing-answers.module';
+
 @Module({
   imports: [
+    UserPracticeWritingAnswersModule,
     UserPracticeListenAnswersModule,
     UserPracticeReadingAnswersModule,
     PracticeSpeakingQuestionsModule,

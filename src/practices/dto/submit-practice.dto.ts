@@ -11,3 +11,9 @@ export class SubmitPracticeDto {
   @IsNotEmpty()
   answer: string[] | string;
 }
+
+export class SubmitPracticeWritingDto {
+  @ApiProperty()
+  @IsNotEmpty()
+  answer: string;
+}

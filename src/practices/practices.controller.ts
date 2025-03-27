@@ -26,7 +26,10 @@ import { AuthGuard } from '@nestjs/passport';
 import { InfinityPaginationResponse } from '../utils/dto/infinity-pagination-response.dto';
 import { FindAllPracticesDto } from './dto/find-all-practices.dto';
 import { paginateData } from '../utils/paginate';
-import { SubmitPracticeDto } from './dto/submit-practice.dto';
+import {
+  SubmitPracticeDto,
+  SubmitPracticeWritingDto,
+} from './dto/submit-practice.dto';
 
 @ApiTags('Practices')
 @Controller({
@@ -92,7 +95,7 @@ export class PracticesController {
   submitPractice(
     @Param('id') id: string,
     @Request() request,
-    @Body() submitPracticeDto: SubmitPracticeDto[],
+    @Body() submitPracticeDto: SubmitPracticeDto[] | SubmitPracticeWritingDto,
   ) {
     const userId = request.user.id;
     return this.practicesService.submitPractice(id, userId, submitPracticeDto);
@@ -109,7 +112,7 @@ export class PracticesController {
   exitPractice(
     @Param('id') id: string,
     @Request() request,
-    @Body() submitPracticeDto: SubmitPracticeDto[],
+    @Body() submitPracticeDto: SubmitPracticeDto[] | SubmitPracticeWritingDto,
   ) {
     const userId = request.user.id;
     return this.practicesService.exitPractice(id, userId, submitPracticeDto);
