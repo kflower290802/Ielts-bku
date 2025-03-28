@@ -52,10 +52,7 @@ export class PracticeReadingsService {
       );
 
     const userPractice =
-      await this.userPracticesService.findUnCompletedUserPracticeByPracticeIdAndUserId(
-        id,
-        userId,
-      );
+      await this.userPracticesService.findByPracticeIdAndUserId(id, userId);
     if (!userPractice) throw new NotFoundException('User practice not found');
     const answers =
       await this.userPracticeReadingAnswersService.findByUserPracticeId(

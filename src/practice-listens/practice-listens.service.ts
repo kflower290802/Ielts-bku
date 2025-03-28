@@ -44,15 +44,13 @@ export class PracticeListensService {
       practiceListen.id,
     );
     const userPractice =
-      await this.userPracticesService.findUnCompletedUserPracticeByPracticeIdAndUserId(
-        id,
-        userId,
-      );
+      await this.userPracticesService.findByPracticeIdAndUserId(id, userId);
     if (!userPractice) throw new NotFoundException('User practice not found');
     const answers =
       await this.userPracticeListenAnswersService.findByUserPracticeId(
         userPractice.id,
       );
+    console.log({ types });
     const typesAnswers = types.map((type) => ({
       ...type,
       questions: type.questions.map((question) => ({

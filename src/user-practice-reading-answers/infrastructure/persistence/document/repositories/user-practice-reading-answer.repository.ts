@@ -70,7 +70,7 @@ export class UserPracticeReadingAnswerDocumentRepository
   ): Promise<NullableType<UserPracticeReadingAnswer>> {
     const clonedPayload = { ...payload };
     delete clonedPayload.id;
-
+    console.log({id})
     const filter = { _id: id.toString() };
     const entity = await this.userPracticeReadingAnswerModel.findOne(filter);
 
