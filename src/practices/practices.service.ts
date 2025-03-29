@@ -27,6 +27,8 @@ import { PracticeListenQuestion } from '../practice-listen-questions/domain/prac
 import { UserPracticeListenAnswersService } from '../user-practice-listen-answers/user-practice-listen-answers.service';
 import { PracticeListenAnswersService } from '../practice-listen-answers/practice-listen-answers.service';
 import { UserPracticeWritingAnswersService } from '../user-practice-writing-answers/user-practice-writing-answers.service';
+import { UserPracticeSpeakAnswersService } from '../user-practice-speak-answers/user-practice-speak-answers.service';
+import { PracticeSpeakingQuestion } from '../practice-speaking-questions/domain/practice-speaking-question';
 
 @Injectable()
 export class PracticesService {
@@ -46,6 +48,7 @@ export class PracticesService {
     private readonly userPracticeListenAnswersService: UserPracticeListenAnswersService,
     private readonly practiceListenAnswersService: PracticeListenAnswersService,
     private readonly userPracticeWritingAnswersService: UserPracticeWritingAnswersService,
+    private readonly userPracticeSpeakAnswersService: UserPracticeSpeakAnswersService,
   ) {}
 
   async create(createPracticeDto: CreatePracticeDto) {
@@ -204,6 +207,16 @@ export class PracticesService {
       });
     }
 
+    if (practice.type === PracticeType.Speaking) {
+      const answerQuestions = answers.map((a) => {
+        const { answer, questionId } = a;
+        const question = new PracticeSpeakingQuestion();
+        question.id = questionId;
+        return { answer, question, userPractice };
+      });
+      await this.userPracticeSpeakAnswersService.createMany(answerQuestions);
+    }
+
     await this.userPracticesService.update(userPractice.id, {
       isCompleted: true,
     });
@@ -287,7 +300,10 @@ export class PracticesService {
         }),
       );
     }
-    if (practice.type === PracticeType.Speaking) {
+    if (
+      practice.type === PracticeType.Speaking ||
+      practice.type === PracticeType.Writing
+    ) {
       return answers;
     }
     const correctScore = summary.filter((s) => s.isCorrect).length;
@@ -326,6 +342,16 @@ export class PracticesService {
         return { answer, question, userPractice };
       });
       await this.userPracticeListenAnswersService.createMany(answerQuestions);
+    }
+
+    if (practice.type === PracticeType.Speaking) {
+      const answerQuestions = answers.map((a) => {
+        const { answer, questionId } = a;
+        const question = new PracticeSpeakingQuestion();
+        question.id = questionId;
+        return { answer, question, userPractice };
+      });
+      await this.userPracticeSpeakAnswersService.createMany(answerQuestions);
     }
     if (practice.type === PracticeType.Writing) {
       await this.userPracticeWritingAnswersService.create({
