@@ -25,26 +25,29 @@ export class UserPracticeReadingAnswersService {
           createUserPracticeReadingAnswerDto[0].userPractice.id,
         )
       : [];
+    console.log({ userAnswers });
     const notExist = createUserPracticeReadingAnswerDto.filter((userAnswer) => {
       return !userAnswers.some(
         (dto) => dto.question.id === userAnswer.question.id,
       );
     });
-    const alreadyExist = createUserPracticeReadingAnswerDto.filter(
-      (userAnswer) => {
+    const alreadyExist = createUserPracticeReadingAnswerDto
+      .filter((userAnswer) => {
         return userAnswers.some(
           (dto) => dto.question.id === userAnswer.question.id,
         );
-      },
-    );
+      })
+      .map((userAnswer) => {
+        const id = userAnswers.find(
+          (answer) => answer.question.id === userAnswer.question.id,
+        )?.id;
+        return { ...userAnswer, id };
+      });
     await Promise.all(
       alreadyExist.map(async (answer) => {
-        await this.userPracticeReadingAnswerRepository.update(
-          answer.question.id,
-          {
-            answer: answer.answer,
-          },
-        );
+        await this.userPracticeReadingAnswerRepository.update(answer.id || '', {
+          answer: answer.answer,
+        });
       }),
     );
     return this.userPracticeReadingAnswerRepository.createMany(notExist);

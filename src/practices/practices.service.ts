@@ -140,10 +140,8 @@ export class PracticesService {
     if (!practice) throw new NotFoundException('Practice not found');
     let practiceData = {} as any;
     const userPractice =
-      await this.userPracticesService.findUnCompletedUserPracticeByPracticeIdAndUserId(
-        id,
-        userId,
-      );
+      await this.userPracticesService.findByPracticeIdAndUserId(id, userId);
+
     if (!userPractice) throw new NotFoundException('User Practice not found');
 
     if (practice.type === PracticeType.Reading) {
