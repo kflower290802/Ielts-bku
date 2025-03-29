@@ -5,13 +5,14 @@ import { DocumentExamListenTypePersistenceModule } from './infrastructure/persis
 import { ExamListenSectionsModule } from '../exam-listen-sections/exam-listen-sections.module';
 import { ExamListenQuestionsModule } from '../exam-listen-questions/exam-listen-questions.module';
 import { ExamListenAnswersModule } from '../exam-listen-answers/exam-listen-answers.module';
-
+import { UserExamListenAnswersModule } from '../user-exam-listen-answers/user-exam-listen-answers.module';
 @Module({
   imports: [
     DocumentExamListenTypePersistenceModule,
     forwardRef(() => ExamListenSectionsModule),
     forwardRef(() => ExamListenQuestionsModule),
     forwardRef(() => ExamListenAnswersModule),
+    forwardRef(() => UserExamListenAnswersModule),
   ],
   controllers: [ExamListenTypesController],
   providers: [ExamListenTypesService],

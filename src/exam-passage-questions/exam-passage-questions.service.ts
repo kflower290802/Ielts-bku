@@ -1,4 +1,9 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  forwardRef,
+  Inject,
+} from '@nestjs/common';
 import { CreateExamPassageQuestionDto } from './dto/create-exam-passage-question.dto';
 import { UpdateExamPassageQuestionDto } from './dto/update-exam-passage-question.dto';
 import { ExamPassageQuestionRepository } from './infrastructure/persistence/exam-passage-question.repository';
@@ -12,6 +17,7 @@ export class ExamPassageQuestionsService {
   constructor(
     private readonly examPassageQuestionRepository: ExamPassageQuestionRepository,
     private readonly examPassageAnswersService: ExamPassageAnswersService,
+    @Inject(forwardRef(() => ExamReadingTypesService))
     private readonly examReadingTypesService: ExamReadingTypesService,
   ) {}
 

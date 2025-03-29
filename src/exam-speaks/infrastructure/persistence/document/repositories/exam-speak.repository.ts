@@ -79,12 +79,12 @@ export class ExamSpeakDocumentRepository implements ExamSpeakRepository {
     await this.examSpeakModel.deleteOne({ _id: id });
   }
 
-  async findByExamId(id: string): Promise<ExamSpeak[]> {
-    const entities = await this.examSpeakModel.find({
+  async findByExamId(id: string): Promise<NullableType<ExamSpeak>> {
+    const entity = await this.examSpeakModel.findOne({
       exam: {
         _id: id,
       },
     });
-    return entities.map(ExamSpeakMapper.toDomain);
+    return entity ? ExamSpeakMapper.toDomain(entity) : null;
   }
 }

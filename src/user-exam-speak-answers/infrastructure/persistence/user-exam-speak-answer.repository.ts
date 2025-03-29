@@ -8,6 +8,10 @@ export abstract class UserExamSpeakAnswerRepository {
     data: Omit<UserExamSpeakAnswer, 'id' | 'createdAt' | 'updatedAt'>,
   ): Promise<UserExamSpeakAnswer>;
 
+  abstract createMany(
+    data: Omit<UserExamSpeakAnswer, 'id' | 'createdAt' | 'updatedAt'>[],
+  ): Promise<UserExamSpeakAnswer[]>;
+
   abstract findAllWithPagination({
     paginationOptions,
   }: {

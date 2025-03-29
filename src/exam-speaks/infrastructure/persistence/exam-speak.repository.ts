@@ -25,5 +25,5 @@ export abstract class ExamSpeakRepository {
 
   abstract remove(id: ExamSpeak['id']): Promise<void>;
 
-  abstract findByExamId(id: string): Promise<ExamSpeak[]>;
+  abstract findByExamId(id: string): Promise<NullableType<ExamSpeak>>;
 }

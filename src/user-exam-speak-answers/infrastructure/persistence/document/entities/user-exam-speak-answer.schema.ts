@@ -2,7 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { now, HydratedDocument, Types } from 'mongoose';
 import { EntityDocumentHelper } from '../../../../../utils/document-entity-helper';
 import { UserExamSchemaClass } from '../../../../../user-exams/infrastructure/persistence/document/entities/user-exam.schema';
-import { ExamSpeakSchemaClass } from '../../../../../exam-speaks/infrastructure/persistence/document/entities/exam-speak.schema';
+import { ExamSpeakQuestionSchemaClass } from '../../../../../exam-speak-questions/infrastructure/persistence/document/entities/exam-speak-question.schema';
 
 export type UserExamSpeakAnswerSchemaDocument =
   HydratedDocument<UserExamSpeakAnswerSchemaClass>;
@@ -25,10 +25,10 @@ export class UserExamSpeakAnswerSchemaClass extends EntityDocumentHelper {
 
   @Prop({
     required: true,
-    ref: ExamSpeakSchemaClass.name,
+    ref: ExamSpeakQuestionSchemaClass.name,
     type: Types.ObjectId,
   })
-  examSpeak: ExamSpeakSchemaClass;
+  question: ExamSpeakQuestionSchemaClass;
 
   @Prop({ required: true, type: String })
   answer: string;

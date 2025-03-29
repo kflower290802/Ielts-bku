@@ -116,23 +116,24 @@ export class ExamsService {
     return this.examRepository.remove(id);
   }
 
-  async findAllPassage(id: Exam['id']) {
+  async findAllPassage(id: Exam['id'], userId: User['id']) {
     const exam = await this.examRepository.findById(id);
-
     if (!exam) throw new NotFoundException('Exam not found');
-
     let examPassage = [] as any[];
     if (exam?.type === ExamType.Reading) {
-      examPassage = await this.examPassagesService.findAllByExamId(id);
+      examPassage = await this.examPassagesService.findAllByExamId(id, userId);
     }
     if (exam?.type === ExamType.Listening) {
-      examPassage = await this.examListenSectionsService.findAllByExamId(id);
+      examPassage = await this.examListenSectionsService.findAllByExamId(
+        id,
+        userId,
+      );
     }
     if (exam?.type === ExamType.Speaking) {
-      examPassage = await this.examSpeakService.findByExamId(id);
+      examPassage = await this.examSpeakService.findAllByExamId(id, userId);
     }
     if (exam.type === ExamType.Writing) {
-      examPassage = await this.examWritingsService.findByExamId(id);
+      examPassage = await this.examWritingsService.findAllByExamId(id, userId);
     }
     return {
       ...exam,
@@ -203,81 +204,24 @@ export class ExamsService {
   }
 
   async getExamData(id: Exam['id'], userId: User['id']) {
-    const exam = await this.findAllPassage(id);
+    const exam = await this.findAllPassage(id, userId);
     const userExam = await this.userExamsService.findByUserIdAndExamId(
       userId,
       id,
     );
-
     if (!userExam) throw new NotFoundException('User exam not found');
-    let answers: any[] = [];
-
-    if (exam.type === ExamType.Reading) {
-      answers = await this.userExamAnswersService.findByUserIdAndExamId(
-        userId,
-        id,
-      );
-    }
-    if (exam.type === ExamType.Listening) {
-      answers = await this.userExamListenAnswersService.findByUserIdAndExamId(
-        userId,
-        id,
-      );
-    }
-    if (exam.type === ExamType.Speaking) {
-      answers = await this.userExamSpeakAnswersService.findByUserIdAndExamId(
-        userId,
-        id,
-      );
-    }
-    if (exam.type === ExamType.Writing) {
-      answers = await this.userExamWritingsService.findByUserIdAndExamId(
-        userId,
-        id,
-      );
-    }
-
-    const answerMap = new Map(
-      answers.map((a) => [
-        a.examPassageQuestion
-          ? a.examPassageQuestion.id
-          : a.examSpeak
-            ? a.examSpeak.id
-            : a.examWriting.id,
-        a.answer,
-      ]),
-    );
-
-    const mergedData = exam.examPassage.map((passage) => {
-      return {
-        ...passage,
-        types:
-          exam.type === ExamType.Reading || exam.type === ExamType.Listening
-            ? passage.types.map((types) => {
-                return {
-                  questions: types.questions.map((q) => {
-                    return {
-                      ...q,
-                      answer: answerMap.get(q.id) || '',
-                    };
-                  }),
-                  type: types.type,
-                  content: types.content,
-                  image: types.image,
-                };
-              })
-            : passage.question,
-      };
-    });
     const remainingTime = await this.getRemainingTime(userExam.id);
     return {
-      exam: mergedData,
+      exam,
       remainingTime,
-      audio: exam.audio,
     };
   }
 
-  async exitExam(id: Exam['id'], userId: User['id']) {
+  async exitExam(
+    id: Exam['id'],
+    userId: User['id'],
+    answers: { questionId: string; answer: string | string[] }[],
+  ) {
     const exam = await this.examRepository.findById(id);
     if (!exam) throw new NotFoundException('Exam not found');
     const now = new Date();
@@ -304,6 +248,47 @@ export class ExamsService {
     await this.userExamsService.update(userExam.id, {
       progress: timeSpent / exam.time > 1 ? 100 : (timeSpent / exam.time) * 100,
     });
+    if (exam.type === ExamType.Reading) {
+      await this.userExamAnswersService.create(
+        answers.map((a) => ({
+          examId: id,
+          examPassageQuestionId: a.questionId,
+          answer: a.answer,
+        })),
+        userId,
+      );
+    }
+
+    if (exam.type === ExamType.Listening) {
+      await this.userExamListenAnswersService.create(
+        answers.map((a) => ({
+          examId: id,
+          examPassageQuestionId: a.questionId,
+          answer: a.answer,
+        })),
+        userId,
+      );
+    }
+    if (exam.type === ExamType.Speaking) {
+      await this.userExamSpeakAnswersService.createMany(
+        answers.map((a) => ({
+          examId: id,
+          questionId: a.questionId,
+          answer: Array.isArray(a.answer) ? a.answer[0] : a.answer,
+        })),
+        userId,
+      );
+    }
+    if (exam.type === ExamType.Writing) {
+      await this.userExamWritingsService.create(
+        answers.map((a) => ({
+          examId: id,
+          examWritingId: a.questionId,
+          answer: Array.isArray(a.answer) ? a.answer[0] : a.answer,
+        })),
+        userId,
+      );
+    }
   }
 
   async submitExam(
@@ -393,6 +378,26 @@ export class ExamsService {
           examId: id,
           examPassageQuestionId: a.questionId,
           answer: a.answer,
+        })),
+        userId,
+      );
+    }
+    if (exam.type === ExamType.Speaking) {
+      await this.userExamSpeakAnswersService.createMany(
+        answers.map((a) => ({
+          examId: id,
+          questionId: a.questionId,
+          answer: Array.isArray(a.answer) ? a.answer[0] : a.answer,
+        })),
+        userId,
+      );
+    }
+    if (exam.type === ExamType.Writing) {
+      await this.userExamWritingsService.create(
+        answers.map((a) => ({
+          examId: id,
+          examWritingId: a.questionId,
+          answer: Array.isArray(a.answer) ? a.answer[0] : a.answer,
         })),
         userId,
       );

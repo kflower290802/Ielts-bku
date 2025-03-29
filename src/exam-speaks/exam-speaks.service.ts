@@ -8,33 +8,26 @@ import { CreateExamSpeakDto } from './dto/create-exam-speak.dto';
 import { UpdateExamSpeakDto } from './dto/update-exam-speak.dto';
 import { ExamSpeakRepository } from './infrastructure/persistence/exam-speak.repository';
 import { ExamSpeak } from './domain/exam-speak';
-import { CloudinaryService } from '../cloudinary/cloudinary.service';
 import { ExamsService } from '../exams/exams.service';
+import { ExamSpeakPartsService } from '../exam-speak-parts/exam-speak-parts.service';
+import { ExamSpeakQuestionsService } from '../exam-speak-questions/exam-speak-questions.service';
 import { UserExamSpeakAnswersService } from '../user-exam-speak-answers/user-exam-speak-answers.service';
-import { UserExamsService } from '../user-exams/user-exams.service';
-
 @Injectable()
 export class ExamSpeaksService {
   constructor(
     private readonly examSpeakRepository: ExamSpeakRepository,
-    private readonly cloudinaryService: CloudinaryService,
     @Inject(forwardRef(() => ExamsService))
     private readonly examsService: ExamsService,
-    @Inject(forwardRef(() => UserExamSpeakAnswersService))
-    private readonly userExamSpeakSAnswerService: UserExamSpeakAnswersService,
-    private readonly userExamsService: UserExamsService,
+    private readonly examSpeakPartsService: ExamSpeakPartsService,
+    private readonly examSpeakQuestionsService: ExamSpeakQuestionsService,
+    private readonly userExamSpeakAnswersService: UserExamSpeakAnswersService,
   ) {}
 
   async create(createExamSpeakDto: CreateExamSpeakDto) {
-    const { question, examId } = createExamSpeakDto;
-    const { secure_url } = await this.cloudinaryService.uploadAudio(
-      createExamSpeakDto.audio,
-    );
+    const { examId } = createExamSpeakDto;
     const exam = await this.examsService.findById(examId);
     if (!exam) throw new NotFoundException('Exam not found');
     return this.examSpeakRepository.create({
-      audio: secure_url,
-      question,
       exam,
     });
   }
@@ -65,30 +58,30 @@ export class ExamSpeaksService {
     return this.examSpeakRepository.remove(id);
   }
 
-  async findByUserIdAndExamId(userId: string, examId: string) {
-    const examSpeakQuestions =
-      await this.examSpeakRepository.findByExamId(examId);
-    const userExam = await this.userExamsService.findByUserIdAndExamId(
-      userId,
-      examId,
-    );
-    if (!userExam) throw new NotFoundException('User exam not found');
+  async findAllByExamId(examId: string, userId: string) {
+    const examSpeak = await this.examSpeakRepository.findByExamId(examId);
+    if (!examSpeak) throw new NotFoundException('Exam speak not found');
+    const [parts, answers] = await Promise.all([
+      this.examSpeakPartsService.findAllByExamId(examSpeak.id),
+      this.userExamSpeakAnswersService.findByUserIdAndExamId(userId, examId),
+    ]);
     return Promise.all(
-      examSpeakQuestions.map(async (question) => {
-        const answer =
-          await this.userExamSpeakSAnswerService.findByQuestionIdAndUserExamId(
-            userExam.id,
-            question.id,
-          );
+      parts.map(async (part) => {
+        const questions = await this.examSpeakQuestionsService.findAllByPartId(
+          part.id,
+        );
         return {
-          ...question,
-          answer,
+          ...part,
+          questions: questions.map((question) => {
+            return {
+              ...question,
+              answer:
+                answers.find((answer) => answer.question.id === question.id)
+                  ?.answer || '',
+            };
+          }),
         };
       }),
     );
-  }
-
-  findByExamId(examId: string) {
-    return this.examSpeakRepository.findByExamId(examId);
   }
 }

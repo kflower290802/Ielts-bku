@@ -10,8 +10,6 @@ export class ExamSpeakMapper {
     const exam = new Exam();
     exam.id = raw.exam._id.toString();
     domainEntity.exam = exam;
-    domainEntity.audio = raw.audio;
-    domainEntity.question = raw.question;
     domainEntity.createdAt = raw.createdAt;
     domainEntity.updatedAt = raw.updatedAt;
 
@@ -23,8 +21,6 @@ export class ExamSpeakMapper {
     if (domainEntity.id) {
       persistenceSchema._id = domainEntity.id;
     }
-    persistenceSchema.audio = domainEntity.audio;
-    persistenceSchema.question = domainEntity.question;
     const exam = new ExamSchemaClass();
     exam._id = domainEntity.exam.id;
     persistenceSchema.exam = exam;

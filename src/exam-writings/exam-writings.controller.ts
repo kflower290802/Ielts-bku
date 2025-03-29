@@ -1,24 +1,17 @@
 import {
   Controller,
-  // Get,
   Post,
   Body,
-  // Patch,
-  // Param,
-  // Delete,
   UseGuards,
   UseInterceptors,
   UploadedFile,
 } from '@nestjs/common';
 import { ExamWritingsService } from './exam-writings.service';
 import { CreateExamWritingDto } from './dto/create-exam-writing.dto';
-// import { UpdateExamWritingDto } from './dto/update-exam-writing.dto';
 import {
   ApiBearerAuth,
   ApiConsumes,
   ApiCreatedResponse,
-  // ApiOkResponse,
-  // ApiParam,
   ApiTags,
 } from '@nestjs/swagger';
 import { ExamWriting } from './domain/exam-writing';

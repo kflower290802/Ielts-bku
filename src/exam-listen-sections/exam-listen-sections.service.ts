@@ -10,7 +10,7 @@ import { ExamListenSection } from './domain/exam-listen-section';
 import { ExamsService } from '../exams/exams.service';
 import { Exam } from '../exams/domain/exam';
 import { ExamListenTypesService } from '../exam-listen-types/exam-listen-types.service';
-
+import { User } from '../users/domain/user';
 @Injectable()
 export class ExamListenSectionsService {
   constructor(
@@ -29,13 +29,15 @@ export class ExamListenSectionsService {
     });
   }
 
-  async findAllByExamId(examId: Exam['id']) {
+  async findAllByExamId(examId: Exam['id'], userId: User['id']) {
     const sections =
       await this.examListenSectionRepository.findSectionsByExamId(examId);
     const examPassagesQuestions = sections.map(async (passage) => {
       const examPassageTypes =
         await this.examListenTypesService.findByPassageIdWithQuestion(
           passage.id,
+          userId,
+          examId,
         );
       return { ...passage, types: examPassageTypes };
     });

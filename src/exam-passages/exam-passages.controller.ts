@@ -6,8 +6,6 @@ import {
   Patch,
   Param,
   Delete,
-  // UseGuards,
-  // Query,
 } from '@nestjs/common';
 import { ExamPassagesService } from './exam-passages.service';
 import { CreateExamPassageDto } from './dto/create-exam-passage.dto';
@@ -22,7 +20,6 @@ import {
 import { ExamPassage } from './domain/exam-passage';
 @ApiTags('Exampassages')
 @ApiBearerAuth()
-// @UseGuards(AuthGuard('jwt'))
 @Controller({
   path: 'exam-passages',
   version: '1',

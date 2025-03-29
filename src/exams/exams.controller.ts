@@ -4,7 +4,6 @@ import {
   Post,
   Body,
   Param,
-  Delete,
   UseGuards,
   Query,
   UseInterceptors,
@@ -157,9 +156,13 @@ export class ExamsController {
     required: true,
   })
   @UseGuards(AuthGuard('jwt'))
-  exitExam(@Param('id') id: string, @Request() request) {
+  exitExam(
+    @Param('id') id: string,
+    @Request() request,
+    @Body() submitExamsDto: SubmitExamDto[],
+  ) {
     const userId = request.user.id;
-    return this.examsService.exitExam(id, userId);
+    return this.examsService.exitExam(id, userId, submitExamsDto);
   }
 
   @Get('exam-summary/:id')
@@ -188,15 +191,5 @@ export class ExamsController {
   ) {
     const userId = request.user.id;
     return this.examsService.submitExam(id, userId, submitExamsDto);
-  }
-
-  @Delete(':id')
-  @ApiParam({
-    name: 'id',
-    type: String,
-    required: true,
-  })
-  remove(@Param('id') id: string) {
-    return this.examsService.remove(id);
   }
 }

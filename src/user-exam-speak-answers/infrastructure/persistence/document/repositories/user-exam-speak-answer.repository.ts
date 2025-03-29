@@ -108,4 +108,12 @@ export class UserExamSpeakAnswerDocumentRepository
     });
     return entities.map(UserExamSpeakAnswerMapper.toDomain);
   }
+  async createMany(
+    data: UserExamSpeakAnswer[],
+  ): Promise<UserExamSpeakAnswer[]> {
+    const persistenceModels = data.map(UserExamSpeakAnswerMapper.toPersistence);
+    const createdEntities =
+      await this.userExamSpeakAnswerModel.insertMany(persistenceModels);
+    return createdEntities.map(UserExamSpeakAnswerMapper.toDomain);
+  }
 }

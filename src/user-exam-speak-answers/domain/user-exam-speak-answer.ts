@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { UserExam } from '../../user-exams/domain/user-exam';
-import { ExamSpeak } from '../../exam-speaks/domain/exam-speak';
+import { ExamSpeakQuestion } from '../../exam-speak-questions/domain/exam-speak-question';
 
 export class UserExamSpeakAnswer {
   @ApiProperty({
@@ -12,7 +12,7 @@ export class UserExamSpeakAnswer {
   userExam: UserExam;
 
   @ApiProperty()
-  examSpeak: ExamSpeak;
+  question: ExamSpeakQuestion;
 
   @ApiProperty()
   answer: string;

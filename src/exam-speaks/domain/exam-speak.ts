@@ -11,12 +11,6 @@ export class ExamSpeak {
   exam: Exam;
 
   @ApiProperty()
-  audio: string;
-
-  @ApiProperty()
-  question: string;
-
-  @ApiProperty()
   createdAt: Date;
 
   @ApiProperty()

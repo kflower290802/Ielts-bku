@@ -6,15 +6,4 @@ export class CreateExamSpeakDto {
   @IsNotEmpty()
   @IsString()
   examId: string;
-
-  @ApiProperty({
-    type: String,
-    format: 'binary',
-  })
-  audio: Express.Multer.File;
-
-  @ApiProperty()
-  @IsString()
-  @IsNotEmpty()
-  question: string;
 }

@@ -68,10 +68,6 @@ import { PracticesModule } from './practices/practices.module';
 
 import { TopicsModule } from './topics/topics.module';
 
-const infrastructureDatabaseModule = MongooseModule.forRootAsync({
-  useClass: MongooseConfigService,
-});
-
 import { PracticeReadingsModule } from './practice-readings/practice-readings.module';
 
 import { PracticeReadingTypesModule } from './practice-reading-types/practice-reading-types.module';
@@ -104,8 +100,18 @@ import { UserPracticeSpeakAnswersModule } from './user-practice-speak-answers/us
 
 import { UserPracticeSessionsModule } from './user-practice-sessions/user-practice-sessions.module';
 
+import { ExamSpeakQuestionsModule } from './exam-speak-questions/exam-speak-questions.module';
+
+const infrastructureDatabaseModule = MongooseModule.forRootAsync({
+  useClass: MongooseConfigService,
+});
+
+import { ExamSpeakPartsModule } from './exam-speak-parts/exam-speak-parts.module';
+
 @Module({
   imports: [
+    ExamSpeakPartsModule,
+    ExamSpeakQuestionsModule,
     UserPracticeSessionsModule,
     UserPracticeSpeakAnswersModule,
     UserPracticeWritingAnswersModule,

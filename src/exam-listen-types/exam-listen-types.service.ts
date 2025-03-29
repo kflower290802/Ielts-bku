@@ -11,7 +11,8 @@ import { ExamListenType } from './domain/exam-listen-type';
 import { ExamListenSectionsService } from '../exam-listen-sections/exam-listen-sections.service';
 import { ExamListenQuestionsService } from '../exam-listen-questions/exam-listen-questions.service';
 import { ExamListenAnswersService } from '../exam-listen-answers/exam-listen-answers.service';
-
+import { User } from '../users/domain/user';
+import { UserExamListenAnswersService } from '../user-exam-listen-answers/user-exam-listen-answers.service';
 @Injectable()
 export class ExamListenTypesService {
   constructor(
@@ -22,6 +23,8 @@ export class ExamListenTypesService {
     private readonly examListenQuestionsService: ExamListenQuestionsService,
     @Inject(forwardRef(() => ExamListenAnswersService))
     private readonly examListenAnswersService: ExamListenAnswersService,
+    @Inject(forwardRef(() => UserExamListenAnswersService))
+    private readonly userExamListenAnswersService: UserExamListenAnswersService,
   ) {}
 
   async create(createExamListenTypeDto: CreateExamListenTypeDto) {
@@ -61,8 +64,17 @@ export class ExamListenTypesService {
     return this.examListenTypeRepository.remove(id);
   }
 
-  async findByPassageIdWithQuestion(id: string) {
+  async findByPassageIdWithQuestion(
+    id: string,
+    userId: User['id'],
+    examId: string,
+  ) {
     const types = await this.examListenTypeRepository.findBySectionId(id);
+    const userExamAnswers =
+      await this.userExamListenAnswersService.findByUserIdAndExamId(
+        userId,
+        examId,
+      );
     const questions = await Promise.all(
       types.map(async (type) => {
         const questions =
@@ -71,7 +83,10 @@ export class ExamListenTypesService {
           questions.map(async (question) => {
             const answers =
               await this.examListenAnswersService.findByQuestionId(question.id);
-            return { ...question, answers };
+            const answer = userExamAnswers.find(
+              (answer) => answer.examPassageQuestion.id === question.id,
+            );
+            return { ...question, answers, answer };
           }),
         );
         return { ...type, questions: questionWithAnswers };

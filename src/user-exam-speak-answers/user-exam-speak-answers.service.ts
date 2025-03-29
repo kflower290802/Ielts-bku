@@ -1,47 +1,76 @@
-import {
-  forwardRef,
-  Inject,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateUserExamSpeakAnswerDto } from './dto/create-user-exam-speak-answer.dto';
 import { UpdateUserExamSpeakAnswerDto } from './dto/update-user-exam-speak-answer.dto';
 import { UserExamSpeakAnswerRepository } from './infrastructure/persistence/user-exam-speak-answer.repository';
 import { UserExamSpeakAnswer } from './domain/user-exam-speak-answer';
 import { UserExamsService } from '../user-exams/user-exams.service';
-import { CloudinaryService } from '../cloudinary/cloudinary.service';
-import { ExamSpeaksService } from '../exam-speaks/exam-speaks.service';
+import { ExamSpeakQuestion } from '../exam-speak-questions/domain/exam-speak-question';
 
 @Injectable()
 export class UserExamSpeakAnswersService {
   constructor(
     private readonly userExamSpeakAnswerRepository: UserExamSpeakAnswerRepository,
     private readonly userExamsService: UserExamsService,
-    private readonly cloudinaryService: CloudinaryService,
-    @Inject(forwardRef(() => ExamSpeaksService))
-    private readonly examSpeaksService: ExamSpeaksService,
   ) {}
 
   async create(
     createUserExamSpeakAnswerDto: CreateUserExamSpeakAnswerDto,
     userId: string,
   ) {
-    const { examId, answer, examSpeakId } = createUserExamSpeakAnswerDto;
+    const { examId, answer, questionId } = createUserExamSpeakAnswerDto;
     const userExam = await this.userExamsService.findByUserIdAndExamId(
       userId,
       examId,
     );
-    const { secure_url } = await this.cloudinaryService.uploadAudio(answer);
     if (!userExam) throw new NotFoundException('User not start this exam');
-    const examSpeak = await this.examSpeaksService.findById(examSpeakId);
-    if (!examSpeak) throw new NotFoundException('Question not found');
+    const question = new ExamSpeakQuestion();
+    question.id = questionId;
     return this.userExamSpeakAnswerRepository.create({
-      examSpeak,
+      question,
       userExam,
-      answer: secure_url,
+      answer,
     });
   }
 
+  async createMany(
+    createUserExamSpeakAnswerDto: CreateUserExamSpeakAnswerDto[],
+    userId: string,
+  ) {
+    const userExam = await this.userExamsService.findByUserIdAndExamId(
+      userId,
+      createUserExamSpeakAnswerDto[0].examId,
+    );
+    if (!userExam) throw new NotFoundException('User not start this exam');
+    const userAnswers =
+      await this.userExamSpeakAnswerRepository.findByUserExamId(userExam.id);
+    const answers = createUserExamSpeakAnswerDto.map((a) => {
+      const question = new ExamSpeakQuestion();
+      question.id = a.questionId;
+      return {
+        ...a,
+        userExam,
+        question,
+      };
+    });
+    const notExist = answers.filter((a) => {
+      return !userAnswers.some(
+        (userAnswer) => userAnswer.question.id === a.questionId,
+      );
+    });
+    const alreadyExist = answers.filter((a) => {
+      return userAnswers.some(
+        (userAnswer) => userAnswer.question.id === a.questionId,
+      );
+    });
+    await Promise.all(
+      alreadyExist.map(async (answer) => {
+        await this.userExamSpeakAnswerRepository.update(answer.question.id, {
+          answer: answer.answer,
+        });
+      }),
+    );
+    return this.userExamSpeakAnswerRepository.createMany(notExist);
+  }
   findById(id: UserExamSpeakAnswer['id']) {
     return this.userExamSpeakAnswerRepository.findById(id);
   }

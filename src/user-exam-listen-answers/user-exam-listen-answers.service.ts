@@ -4,7 +4,6 @@ import { UpdateUserExamListenAnswerDto } from './dto/update-user-exam-listen-ans
 import { UserExamListenAnswerRepository } from './infrastructure/persistence/user-exam-listen-answer.repository';
 import { IPaginationOptions } from '../utils/types/pagination-options';
 import { UserExamListenAnswer } from './domain/user-exam-listen-answer';
-import { ExamListenSectionsService } from '../exam-listen-sections/exam-listen-sections.service';
 import { ExamListenSection } from '../exam-listen-sections/domain/exam-listen-section';
 import { UserExamsService } from '../user-exams/user-exams.service';
 
@@ -12,7 +11,6 @@ import { UserExamsService } from '../user-exams/user-exams.service';
 export class UserExamListenAnswersService {
   constructor(
     private readonly userExamListenAnswerRepository: UserExamListenAnswerRepository,
-    private readonly examListenSectionsService: ExamListenSectionsService,
     private readonly userExamsService: UserExamsService,
   ) {}
 
@@ -92,10 +90,12 @@ export class UserExamListenAnswersService {
   }
 
   async findByUserIdAndExamId(userId: string, examId: string) {
+    console.log({ userId, examId });
     const userExam = await this.userExamsService.findByUserIdAndExamId(
       userId,
       examId,
     );
+    console.log({ userExam });
     if (!userExam) throw new NotFoundException('User exam not found');
     return this.userExamListenAnswerRepository.findByUserExamId(userExam.id);
   }

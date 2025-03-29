@@ -11,19 +11,14 @@ import { IPaginationOptions } from '../utils/types/pagination-options';
 import { ExamPassage } from './domain/exam-passage';
 import { ExamsService } from '../exams/exams.service';
 import { Exam } from '../exams/domain/exam';
-import { ExamPassageQuestionsService } from '../exam-passage-questions/exam-passage-questions.service';
-import { ExamPassageAnswersService } from '../exam-passage-answers/exam-passage-answers.service';
 import { ExamReadingTypesService } from '../exam-reading-types/exam-reading-types.service';
-
+import { User } from '../users/domain/user';
 @Injectable()
 export class ExamPassagesService {
   constructor(
     private readonly examPassageRepository: ExamPassageRepository,
     @Inject(forwardRef(() => ExamsService))
     private readonly examsService: ExamsService,
-    @Inject(forwardRef(() => ExamPassageQuestionsService))
-    private readonly examPassageQuestionService: ExamPassageQuestionsService,
-    private readonly examPassageAnswersService: ExamPassageAnswersService,
     private readonly examReadingTypesService: ExamReadingTypesService,
   ) {}
 
@@ -51,16 +46,19 @@ export class ExamPassagesService {
       },
     });
   }
-  async findAllByExamId(id: Exam['id']) {
+  async findAllByExamId(id: Exam['id'], userId: User['id']) {
     const examPassages = await this.examPassageRepository.findByExamId(id);
-    const examPassagesQuestions = examPassages.map(async (passage) => {
-      const examPassageTypes =
-        await this.examReadingTypesService.findByPassageIdWithQuestion(
-          passage.id,
-        );
-      return { ...passage, types: examPassageTypes };
-    });
-    return Promise.all(examPassagesQuestions);
+    return Promise.all(
+      examPassages.map(async (passage) => {
+        const examPassageTypes =
+          await this.examReadingTypesService.findByPassageIdWithQuestion(
+            passage.id,
+            userId,
+            id,
+          );
+        return { ...passage, types: examPassageTypes };
+      }),
+    );
   }
 
   findById(id: ExamPassage['id']) {

@@ -1,9 +1,9 @@
-import { ExamSpeak } from '../../../../../exam-speaks/domain/exam-speak';
-import { ExamSpeakSchemaClass } from '../../../../../exam-speaks/infrastructure/persistence/document/entities/exam-speak.schema';
 import { UserExam } from '../../../../../user-exams/domain/user-exam';
 import { UserExamSchemaClass } from '../../../../../user-exams/infrastructure/persistence/document/entities/user-exam.schema';
 import { UserExamSpeakAnswer } from '../../../../domain/user-exam-speak-answer';
 import { UserExamSpeakAnswerSchemaClass } from '../entities/user-exam-speak-answer.schema';
+import { ExamSpeakQuestion } from '../../../../../exam-speak-questions/domain/exam-speak-question';
+import { ExamSpeakQuestionSchemaClass } from '../../../../../exam-speak-questions/infrastructure/persistence/document/entities/exam-speak-question.schema';
 
 export class UserExamSpeakAnswerMapper {
   public static toDomain(
@@ -16,9 +16,9 @@ export class UserExamSpeakAnswerMapper {
     domainEntity.answer = raw.answer;
     const userExam = new UserExam();
     userExam.id = raw.userExam._id.toString();
-    const examSpeak = new ExamSpeak();
-    examSpeak.id = raw.examSpeak._id.toString();
-    domainEntity.examSpeak = examSpeak;
+    const question = new ExamSpeakQuestion();
+    question.id = raw.question._id.toString();
+    domainEntity.question = question;
     domainEntity.userExam = userExam;
     return domainEntity;
   }
@@ -34,9 +34,9 @@ export class UserExamSpeakAnswerMapper {
     const userExam = new UserExamSchemaClass();
     userExam._id = domainEntity.userExam.id;
     persistenceSchema.userExam = userExam;
-    const examSpeak = new ExamSpeakSchemaClass();
-    examSpeak._id = domainEntity.examSpeak.id;
-    persistenceSchema.examSpeak = examSpeak;
+    const question = new ExamSpeakQuestionSchemaClass();
+    question._id = domainEntity.question.id;
+    persistenceSchema.question = question;
     persistenceSchema.createdAt = domainEntity.createdAt;
     persistenceSchema.updatedAt = domainEntity.updatedAt;
 
