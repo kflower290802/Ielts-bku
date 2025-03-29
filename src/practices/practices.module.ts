@@ -16,6 +16,7 @@ import { UserPracticeListenAnswersModule } from '../user-practice-listen-answers
 import { PracticeListenAnswersModule } from '../practice-listen-answers/practice-listen-answers.module';
 import { UserPracticeWritingAnswersModule } from '../user-practice-writing-answers/user-practice-writing-answers.module';
 import { UserPracticeSpeakAnswersModule } from '../user-practice-speak-answers/user-practice-speak-answers.module';
+import { UserPracticeSessionsModule } from '../user-practice-sessions/user-practice-sessions.module';
 @Module({
   imports: [
     DocumentPracticePersistenceModule,
@@ -33,6 +34,7 @@ import { UserPracticeSpeakAnswersModule } from '../user-practice-speak-answers/u
     PracticeListenAnswersModule,
     UserPracticeWritingAnswersModule,
     UserPracticeSpeakAnswersModule,
+    UserPracticeSessionsModule,
   ],
   controllers: [PracticesController],
   providers: [PracticesService],

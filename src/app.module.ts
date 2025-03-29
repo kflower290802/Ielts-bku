@@ -102,8 +102,11 @@ import { UserPracticeWritingAnswersModule } from './user-practice-writing-answer
 
 import { UserPracticeSpeakAnswersModule } from './user-practice-speak-answers/user-practice-speak-answers.module';
 
+import { UserPracticeSessionsModule } from './user-practice-sessions/user-practice-sessions.module';
+
 @Module({
   imports: [
+    UserPracticeSessionsModule,
     UserPracticeSpeakAnswersModule,
     UserPracticeWritingAnswersModule,
     UserPracticeListenAnswersModule,

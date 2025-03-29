@@ -51,6 +51,13 @@ export class UserSchemaClass extends EntityDocumentHelper {
   })
   status: StatusEnum;
 
+  @Prop({
+    type: Number,
+    default: 0,
+    required: false,
+  })
+  target?: number;
+
   @Prop({ default: now })
   createdAt: Date;
 

@@ -14,6 +14,7 @@ export class UserMapper {
     if (raw.account) {
       domainEntity.account = AccountMapper.toDomain(raw.account);
     }
+    domainEntity.target = raw.target;
     domainEntity.createdAt = raw.createdAt;
     domainEntity.updatedAt = raw.updatedAt;
     domainEntity.deletedAt = raw.deletedAt;
@@ -28,6 +29,7 @@ export class UserMapper {
     persistenceSchema.email = domainEntity.email;
     persistenceSchema.name = domainEntity.name;
     persistenceSchema.status = domainEntity.status;
+    persistenceSchema.target = domainEntity.target;
     const accountSchema = new AccountSchemaClass();
     accountSchema._id = domainEntity.account.id;
     persistenceSchema.account = accountSchema;

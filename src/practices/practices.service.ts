@@ -29,7 +29,7 @@ import { PracticeListenAnswersService } from '../practice-listen-answers/practic
 import { UserPracticeWritingAnswersService } from '../user-practice-writing-answers/user-practice-writing-answers.service';
 import { UserPracticeSpeakAnswersService } from '../user-practice-speak-answers/user-practice-speak-answers.service';
 import { PracticeSpeakingQuestion } from '../practice-speaking-questions/domain/practice-speaking-question';
-
+import { UserPracticeSessionsService } from '../user-practice-sessions/user-practice-sessions.service';
 @Injectable()
 export class PracticesService {
   constructor(
@@ -49,6 +49,7 @@ export class PracticesService {
     private readonly practiceListenAnswersService: PracticeListenAnswersService,
     private readonly userPracticeWritingAnswersService: UserPracticeWritingAnswersService,
     private readonly userPracticeSpeakAnswersService: UserPracticeSpeakAnswersService,
+    private readonly userPracticeSessionsService: UserPracticeSessionsService,
   ) {}
 
   async create(createPracticeDto: CreatePracticeDto) {
@@ -128,9 +129,13 @@ export class PracticesService {
     if (!user) throw new NotFoundException('User not found');
     const practice = await this.practiceRepository.findById(id);
     if (!practice) throw new NotFoundException('Practice not found');
-    await this.userPracticesService.create({
+    const newUserPractice = await this.userPracticesService.create({
       user,
       practice,
+    });
+    await this.userPracticeSessionsService.create({
+      userPractice: newUserPractice,
+      startTime: new Date(),
     });
     return;
   }
@@ -217,6 +222,10 @@ export class PracticesService {
 
     await this.userPracticesService.update(userPractice.id, {
       isCompleted: true,
+    });
+
+    await this.userPracticeSessionsService.update(userPractice.id, {
+      endTime: new Date(),
     });
 
     return userPractice.id;
@@ -357,5 +366,8 @@ export class PracticesService {
         answer: answers.answer,
       });
     }
+    await this.userPracticeSessionsService.update(userPractice.id, {
+      endTime: new Date(),
+    });
   }
 }

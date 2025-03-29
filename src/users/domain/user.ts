@@ -36,6 +36,9 @@ export class User {
   phone: string | null;
 
   @ApiProperty()
+  target?: number;
+
+  @ApiProperty()
   status: StatusEnum;
 
   @ApiProperty()
