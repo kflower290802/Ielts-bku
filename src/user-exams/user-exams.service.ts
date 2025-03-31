@@ -97,6 +97,7 @@ export class UserExamsService {
   }
 
   async getScoresByDay(userId: User['id'], startTime: Date, endTime: Date) {
+    console.log({ startTime, endTime });
     return this.userExamRepository.getScoresByDay(userId, startTime, endTime);
   }
 }

@@ -356,7 +356,7 @@ export class ExamsService {
     }
 
     const correctScore = summary.filter((s) => s.isCorrect).length;
-    const score = (correctScore / summary.length) * 10;
+    const score = (correctScore / summary.length) * 10 || 0;
     await this.userExamsService.update(userExam.id, {
       score,
       progress: 100,

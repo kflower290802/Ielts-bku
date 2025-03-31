@@ -100,11 +100,13 @@ export class UserPracticeWritingAnswerDocumentRepository
   async finByUserPracticeId(
     id: string,
   ): Promise<NullableType<UserPracticeWritingAnswer>> {
-    const answer = await this.userPracticeWritingAnswerModel.findOne({
-      userPractice: {
-        _id: id,
-      },
-    });
+    const answer = await this.userPracticeWritingAnswerModel
+      .findOne({
+        userPractice: {
+          _id: id,
+        },
+      })
+      .sort({ updatedAt: -1 });
     return answer ? UserPracticeWritingAnswerMapper.toDomain(answer) : null;
   }
 }

@@ -108,9 +108,13 @@ export class UserPracticeSpeakAnswerDocumentRepository
   }
 
   async findByUserPractice(id: string): Promise<UserPracticeSpeakAnswer[]> {
-    const entityObjects = await this.userPracticeSpeakAnswerModel.find({
-      userPractice: id,
-    });
+    const entityObjects = await this.userPracticeSpeakAnswerModel
+      .find({
+        userPractice: {
+          _id: id,
+        },
+      })
+      .sort({ updatedAt: -1 });
     return entityObjects.map(UserPracticeSpeakAnswerMapper.toDomain);
   }
 }

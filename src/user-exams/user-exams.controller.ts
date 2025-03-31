@@ -59,6 +59,7 @@ export class UserExamsController {
     @Query('endTime') endTime: Date,
   ) {
     const userId = request.user.id;
+    console.log({ startTime, endTime });
     return this.userExamsService.getScoresByDay(
       userId,
       new Date(startTime),

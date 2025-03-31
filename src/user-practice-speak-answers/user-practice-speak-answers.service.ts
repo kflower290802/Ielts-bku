@@ -31,21 +31,23 @@ export class UserPracticeSpeakAnswersService {
         (dto) => dto.question.id === userAnswer.question.id,
       );
     });
-    const alreadyExist = createUserPracticeSpeakAnswerDto.filter(
-      (userAnswer) => {
+    const alreadyExist = createUserPracticeSpeakAnswerDto
+      .filter((userAnswer) => {
         return userAnswers.some(
           (dto) => dto.question.id === userAnswer.question.id,
         );
-      },
-    );
+      })
+      .map((userAnswer) => {
+        const id = userAnswers.find(
+          (answer) => answer.question.id === userAnswer.question.id,
+        )?.id;
+        return { ...userAnswer, id };
+      });
     await Promise.all(
       alreadyExist.map(async (answer) => {
-        await this.userPracticeSpeakAnswerRepository.update(
-          answer.question.id,
-          {
-            answer: answer.answer,
-          },
-        );
+        await this.userPracticeSpeakAnswerRepository.update(answer.id || '', {
+          answer: answer.answer,
+        });
       }),
     );
     return this.userPracticeSpeakAnswerRepository.createMany(notExist);
