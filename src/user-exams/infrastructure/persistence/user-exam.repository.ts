@@ -3,6 +3,7 @@ import { DeepPartial } from '../../../utils/types/deep-partial.type';
 import { NullableType } from '../../../utils/types/nullable.type';
 import { IPaginationOptions } from '../../../utils/types/pagination-options';
 import { UserExam } from '../../domain/user-exam';
+import { Exam } from '../../../exams/domain/exam';
 
 export abstract class UserExamRepository {
   abstract create(
@@ -32,4 +33,17 @@ export abstract class UserExamRepository {
     userId: User['id'],
     examId: UserExam['id'],
   ): Promise<NullableType<UserExam>>;
+
+  abstract getAvgScore(
+    userId: User['id'],
+    startTime: Date,
+    endTime: Date,
+    examIds: Exam['id'][],
+  ): Promise<number>;
+
+  abstract getScoresByDay(
+    userId: User['id'],
+    startTime: Date,
+    endTime: Date,
+  ): Promise<{ date: string; [key: string]: any }[]>;
 }

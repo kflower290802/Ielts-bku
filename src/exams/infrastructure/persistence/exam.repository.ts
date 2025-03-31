@@ -28,4 +28,6 @@ export abstract class ExamRepository {
   abstract remove(id: Exam['id']): Promise<void>;
 
   abstract findYearsExam(): Promise<number[]>;
+
+  abstract findAllExams(): Promise<Exam[]>;
 }

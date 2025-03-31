@@ -472,4 +472,7 @@ export class ExamsService {
       score: userExam.score,
     };
   }
+  findAllExams() {
+    return this.examRepository.findAllExams();
+  }
 }

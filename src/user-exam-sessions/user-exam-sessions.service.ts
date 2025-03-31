@@ -6,18 +6,17 @@ import { IPaginationOptions } from '../utils/types/pagination-options';
 import { UserExamSession } from './domain/user-exam-session';
 import { UserExamsService } from '../user-exams/user-exams.service';
 import { UserExam } from '../user-exams/domain/user-exam';
-
+import { User } from '../users/domain/user';
+import { UserPracticeSessionsService } from '../user-practice-sessions/user-practice-sessions.service';
 @Injectable()
 export class UserExamSessionsService {
   constructor(
     private readonly userExamSessionRepository: UserExamSessionRepository,
     private readonly userExamsService: UserExamsService,
+    private readonly userPracticeSessionsService: UserPracticeSessionsService,
   ) {}
 
   async create(createUserExamSessionDto: CreateUserExamSessionDto) {
-    // Do not remove comment below.
-    // <creating-property />
-
     const { examUserId, ...rest } = createUserExamSessionDto;
 
     const userExam = await this.userExamsService.findById(examUserId);
@@ -76,5 +75,24 @@ export class UserExamSessionsService {
         session.startTime.getTime();
       return total + sessionTime;
     }, 0);
+  }
+
+  async getTimeSpentByDay(userId: User['id'], startTime: Date, endTime: Date) {
+    const totalExamTimeSpent =
+      await this.userExamSessionRepository.getTimeSpentByDay(
+        userId,
+        startTime,
+        endTime,
+      );
+    const totalPracticeTimeSpent =
+      await this.userPracticeSessionsService.getTimeSpentByDay(
+        userId,
+        startTime,
+        endTime,
+      );
+    return totalExamTimeSpent.map((timeSpent, index) => ({
+      ...timeSpent,
+      timeSpent: timeSpent.timeSpent + totalPracticeTimeSpent[index].timeSpent,
+    }));
   }
 }

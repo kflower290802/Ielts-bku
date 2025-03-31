@@ -1,6 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateUserExamWritingDto } from './dto/create-user-exam-writing.dto';
-import { UpdateUserExamWritingDto } from './dto/update-user-exam-writing.dto';
 import { UserExamWritingRepository } from './infrastructure/persistence/user-exam-writing.repository';
 import { IPaginationOptions } from '../utils/types/pagination-options';
 import { UserExamWriting } from './domain/user-exam-writing';
@@ -68,20 +67,6 @@ export class UserExamWritingsService {
 
   findByIds(ids: UserExamWriting['id'][]) {
     return this.userExamWritingRepository.findByIds(ids);
-  }
-
-  async update(
-    id: UserExamWriting['id'],
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    updateUserExamWritingDto: UpdateUserExamWritingDto,
-  ) {
-    // Do not remove comment below.
-    // <updating-property />
-
-    return this.userExamWritingRepository.update(id, {
-      // Do not remove comment below.
-      // <updating-property-payload />
-    });
   }
 
   remove(id: UserExamWriting['id']) {

@@ -1,4 +1,5 @@
 import { UserExam } from '../../../user-exams/domain/user-exam';
+import { User } from '../../../users/domain/user';
 import { DeepPartial } from '../../../utils/types/deep-partial.type';
 import { NullableType } from '../../../utils/types/nullable.type';
 import { IPaginationOptions } from '../../../utils/types/pagination-options';
@@ -35,4 +36,10 @@ export abstract class UserExamSessionRepository {
   abstract findLastSessionByUserExamId(
     userExamId: UserExam['id'],
   ): Promise<NullableType<UserExamSession>>;
+
+  abstract getTimeSpentByDay(
+    userId: User['id'],
+    startTime: Date,
+    endTime: Date,
+  ): Promise<{ date: string; [key: string]: any }[]>;
 }

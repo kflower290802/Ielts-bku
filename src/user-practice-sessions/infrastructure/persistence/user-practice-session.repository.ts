@@ -1,3 +1,4 @@
+import { User } from '../../../users/domain/user';
 import { DeepPartial } from '../../../utils/types/deep-partial.type';
 import { NullableType } from '../../../utils/types/nullable.type';
 import { IPaginationOptions } from '../../../utils/types/pagination-options';
@@ -28,4 +29,10 @@ export abstract class UserPracticeSessionRepository {
   ): Promise<UserPracticeSession | null>;
 
   abstract remove(id: UserPracticeSession['id']): Promise<void>;
+
+  abstract getTimeSpentByDay(
+    userId: User['id'],
+    startTime: Date,
+    endTime: Date,
+  ): Promise<{ date: string; [key: string]: any }[]>;
 }

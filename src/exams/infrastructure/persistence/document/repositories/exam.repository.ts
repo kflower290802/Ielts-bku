@@ -89,4 +89,9 @@ export class examDocumentRepository implements ExamRepository {
   findYearsExam(): Promise<number[]> {
     return this.examModel.distinct('year').sort('year');
   }
+
+  async findAllExams(): Promise<Exam[]> {
+    const entities = await this.examModel.find();
+    return entities.map(ExamMapper.toDomain);
+  }
 }

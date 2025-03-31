@@ -8,6 +8,8 @@ import { UserExamSession } from '../../../../domain/user-exam-session';
 import { UserExamSessionMapper } from '../mappers/user-exam-session.mapper';
 import { IPaginationOptions } from '../../../../../utils/types/pagination-options';
 import { UserExam } from '../../../../../user-exams/domain/user-exam';
+import { User } from '../../../../../users/domain/user';
+import { getAllDatesBetween } from '../../../../../utils/time';
 
 @Injectable()
 export class UserExamSessionDocumentRepository
@@ -108,5 +110,36 @@ export class UserExamSessionDocumentRepository
       })
       .sort({ createdAt: -1 });
     return entity ? UserExamSessionMapper.toDomain(entity) : null;
+  }
+
+  async getTimeSpentByDay(
+    userId: User['id'],
+    startTime: Date,
+    endTime: Date,
+  ): Promise<{ date: string; [key: string]: any }[]> {
+    const entityObjects = await this.userExamSessionModel.find({
+      user: {
+        _id: userId,
+      },
+    });
+    const allDays = getAllDatesBetween(startTime, endTime);
+    const dayTimeSpentMap = new Map<string, number>();
+    allDays.forEach((day) => {
+      dayTimeSpentMap.set(day, 0);
+    });
+    entityObjects.forEach((session) => {
+      const sessionDate = session.createdAt.toISOString().split('T')[0];
+      const timeSpent = session.endTime
+        ? session.endTime.getTime() - session.startTime.getTime()
+        : 0;
+      dayTimeSpentMap.set(
+        sessionDate,
+        (dayTimeSpentMap.get(sessionDate) || 0) + timeSpent,
+      );
+    });
+    return Array.from(dayTimeSpentMap.entries()).map(([date, timeSpent]) => ({
+      date,
+      timeSpent,
+    }));
   }
 }

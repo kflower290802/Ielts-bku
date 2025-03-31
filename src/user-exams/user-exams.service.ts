@@ -12,7 +12,7 @@ import { UserExam } from './domain/user-exam';
 import { UsersService } from '../users/users.service';
 import { ExamsService } from '../exams/exams.service';
 import { User } from '../users/domain/user';
-
+import { ExamType } from '../exams/exams.type';
 @Injectable()
 export class UserExamsService {
   constructor(
@@ -23,8 +23,6 @@ export class UserExamsService {
   ) {}
 
   async create(createUserExamDto: CreateUserExamDto) {
-    // Do not remove comment below.
-    // <creating-property />
     const { userId, examId, ...rest } = createUserExamDto;
     const user = await this.usersService.findById(userId);
     if (!user) throw new BadRequestException('User not found');
@@ -33,8 +31,6 @@ export class UserExamsService {
 
     if (!exam) throw new BadRequestException('Exam not found');
     return this.userExamRepository.create({
-      // Do not remove comment below.
-      // <creating-property-payload />
       user,
       exam,
       ...rest,
@@ -76,5 +72,35 @@ export class UserExamsService {
 
   findByUserId(id: User['id']) {
     return this.userExamRepository.findByUserId(id);
+  }
+
+  async getAvgScore(userId: User['id'], startTime: Date, endTime: Date) {
+    const exams = await this.examsService.findAllExams();
+    const examReadingIds = exams
+      .filter((exam) => exam.type === ExamType.Reading)
+      .map((exam) => exam.id);
+    const examListeningIds = exams
+      .filter((exam) => exam.type === ExamType.Listening)
+      .map((exam) => exam.id);
+    const reading = await this.userExamRepository.getAvgScore(
+      userId,
+      startTime,
+      endTime,
+      examReadingIds,
+    );
+    const listening = await this.userExamRepository.getAvgScore(
+      userId,
+      startTime,
+      endTime,
+      examListeningIds,
+    );
+    return {
+      reading,
+      listening,
+    };
+  }
+
+  async getScoresByDay(userId: User['id'], startTime: Date, endTime: Date) {
+    return this.userExamRepository.getScoresByDay(userId, startTime, endTime);
   }
 }

@@ -8,6 +8,7 @@ import {
   Delete,
   UseGuards,
   Request,
+  Query,
   // Query,
 } from '@nestjs/common';
 import { UserExamsService } from './user-exams.service';
@@ -18,6 +19,7 @@ import {
   ApiCreatedResponse,
   ApiOkResponse,
   ApiParam,
+  ApiQuery,
   ApiTags,
 } from '@nestjs/swagger';
 import { UserExam } from './domain/user-exam';
@@ -41,6 +43,30 @@ export class UserExamsController {
     return this.userExamsService.create(createUserExamDto);
   }
 
+  @Get('scores-by-period-day')
+  @ApiQuery({
+    name: 'startTime',
+    type: Date,
+    required: true,
+  })
+  @ApiQuery({
+    name: 'endTime',
+    type: Date,
+    required: true,
+  })
+  getScoresByDay(
+    @Request() request,
+    @Query('startTime') startTime: Date,
+    @Query('endTime') endTime: Date,
+  ) {
+    const userId = request.user.id;
+    return this.userExamsService.getScoresByDay(
+      userId,
+      new Date(startTime),
+      new Date(endTime),
+    );
+  }
+
   @Get('exam/:id')
   @ApiParam({
     name: 'id',
@@ -55,6 +81,25 @@ export class UserExamsController {
     return this.userExamsService.findByUserIdAndExamId(userId, id);
   }
 
+  @Get('avg-score')
+  @ApiQuery({
+    name: 'startTime',
+    type: Date,
+    required: true,
+  })
+  @ApiQuery({
+    name: 'endTime',
+    type: Date,
+    required: true,
+  })
+  getAvgScore(
+    @Request() request,
+    @Query('startTime') startTime: Date,
+    @Query('endTime') endTime: Date,
+  ) {
+    const userId = request.user.id;
+    return this.userExamsService.getAvgScore(userId, startTime, endTime);
+  }
   @Get(':id')
   @ApiParam({
     name: 'id',

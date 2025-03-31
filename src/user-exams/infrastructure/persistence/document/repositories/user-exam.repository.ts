@@ -8,6 +8,8 @@ import { UserExam } from '../../../../domain/user-exam';
 import { UserExamMapper } from '../mappers/user-exam.mapper';
 import { IPaginationOptions } from '../../../../../utils/types/pagination-options';
 import { User } from '../../../../../users/domain/user';
+import { Exam } from '../../../../../exams/domain/exam';
+import { getAllDatesBetween } from '../../../../../utils/time';
 
 @Injectable()
 export class UserExamDocumentRepository implements UserExamRepository {
@@ -109,5 +111,133 @@ export class UserExamDocumentRepository implements UserExamRepository {
       .sort({ createdAt: -1 })
       .populate('exam');
     return userExam ? UserExamMapper.toDomain(userExam) : null;
+  }
+
+  async getAvgScore(
+    userId: User['id'],
+    startTime: Date,
+    endTime: Date,
+    examIds: Exam['id'][],
+  ): Promise<number> {
+    const userExam = await this.userExamModel.find({
+      user: {
+        _id: userId,
+      },
+      updatedAt: {
+        $gte: startTime,
+        $lte: endTime,
+      },
+      'exam._id': {
+        $in: examIds,
+      },
+      progress: 100,
+    });
+    return parseFloat(
+      (
+        userExam.reduce((acc, curr) => acc + curr.score, 0) / userExam.length
+      ).toFixed(1),
+    );
+  }
+
+  async getScoresByDayAndExamIds(
+    userId: User['id'],
+    startTime: Date,
+    endTime: Date,
+  ): Promise<{ score: number }[]> {
+    const userExam = await this.userExamModel.find({
+      user: {
+        _id: userId,
+      },
+      updatedAt: {
+        $gte: startTime,
+        $lte: endTime,
+      },
+      progress: 100,
+    });
+    return userExam.map((exam) => ({
+      score: exam.score,
+    }));
+  }
+
+  async getScoresByDay(
+    userId: User['id'],
+    startTime: Date,
+    endTime: Date,
+  ): Promise<{ date: string; [key: string]: any }[]> {
+    const userExams = await this.userExamModel
+      .find({
+        user: {
+          _id: userId,
+        },
+        updatedAt: {
+          $gte: startTime,
+          $lte: endTime,
+        },
+        progress: 100,
+      })
+      .populate('exam');
+
+    const allDays = getAllDatesBetween(startTime, endTime);
+    const dayScoreMap = new Map<
+      string,
+      Map<string, { total: number; count: number }>
+    >();
+
+    allDays.forEach((day) => {
+      dayScoreMap.set(day, new Map<string, { total: number; count: number }>());
+    });
+
+    userExams.forEach((exam) => {
+      console.log({ exam });
+      const examDate = exam.updatedAt.toISOString().split('T')[0];
+      const examType = exam.exam.type as string;
+
+      if (!dayScoreMap.has(examDate)) {
+        dayScoreMap.set(
+          examDate,
+          new Map<string, { total: number; count: number }>(),
+        );
+      }
+
+      if (!dayScoreMap.get(examDate)?.has(examType)) {
+        dayScoreMap.get(examDate)?.set(examType, { total: 0, count: 0 });
+      }
+
+      const current = dayScoreMap.get(examDate)?.get(examType);
+      if (current) {
+        current.total += exam.score;
+        current.count += 1;
+      }
+    });
+
+    const result: { date: string; [key: string]: any }[] = [];
+
+    const allTypes = new Set<string>();
+    userExams.forEach((exam) => {
+      if (exam.exam && exam.exam.type) {
+        allTypes.add(exam.exam.type as string);
+      }
+    });
+
+    dayScoreMap.forEach((typeMap, date) => {
+      const dayData: { date: string; [key: string]: any } = { date };
+
+      allTypes.forEach((type) => {
+        const scoreData = typeMap.get(type);
+
+        if (scoreData && scoreData.count > 0) {
+          dayData[type] =
+            Math.round((scoreData.total / scoreData.count) * 10) / 10;
+        } else {
+          dayData[type] = 0;
+        }
+      });
+
+      result.push(dayData);
+    });
+
+    return result.sort((a, b) => {
+      return new Date(a.date).getTime() - new Date(b.date).getTime();
+    });
   }
 }

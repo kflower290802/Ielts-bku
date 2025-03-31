@@ -7,6 +7,8 @@ import { UserPracticeSessionRepository } from '../../user-practice-session.repos
 import { UserPracticeSession } from '../../../../domain/user-practice-session';
 import { UserPracticeSessionMapper } from '../mappers/user-practice-session.mapper';
 import { IPaginationOptions } from '../../../../../utils/types/pagination-options';
+import { User } from '../../../../../users/domain/user';
+import { getAllDatesBetween } from '../../../../../utils/time';
 
 @Injectable()
 export class UserPracticeSessionDocumentRepository
@@ -89,5 +91,36 @@ export class UserPracticeSessionDocumentRepository
 
   async remove(id: UserPracticeSession['id']): Promise<void> {
     await this.userPracticeSessionModel.deleteOne({ _id: id });
+  }
+
+  async getTimeSpentByDay(
+    userId: User['id'],
+    startTime: Date,
+    endTime: Date,
+  ): Promise<{ date: string; [key: string]: any }[]> {
+    const userPracticeSessions = await this.userPracticeSessionModel.find({
+      user: {
+        _id: userId,
+      },
+    });
+    const allDays = getAllDatesBetween(startTime, endTime);
+    const dayTimeSpentMap = new Map<string, number>();
+    allDays.forEach((day) => {
+      dayTimeSpentMap.set(day, 0);
+    });
+    userPracticeSessions.forEach((session) => {
+      const sessionDate = session.createdAt.toISOString().split('T')[0];
+      const timeSpent = session.endTime
+        ? session.endTime.getTime() - session.startTime.getTime()
+        : 0;
+      dayTimeSpentMap.set(
+        sessionDate,
+        (dayTimeSpentMap.get(sessionDate) || 0) + timeSpent,
+      );
+    });
+    return Array.from(dayTimeSpentMap.entries()).map(([date, timeSpent]) => ({
+      date,
+      timeSpent,
+    }));
   }
 }
