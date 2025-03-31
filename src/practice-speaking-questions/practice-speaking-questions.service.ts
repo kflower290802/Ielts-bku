@@ -46,6 +46,11 @@ export class PracticeSpeakingQuestionsService {
       );
       return { ...question, answer: answer?.answer || '' };
     });
-    return { ...practice, questions: questionsWithAnswers };
+    return practice.map((q, index) => {
+      return {
+        ...q,
+        question: questionsWithAnswers[index],
+      };
+    });
   }
 }

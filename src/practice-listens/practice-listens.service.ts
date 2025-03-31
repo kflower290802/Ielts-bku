@@ -50,7 +50,6 @@ export class PracticeListensService {
       await this.userPracticeListenAnswersService.findByUserPracticeId(
         userPractice.id,
       );
-    console.log({ types });
     const typesAnswers = types.map((type) => ({
       ...type,
       questions: type.questions.map((question) => ({

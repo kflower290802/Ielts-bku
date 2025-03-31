@@ -10,6 +10,7 @@ import { IPaginationOptions } from '../../../../../utils/types/pagination-option
 import { User } from '../../../../../users/domain/user';
 import { Exam } from '../../../../../exams/domain/exam';
 import { getAllDatesBetween } from '../../../../../utils/time';
+import { addDays } from 'date-fns';
 
 @Injectable()
 export class UserExamDocumentRepository implements UserExamRepository {
@@ -155,18 +156,23 @@ export class UserExamDocumentRepository implements UserExamRepository {
 
   async getScoresByDay(
     userId: User['id'],
+    startDate: Date,
+    endDate: Date,
   ): Promise<{ date: string; [key: string]: any }[]> {
+    const startTime = addDays(startDate, 1);
     const userExams = await this.userExamModel
       .find({
         user: {
           _id: userId,
         },
+        updatedAt: {
+          $gt: startTime,
+          $lt: endDate,
+        },
         progress: 100,
       })
       .populate('exam');
-    const startDate = userExams[0].updatedAt;
-    const endDate = userExams[userExams.length - 1].updatedAt;
-    const allDays = getAllDatesBetween(startDate, endDate);
+    const allDays = getAllDatesBetween(startTime, endDate);
     const dayScoreMap = new Map<
       string,
       Map<string, { total: number; count: number }>
@@ -177,7 +183,6 @@ export class UserExamDocumentRepository implements UserExamRepository {
     });
 
     userExams.forEach((exam) => {
-      console.log({ exam });
       const examDate = exam.updatedAt.toISOString().split('T')[0];
       const examType = exam.exam.type as string;
 

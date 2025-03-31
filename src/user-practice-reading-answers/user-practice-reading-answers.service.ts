@@ -25,7 +25,6 @@ export class UserPracticeReadingAnswersService {
           createUserPracticeReadingAnswerDto[0].userPractice.id,
         )
       : [];
-    console.log({ userAnswers });
     const notExist = createUserPracticeReadingAnswerDto.filter((userAnswer) => {
       return !userAnswers.some(
         (dto) => dto.question.id === userAnswer.question.id,

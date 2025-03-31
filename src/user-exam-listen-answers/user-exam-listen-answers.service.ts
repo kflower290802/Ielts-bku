@@ -90,12 +90,10 @@ export class UserExamListenAnswersService {
   }
 
   async findByUserIdAndExamId(userId: string, examId: string) {
-    console.log({ userId, examId });
     const userExam = await this.userExamsService.findByUserIdAndExamId(
       userId,
       examId,
     );
-    console.log({ userExam });
     if (!userExam) throw new NotFoundException('User exam not found');
     return this.userExamListenAnswerRepository.findByUserExamId(userExam.id);
   }

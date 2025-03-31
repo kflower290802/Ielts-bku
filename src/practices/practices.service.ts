@@ -224,9 +224,9 @@ export class PracticesService {
       isCompleted: true,
     });
 
-    await this.userPracticeSessionsService.update(userPractice.id, {
-      endTime: new Date(),
-    });
+    // await this.userPracticeSessionsService.update(userPractice.id, {
+    //   endTime: new Date(),
+    // });
 
     return userPractice.id;
   }
@@ -366,8 +366,8 @@ export class PracticesService {
         answer: answers.answer,
       });
     }
-    await this.userPracticeSessionsService.update(userPractice.id, {
-      endTime: new Date(),
-    });
+    // await this.userPracticeSessionsService.update(userPractice.id, {
+    //   endTime: new Date(),
+    // });
   }
 }
