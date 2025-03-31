@@ -30,7 +30,7 @@ export class UserExamSpeakAnswerSchemaClass extends EntityDocumentHelper {
   })
   question: ExamSpeakQuestionSchemaClass;
 
-  @Prop({ required: true, type: String })
+  @Prop({ required: false, type: String })
   answer: string;
 
   @Prop({ default: now })
