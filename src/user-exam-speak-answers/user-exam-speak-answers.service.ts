@@ -57,14 +57,21 @@ export class UserExamSpeakAnswersService {
         (userAnswer) => userAnswer.question.id === a.questionId,
       );
     });
-    const alreadyExist = answers.filter((a) => {
-      return userAnswers.some(
-        (userAnswer) => userAnswer.question.id === a.questionId,
-      );
-    });
+    const alreadyExist = answers
+      .filter((a) => {
+        return userAnswers.some(
+          (userAnswer) => userAnswer.question.id === a.questionId,
+        );
+      })
+      .map((userAnswer) => {
+        const id = userAnswers.find(
+          (answer) => answer.question.id === userAnswer.question.id,
+        )?.id;
+        return { ...userAnswer, id };
+      });
     await Promise.all(
       alreadyExist.map(async (answer) => {
-        await this.userExamSpeakAnswerRepository.update(answer.question.id, {
+        await this.userExamSpeakAnswerRepository.update(answer.id || '', {
           answer: answer.answer,
         });
       }),

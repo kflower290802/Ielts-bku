@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { CreatePracticeListenTypeDto } from './dto/create-practice-listen-type.dto';
-import { UpdatePracticeListenTypeDto } from './dto/update-practice-listen-type.dto';
 import { PracticeListenTypeRepository } from './infrastructure/persistence/practice-listen-type.repository';
 import { IPaginationOptions } from '../utils/types/pagination-options';
 import { PracticeListenType } from './domain/practice-listen-type';
@@ -43,20 +42,6 @@ export class PracticeListenTypesService {
 
   findByIds(ids: PracticeListenType['id'][]) {
     return this.practiceListenTypeRepository.findByIds(ids);
-  }
-
-  async update(
-    id: PracticeListenType['id'],
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    updatePracticeListenTypeDto: UpdatePracticeListenTypeDto,
-  ) {
-    // Do not remove comment below.
-    // <updating-property />
-
-    return this.practiceListenTypeRepository.update(id, {
-      // Do not remove comment below.
-      // <updating-property-payload />
-    });
   }
 
   remove(id: PracticeListenType['id']) {

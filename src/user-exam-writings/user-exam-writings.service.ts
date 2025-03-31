@@ -23,11 +23,10 @@ export class UserExamWritingsService {
       examId,
     );
     if (!userExam) throw new NotFoundException('User exam not found');
-    const examWriting = new ExamWriting();
-
     return Promise.all(
       createUserExamWritingDto.map(async (dto) => {
         const { answer, examWritingId } = dto;
+        const examWriting = new ExamWriting();
         examWriting.id = examWritingId;
         const userExamWriting =
           await this.userExamWritingRepository.findByUserExamIdAndExamWritingId(
