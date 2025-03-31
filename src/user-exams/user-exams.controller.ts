@@ -9,7 +9,6 @@ import {
   UseGuards,
   Request,
   Query,
-  // Query,
 } from '@nestjs/common';
 import { UserExamsService } from './user-exams.service';
 import { CreateUserExamDto } from './dto/create-user-exam.dto';
@@ -82,23 +81,9 @@ export class UserExamsController {
   }
 
   @Get('avg-score')
-  @ApiQuery({
-    name: 'startTime',
-    type: Date,
-    required: true,
-  })
-  @ApiQuery({
-    name: 'endTime',
-    type: Date,
-    required: true,
-  })
-  getAvgScore(
-    @Request() request,
-    @Query('startTime') startTime: Date,
-    @Query('endTime') endTime: Date,
-  ) {
+  getAvgScore(@Request() request) {
     const userId = request.user.id;
-    return this.userExamsService.getAvgScore(userId, startTime, endTime);
+    return this.userExamsService.getAvgScore(userId);
   }
   @Get(':id')
   @ApiParam({

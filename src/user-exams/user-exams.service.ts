@@ -74,7 +74,7 @@ export class UserExamsService {
     return this.userExamRepository.findByUserId(id);
   }
 
-  async getAvgScore(userId: User['id'], startTime: Date, endTime: Date) {
+  async getAvgScore(userId: User['id']) {
     const exams = await this.examsService.findAllExams();
     const examReadingIds = exams
       .filter((exam) => exam.type === ExamType.Reading)
@@ -84,14 +84,10 @@ export class UserExamsService {
       .map((exam) => exam.id);
     const reading = await this.userExamRepository.getAvgScore(
       userId,
-      startTime,
-      endTime,
       examReadingIds,
     );
     const listening = await this.userExamRepository.getAvgScore(
       userId,
-      startTime,
-      endTime,
       examListeningIds,
     );
     return {

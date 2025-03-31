@@ -115,17 +115,11 @@ export class UserExamDocumentRepository implements UserExamRepository {
 
   async getAvgScore(
     userId: User['id'],
-    startTime: Date,
-    endTime: Date,
     examIds: Exam['id'][],
   ): Promise<number> {
     const userExam = await this.userExamModel.find({
       user: {
         _id: userId,
-      },
-      updatedAt: {
-        $gte: startTime,
-        $lte: endTime,
       },
       'exam._id': {
         $in: examIds,
@@ -161,23 +155,18 @@ export class UserExamDocumentRepository implements UserExamRepository {
 
   async getScoresByDay(
     userId: User['id'],
-    startTime: Date,
-    endTime: Date,
   ): Promise<{ date: string; [key: string]: any }[]> {
     const userExams = await this.userExamModel
       .find({
         user: {
           _id: userId,
         },
-        updatedAt: {
-          $gte: startTime,
-          $lte: endTime,
-        },
         progress: 100,
       })
       .populate('exam');
-
-    const allDays = getAllDatesBetween(startTime, endTime);
+    const startDate = userExams[0].updatedAt;
+    const endDate = userExams[userExams.length - 1].updatedAt;
+    const allDays = getAllDatesBetween(startDate, endDate);
     const dayScoreMap = new Map<
       string,
       Map<string, { total: number; count: number }>

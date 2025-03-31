@@ -36,8 +36,6 @@ export abstract class UserExamRepository {
 
   abstract getAvgScore(
     userId: User['id'],
-    startTime: Date,
-    endTime: Date,
     examIds: Exam['id'][],
   ): Promise<number>;
 
