@@ -4,6 +4,7 @@ import { DeepPartial } from '../../../utils/types/deep-partial.type';
 import { NullableType } from '../../../utils/types/nullable.type';
 import { IPaginationOptions } from '../../../utils/types/pagination-options';
 import { UserExamSession } from '../../domain/user-exam-session';
+import { UserExamSessionSchemaClass } from './document/entities/user-exam-session.schema';
 
 export abstract class UserExamSessionRepository {
   abstract create(
@@ -42,4 +43,16 @@ export abstract class UserExamSessionRepository {
     startTime: Date,
     endTime: Date,
   ): Promise<{ date: string; [key: string]: any }[]>;
+
+  abstract getTimeSpentByUserId(
+    userId: User['id'],
+    startTime: Date,
+    endTime: Date,
+  ): Promise<{ date: string; [key: string]: any }[]>;
+
+  abstract findByUserExamIds(
+    userExamIds: UserExam['id'][],
+    startTime: Date,
+    endTime: Date,
+  ): Promise<UserExamSessionSchemaClass[]>;
 }

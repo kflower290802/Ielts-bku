@@ -8,6 +8,7 @@ import { UserExamsService } from '../user-exams/user-exams.service';
 import { UserExam } from '../user-exams/domain/user-exam';
 import { User } from '../users/domain/user';
 import { UserPracticeSessionsService } from '../user-practice-sessions/user-practice-sessions.service';
+import { getAllDatesBetween } from '../utils/time';
 @Injectable()
 export class UserExamSessionsService {
   constructor(
@@ -94,5 +95,67 @@ export class UserExamSessionsService {
       ...timeSpent,
       timeSpent: timeSpent.timeSpent + totalPracticeTimeSpent[index].timeSpent,
     }));
+  }
+  async getTimeSpentByUserId(
+    userId: User['id'],
+    startTime: Date,
+    endTime: Date,
+  ) {
+    const userExams = await this.userExamsService.findUserExamsByUserId(userId);
+    const userExamIds = userExams.map((userExam) => userExam.id);
+    const userExamSessions =
+      await this.userExamSessionRepository.findByUserExamIds(
+        userExamIds,
+        startTime,
+        endTime,
+      );
+    const allDays = getAllDatesBetween(startTime, endTime);
+    const dayScoreMap = new Map<string, Map<string, { total: number }>>();
+
+    allDays.forEach((day) => {
+      dayScoreMap.set(day, new Map<string, { total: number }>());
+    });
+    userExamSessions.forEach((session) => {
+      const examDate = session.createdAt.toISOString().split('T')[0];
+      const examType = session.userExam.exam.type;
+      if (!dayScoreMap.has(examDate)) {
+        dayScoreMap.set(examDate, new Map<string, { total: number }>());
+      }
+
+      if (!dayScoreMap.get(examDate)?.has(examType)) {
+        dayScoreMap.get(examDate)?.set(examType, { total: 0 });
+      }
+      const current = dayScoreMap.get(examDate)?.get(examType);
+      if (current) {
+        current.total +=
+          (session.endTime?.getTime() || new Date().getTime()) -
+          session.startTime.getTime();
+      }
+    });
+
+    const result: { date: string; [key: string]: any }[] = [];
+
+    const allTypes = new Set<string>();
+    userExams.forEach((exam) => {
+      if (exam.exam && exam.exam.type) {
+        allTypes.add(exam.exam.type);
+      }
+    });
+
+    dayScoreMap.forEach((typeMap, date) => {
+      const dayData: { date: string; [key: string]: any } = { date };
+
+      allTypes.forEach((type) => {
+        const scoreData = typeMap.get(type);
+        dayData[type] = scoreData?.total || 0;
+      });
+
+      result.push(dayData);
+    });
+
+    const sortedResult = result.sort((a, b) => {
+      return new Date(a.date).getTime() - new Date(b.date).getTime();
+    });
+    return sortedResult;
   }
 }

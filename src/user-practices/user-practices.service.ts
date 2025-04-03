@@ -56,4 +56,8 @@ export class UserPracticesService {
       userId,
     );
   }
+
+  findUserPracticesByUserId(userId: string) {
+    return this.userPracticeRepository.findUserPracticesByUserId(userId);
+  }
 }

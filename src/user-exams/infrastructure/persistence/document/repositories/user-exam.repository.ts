@@ -234,4 +234,15 @@ export class UserExamDocumentRepository implements UserExamRepository {
       return new Date(a.date).getTime() - new Date(b.date).getTime();
     });
   }
+
+  async findAllByUserId(userId: User['id']): Promise<UserExam[]> {
+    const entityObjects = await this.userExamModel
+      .find({
+        user: {
+          _id: userId,
+        },
+      })
+      .populate('exam');
+    return entityObjects.map(UserExamMapper.toDomain);
+  }
 }

@@ -6,7 +6,6 @@ import {
   Patch,
   Param,
   Delete,
-  // Query,
   UseInterceptors,
   UploadedFile,
 } from '@nestjs/common';
@@ -22,19 +21,12 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { Lesson } from './domain/lesson';
-// import {
-//   InfinityPaginationResponse,
-//   InfinityPaginationResponseDto,
-// } from '../utils/dto/infinity-pagination-response.dto';
-// import { infinityPagination } from '../utils/infinity-pagination';
-// import { FindAllLessonsDto } from './dto/find-all-lessons.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import path from 'path';
 
 @ApiTags('Lessons')
 @ApiBearerAuth()
-// @UseGuards(AuthGuard('jwt'))
 @Controller({
   path: 'lessons',
   version: '1',
@@ -67,30 +59,6 @@ export class LessonsController {
   ) {
     return this.lessonsService.create({ ...createLessonDto, video });
   }
-
-  // @Get()
-  // @ApiOkResponse({
-  //   type: InfinityPaginationResponse(Lesson),
-  // })
-  // async findAll(
-  //   @Query() query: FindAllLessonsDto,
-  // ): Promise<InfinityPaginationResponseDto<Lesson>> {
-  //   const page = query?.page ?? 1;
-  //   let limit = query?.limit ?? 10;
-  //   if (limit > 50) {
-  //     limit = 50;
-  //   }
-
-  //   return infinityPagination(
-  //     await this.lessonsService.findAllWithPagination({
-  //       paginationOptions: {
-  //         page,
-  //         limit,
-  //       },
-  //     }),
-  //     { page, limit },
-  //   );
-  // }
 
   @Get(':id')
   @ApiParam({

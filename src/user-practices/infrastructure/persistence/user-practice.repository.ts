@@ -41,4 +41,6 @@ export abstract class UserPracticeRepository {
     practice: string,
     userId: string,
   ): Promise<NullableType<UserPractice>>;
+
+  abstract findUserPracticesByUserId(userId: string): Promise<UserPractice[]>;
 }

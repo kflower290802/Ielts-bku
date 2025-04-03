@@ -9,6 +9,7 @@ import { UserPracticeSessionMapper } from '../mappers/user-practice-session.mapp
 import { IPaginationOptions } from '../../../../../utils/types/pagination-options';
 import { User } from '../../../../../users/domain/user';
 import { getAllDatesBetween } from '../../../../../utils/time';
+import { UserPractice } from '../../../../../user-practices/domain/user-practice';
 
 @Injectable()
 export class UserPracticeSessionDocumentRepository
@@ -122,5 +123,35 @@ export class UserPracticeSessionDocumentRepository
       date,
       timeSpent,
     }));
+  }
+
+  async findByUserPracticeId(
+    userPracticeId: UserPractice['id'],
+  ): Promise<NullableType<UserPracticeSession>> {
+    const entityObject = await this.userPracticeSessionModel
+      .findOne({
+        userPractice: userPracticeId,
+      })
+      .sort({ updatedAt: -1 });
+    return entityObject
+      ? UserPracticeSessionMapper.toDomain(entityObject)
+      : null;
+  }
+
+  async findByUserPracticeIds(
+    userPracticeIds: UserPractice['id'][],
+    startTime: Date,
+    endTime: Date,
+  ): Promise<UserPracticeSessionSchemaClass[]> {
+    return this.userPracticeSessionModel
+      .find({
+        userPractice: {
+          $in: userPracticeIds,
+        },
+        updatedAt: { $gte: startTime, $lte: endTime },
+      })
+      .populate({
+        path: 'userPractice',
+      });
   }
 }

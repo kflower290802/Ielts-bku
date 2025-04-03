@@ -223,10 +223,15 @@ export class PracticesService {
     await this.userPracticesService.update(userPractice.id, {
       isCompleted: true,
     });
-
-    // await this.userPracticeSessionsService.update(userPractice.id, {
-    //   endTime: new Date(),
-    // });
+    const userPracticeSession =
+      await this.userPracticeSessionsService.findByUserPracticeId(
+        userPractice.id,
+      );
+    if (userPracticeSession) {
+      await this.userPracticeSessionsService.update(userPracticeSession.id, {
+        endTime: new Date(),
+      });
+    }
 
     return userPractice.id;
   }
@@ -366,8 +371,14 @@ export class PracticesService {
         answer: answers.answer,
       });
     }
-    // await this.userPracticeSessionsService.update(userPractice.id, {
-    //   endTime: new Date(),
-    // });
+    const userPracticeSession =
+      await this.userPracticeSessionsService.findByUserPracticeId(
+        userPractice.id,
+      );
+    if (userPracticeSession) {
+      await this.userPracticeSessionsService.update(userPracticeSession.id, {
+        endTime: new Date(),
+      });
+    }
   }
 }

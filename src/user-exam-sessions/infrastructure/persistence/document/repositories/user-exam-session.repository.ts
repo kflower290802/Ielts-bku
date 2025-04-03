@@ -142,4 +142,55 @@ export class UserExamSessionDocumentRepository
       timeSpent,
     }));
   }
+
+  async getTimeSpentByUserId(
+    userId: User['id'],
+    startTime: Date,
+    endTime: Date,
+  ): Promise<{ date: string; [key: string]: any }[]> {
+    const entityObjects = await this.userExamSessionModel.find({
+      'userExam.user._id': userId,
+      startTime: { $gte: startTime },
+      endTime: { $lte: endTime },
+    });
+    const allDays = getAllDatesBetween(startTime, endTime);
+    const dayTimeSpentMap = new Map<string, number>();
+    allDays.forEach((day) => {
+      dayTimeSpentMap.set(day, 0);
+    });
+    entityObjects.forEach((session) => {
+      const sessionDate = session.createdAt.toISOString().split('T')[0];
+      const timeSpent = session.endTime
+        ? session.endTime.getTime() - session.startTime.getTime()
+        : 0;
+      dayTimeSpentMap.set(
+        sessionDate,
+        (dayTimeSpentMap.get(sessionDate) || 0) + timeSpent,
+      );
+    });
+    return Array.from(dayTimeSpentMap.entries()).map(([date, timeSpent]) => ({
+      date,
+      timeSpent,
+    }));
+  }
+
+  async findByUserExamIds(
+    userExamIds: UserExam['id'][],
+    startTime: Date,
+    endTime: Date,
+  ): Promise<UserExamSessionSchemaClass[]> {
+    return this.userExamSessionModel
+      .find({
+        'userExam._id': {
+          $in: userExamIds,
+        },
+        updatedAt: { $gte: startTime, $lte: endTime },
+      })
+      .populate({
+        path: 'userExam',
+        populate: {
+          path: 'exam',
+        },
+      });
+  }
 }

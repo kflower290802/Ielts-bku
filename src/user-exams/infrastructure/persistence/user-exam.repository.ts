@@ -44,4 +44,6 @@ export abstract class UserExamRepository {
     startTime: Date,
     endTime: Date,
   ): Promise<{ date: string; [key: string]: any }[]>;
+
+  abstract findAllByUserId(userId: User['id']): Promise<UserExam[]>;
 }

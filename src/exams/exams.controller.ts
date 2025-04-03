@@ -27,7 +27,7 @@ import { InfinityPaginationResponse } from '../utils/dto/infinity-pagination-res
 import { FindAllExamsDto } from './dto/find-all-exams.dto';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { SubmitExamDto } from './dto/submit-exam.dto';
-
+import { TimeSpentDto } from './dto/time-spent.dto';
 function paginateData(data: any[], page = 1, limit = 10) {
   // Tính toán vị trí bắt đầu và kết thúc của dữ liệu cần lấy
   const startIndex = (page - 1) * limit;
@@ -111,6 +111,17 @@ export class ExamsController {
   @ApiOkResponse({ type: [Number] })
   findYearsExam() {
     return this.examsService.findYearsExam();
+  }
+
+  @Get('time-spent')
+  @UseGuards(AuthGuard('jwt'))
+  getTimeSpentByUserId(
+    @Query() timeSpentDto: TimeSpentDto,
+    @Request() request,
+  ) {
+    const userId = request.user.id;
+    const { startTime, endTime } = timeSpentDto;
+    return this.examsService.getTimeSpentByUserId(userId, startTime, endTime);
   }
 
   @Get(':id')
