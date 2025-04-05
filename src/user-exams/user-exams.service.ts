@@ -13,6 +13,7 @@ import { UsersService } from '../users/users.service';
 import { ExamsService } from '../exams/exams.service';
 import { User } from '../users/domain/user';
 import { ExamType } from '../exams/exams.type';
+import { UserExamSessionsService } from '../user-exam-sessions/user-exam-sessions.service';
 @Injectable()
 export class UserExamsService {
   constructor(
@@ -20,6 +21,8 @@ export class UserExamsService {
     private readonly usersService: UsersService,
     @Inject(forwardRef(() => ExamsService))
     private readonly examsService: ExamsService,
+    @Inject(forwardRef(() => UserExamSessionsService))
+    private readonly userExamSessionsService: UserExamSessionsService,
   ) {}
 
   async create(createUserExamDto: CreateUserExamDto) {
@@ -102,5 +105,26 @@ export class UserExamsService {
 
   findUserExamsByUserId(userId: User['id']) {
     return this.userExamRepository.findAllByUserId(userId);
+  }
+
+  async getUserExamByUserIdWithPagination(userId: User['id']) {
+    const userExams =
+      await this.userExamRepository.findAllByUserIdWithPagination(userId, 5);
+    return Promise.all(
+      userExams.map(async (userExam) => {
+        const userExamSession =
+          await this.userExamSessionsService.findByUserExamId(userExam.id);
+        const startTime = userExamSession[0].startTime;
+        const endTime =
+          userExam.progress === 100
+            ? userExamSession[userExamSession.length - 1].endTime
+            : null;
+        return {
+          ...userExam,
+          startTime,
+          endTime,
+        };
+      }),
+    );
   }
 }

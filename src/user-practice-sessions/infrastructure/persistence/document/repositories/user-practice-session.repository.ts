@@ -154,4 +154,12 @@ export class UserPracticeSessionDocumentRepository
         path: 'userPractice',
       });
   }
+  async findAllByUserPracticeId(
+    userPracticeId: UserPractice['id'],
+  ): Promise<UserPracticeSession[]> {
+    const entityObjects = await this.userPracticeSessionModel.find({
+      userPractice: userPracticeId,
+    });
+    return entityObjects.map(UserPracticeSessionMapper.toDomain);
+  }
 }

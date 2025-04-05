@@ -1,4 +1,9 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  forwardRef,
+  Inject,
+  Injectable,
+} from '@nestjs/common';
 import { CreateUserExamSessionDto } from './dto/create-user-exam-session.dto';
 import { UpdateUserExamSessionDto } from './dto/update-user-exam-session.dto';
 import { UserExamSessionRepository } from './infrastructure/persistence/user-exam-session.repository';
@@ -13,6 +18,7 @@ import { getAllDatesBetween } from '../utils/time';
 export class UserExamSessionsService {
   constructor(
     private readonly userExamSessionRepository: UserExamSessionRepository,
+    @Inject(forwardRef(() => UserExamsService))
     private readonly userExamsService: UserExamsService,
     private readonly userPracticeSessionsService: UserPracticeSessionsService,
   ) {}
@@ -157,5 +163,9 @@ export class UserExamSessionsService {
       return new Date(a.date).getTime() - new Date(b.date).getTime();
     });
     return sortedResult;
+  }
+
+  findByUserExamId(userExamId: UserExam['id']) {
+    return this.userExamSessionRepository.findByUserExamId(userExamId);
   }
 }

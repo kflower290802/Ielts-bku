@@ -46,4 +46,8 @@ export abstract class UserPracticeSessionRepository {
     startTime: Date,
     endTime: Date,
   ): Promise<UserPracticeSessionSchemaClass[]>;
+
+  abstract findAllByUserPracticeId(
+    userPracticeId: UserPractice['id'],
+  ): Promise<UserPracticeSession[]>;
 }

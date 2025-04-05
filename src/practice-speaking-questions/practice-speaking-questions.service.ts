@@ -36,12 +36,10 @@ export class PracticeSpeakingQuestionsService {
     if (!userPractice) throw new NotFoundException('User practice not found');
     const questions =
       await this.practiceSpeakingQuestionRepository.findByPracticeId(id);
-    console.log({ userPractice });
     const answers =
       await this.userPracticeSpeakAnswersService.findByUserPracticeId(
         userPractice.id,
       );
-    console.log({ answers });
     const questionsWithAnswers = questions.map((question) => {
       const answer = answers.find(
         (answer) => answer.question.id === question.id,

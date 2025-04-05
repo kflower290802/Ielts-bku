@@ -149,4 +149,15 @@ export class UserPracticeDocumentRepository implements UserPracticeRepository {
       UserPracticeMapper.toDomain(entityObject),
     );
   }
+
+  async getUserPracticeByUserIdWithPagination(
+    userId: string,
+    limit = 5,
+  ): Promise<UserPractice[]> {
+    const entities = await this.userPracticeModel
+      .find({ user: { _id: userId } })
+      .populate('practice')
+      .limit(limit);
+    return entities.map((entity) => UserPracticeMapper.toDomain(entity));
+  }
 }

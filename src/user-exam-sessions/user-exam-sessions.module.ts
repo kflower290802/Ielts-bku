@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { UserExamSessionsService } from './user-exam-sessions.service';
 import { UserExamSessionsController } from './user-exam-sessions.controller';
 import { DocumentUserExamSessionPersistenceModule } from './infrastructure/persistence/document/document-persistence.module';
@@ -8,7 +8,7 @@ import { UserPracticeSessionsModule } from '../user-practice-sessions/user-pract
 @Module({
   imports: [
     DocumentUserExamSessionPersistenceModule,
-    UserExamsModule,
+    forwardRef(() => UserExamsModule),
     UserPracticeSessionsModule,
   ],
   controllers: [UserExamSessionsController],

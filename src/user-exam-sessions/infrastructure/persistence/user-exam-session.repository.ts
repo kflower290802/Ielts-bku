@@ -55,4 +55,8 @@ export abstract class UserExamSessionRepository {
     startTime: Date,
     endTime: Date,
   ): Promise<UserExamSessionSchemaClass[]>;
+
+  abstract findByUserExamId(
+    userExamId: UserExam['id'],
+  ): Promise<UserExamSession[]>;
 }

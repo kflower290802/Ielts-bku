@@ -193,4 +193,10 @@ export class UserExamSessionDocumentRepository
         },
       });
   }
+
+  async findByUserExamId(
+    userExamId: UserExam['id'],
+  ): Promise<UserExamSession[]> {
+    return this.userExamSessionModel.find({ userExam: { _id: userExamId } });
+  }
 }

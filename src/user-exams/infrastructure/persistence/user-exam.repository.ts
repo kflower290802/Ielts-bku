@@ -46,4 +46,9 @@ export abstract class UserExamRepository {
   ): Promise<{ date: string; [key: string]: any }[]>;
 
   abstract findAllByUserId(userId: User['id']): Promise<UserExam[]>;
+
+  abstract findAllByUserIdWithPagination(
+    userId: User['id'],
+    limit: number,
+  ): Promise<UserExam[]>;
 }

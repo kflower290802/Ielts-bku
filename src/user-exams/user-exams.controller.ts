@@ -59,7 +59,6 @@ export class UserExamsController {
     @Query('endTime') endTime: Date,
   ) {
     const userId = request.user.id;
-    console.log({ startTime, endTime });
     return this.userExamsService.getScoresByDay(
       userId,
       new Date(startTime),
@@ -81,6 +80,14 @@ export class UserExamsController {
     return this.userExamsService.findByUserIdAndExamId(userId, id);
   }
 
+  @Get('exam-recently')
+  @ApiOkResponse({
+    type: UserExam,
+  })
+  async getUserExamByUserId(@Request() request) {
+    const userId = request.user.id;
+    return this.userExamsService.getUserExamByUserIdWithPagination(userId);
+  }
   @Get('avg-score')
   getAvgScore(@Request() request) {
     const userId = request.user.id;

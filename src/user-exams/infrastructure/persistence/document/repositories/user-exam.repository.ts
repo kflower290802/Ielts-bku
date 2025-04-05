@@ -245,4 +245,19 @@ export class UserExamDocumentRepository implements UserExamRepository {
       .populate('exam');
     return entityObjects.map(UserExamMapper.toDomain);
   }
+
+  async findAllByUserIdWithPagination(
+    userId: User['id'],
+    limit = 5,
+  ): Promise<UserExam[]> {
+    const entityObjects = await this.userExamModel
+      .find({
+        user: {
+          _id: userId,
+        },
+      })
+      .populate('exam')
+      .limit(limit);
+    return entityObjects.map(UserExamMapper.toDomain);
+  }
 }

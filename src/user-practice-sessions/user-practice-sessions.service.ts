@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable, forwardRef } from '@nestjs/common';
 import { CreateUserPracticeSessionDto } from './dto/create-user-practice-session.dto';
 import { UpdateUserPracticeSessionDto } from './dto/update-user-practice-session.dto';
 import { UserPracticeSessionRepository } from './infrastructure/persistence/user-practice-session.repository';
@@ -12,6 +12,7 @@ import { getAllDatesBetween } from '../utils/time';
 export class UserPracticeSessionsService {
   constructor(
     private readonly userPracticeSessionRepository: UserPracticeSessionRepository,
+    @Inject(forwardRef(() => UserPracticesService))
     private readonly userPracticesService: UserPracticesService,
   ) {}
 
@@ -93,7 +94,6 @@ export class UserPracticeSessionsService {
 
     const allTypes = new Set<string>();
     userPractices.forEach((practice) => {
-      console.log(practice);
       if (practice.practice && practice.practice.type) {
         allTypes.add(practice.practice.type);
       }
@@ -104,7 +104,6 @@ export class UserPracticeSessionsService {
 
       allTypes.forEach((type) => {
         const scoreData = typeMap.get(type);
-        console.log(scoreData);
         dayData[type] = scoreData?.total || 0;
       });
 
@@ -113,5 +112,11 @@ export class UserPracticeSessionsService {
     return result.sort((a, b) => {
       return new Date(a.date).getTime() - new Date(b.date).getTime();
     });
+  }
+
+  findAllByUserPracticeId(userPracticeId: UserPractice['id']) {
+    return this.userPracticeSessionRepository.findAllByUserPracticeId(
+      userPracticeId,
+    );
   }
 }
