@@ -23,16 +23,10 @@ import { SubscriptionsModule } from './subscriptions/subscriptions.module';
 
 import { HistoriesModule } from './histories/histories.module';
 
-import { ExplainationsModule } from './explainations/explainations.module';
-
-import { ChoicesModule } from './choices/choices.module';
-
 import { BlogsModule } from './blogs/blogs.module';
 import { CloudinaryModule } from './cloudinary/cloudinary.module';
 
-import { FlashCardsModule } from './flash-cards/flash-cards.module';
 import { VideosModule } from './videos/videos.module';
-import { BlogLessonsModule } from './blog-lessons/blog-lessons.module';
 import { ExamsModule } from './exams/exams.module';
 import { UserExamsModule } from './user-exams/user-exams.module';
 import { ExamPassagesModule } from './exam-passages/exam-passages.module';
@@ -148,13 +142,9 @@ import { ExamSpeakPartsModule } from './exam-speak-parts/exam-speak-parts.module
     ExamPassagesModule,
     UserExamsModule,
     ExamsModule,
-    BlogLessonsModule,
-    FlashCardsModule,
     VideosModule,
     CloudinaryModule,
     BlogsModule,
-    ChoicesModule,
-    ExplainationsModule,
     HistoriesModule,
     SubscriptionsModule,
     AccountsModule,
