@@ -1,7 +1,7 @@
-import { Controller, Post, Body } from '@nestjs/common';
+import { Controller, Post, Body, Get } from '@nestjs/common';
 import { GrammarPointsService } from './grammar-points.service';
 import { CreateGrammarPointDto } from './dto/create-grammar-point.dto';
-import { ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
+import { ApiCreatedResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { GrammarPoint } from './domain/grammar-point';
 
 @ApiTags('Grammarpoints')
@@ -18,5 +18,13 @@ export class GrammarPointsController {
   })
   create(@Body() createGrammarPointDto: CreateGrammarPointDto) {
     return this.grammarPointsService.create(createGrammarPointDto);
+  }
+
+  @Get()
+  @ApiOkResponse({
+    type: [GrammarPoint],
+  })
+  findAll() {
+    return this.grammarPointsService.findAll();
   }
 }

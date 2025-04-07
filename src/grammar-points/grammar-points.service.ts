@@ -14,6 +14,10 @@ export class GrammarPointsService {
     return this.grammarPointRepository.create(createGrammarPointDto);
   }
 
+  findAll() {
+    return this.grammarPointRepository.findAll();
+  }
+
   findById(id: GrammarPoint['id']) {
     return this.grammarPointRepository.findById(id);
   }

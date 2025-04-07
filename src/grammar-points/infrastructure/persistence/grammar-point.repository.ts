@@ -26,4 +26,6 @@ export abstract class GrammarPointRepository {
   ): Promise<GrammarPoint | null>;
 
   abstract remove(id: GrammarPoint['id']): Promise<void>;
+
+  abstract findAll(): Promise<GrammarPoint[]>;
 }

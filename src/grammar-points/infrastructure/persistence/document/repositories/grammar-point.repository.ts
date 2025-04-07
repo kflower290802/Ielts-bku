@@ -80,4 +80,11 @@ export class GrammarPointDocumentRepository implements GrammarPointRepository {
   async remove(id: GrammarPoint['id']): Promise<void> {
     await this.grammarPointModel.deleteOne({ _id: id });
   }
+
+  async findAll(): Promise<GrammarPoint[]> {
+    const entityObjects = await this.grammarPointModel.find();
+    return entityObjects.map((entityObject) =>
+      GrammarPointMapper.toDomain(entityObject),
+    );
+  }
 }
