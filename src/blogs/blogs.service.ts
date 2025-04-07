@@ -5,26 +5,38 @@ import { BlogRepository } from './infrastructure/persistence/blog.repository';
 import { IPaginationOptions } from '../utils/types/pagination-options';
 import { Blog } from './domain/blog';
 import { CloudinaryService } from '../cloudinary/cloudinary.service';
+import { BlogGrammarPointsService } from '../blog-grammar-points/blog-grammar-points.service';
+import { BlogTopicsService } from '../blog-topics/blog-topics.service';
 
 @Injectable()
 export class BlogsService {
   constructor(
     private readonly blogRepository: BlogRepository,
     private readonly cloudinaryService: CloudinaryService,
+    private readonly blogTopicsService: BlogTopicsService,
+    private readonly blogGrammarPointsService: BlogGrammarPointsService,
   ) {}
 
   async create(createBlogDto: CreateBlogDto & { image: Express.Multer.File }) {
-    // Do not remove comment below.
-    // <creating-property />
     const imageResponse = await this.cloudinaryService.uploadImage(
       createBlogDto.image,
     );
     if (imageResponse.http_code)
       throw new InternalServerErrorException('Something went wrong!');
-    return this.blogRepository.create({
+    const blog = await this.blogRepository.create({
       ...createBlogDto,
       image: imageResponse.secure_url,
     });
+    const blogId = blog.id;
+    await this.blogTopicsService.create({
+      topicId: createBlogDto.topicId,
+      blogId,
+    });
+    await this.blogGrammarPointsService.create({
+      grammarPointId: createBlogDto.grammarPointId,
+      blogId,
+    });
+    return blog;
   }
 
   findAllWithPagination({
@@ -49,17 +61,48 @@ export class BlogsService {
   }
 
   async update(id: Blog['id'], updateBlogDto: UpdateBlogDto) {
-    // Do not remove comment below.
-    // <updating-property />
-
+    let imageResponse;
+    if (updateBlogDto.image) {
+      imageResponse = await this.cloudinaryService.uploadImage(
+        updateBlogDto.image,
+      );
+      if (imageResponse.http_code)
+        throw new InternalServerErrorException('Something went wrong!');
+    }
     return this.blogRepository.update(id, {
-      // Do not remove comment below.
-      // <updating-property-payload />
       ...updateBlogDto,
+      image: imageResponse?.secure_url,
     });
   }
 
   remove(id: Blog['id']) {
     return this.blogRepository.remove(id);
+  }
+
+  findAllByTopic({
+    paginationOptions,
+    topicId,
+  }: {
+    paginationOptions: IPaginationOptions;
+    topicId?: string;
+  }) {
+    return this.blogTopicsService.findAllByTopicIdWithPagination(
+      paginationOptions.page,
+      paginationOptions.limit,
+      topicId,
+    );
+  }
+
+  findAllByGrammarPoint({
+    paginationOptions,
+    grammarPointId,
+  }: {
+    paginationOptions: IPaginationOptions;
+    grammarPointId?: string;
+  }) {
+    return this.blogGrammarPointsService.findAllWithPagination({
+      paginationOptions,
+      grammarPointId,
+    });
   }
 }

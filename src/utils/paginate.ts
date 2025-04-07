@@ -1,4 +1,4 @@
-export function paginateData(data: any[], page = 1, limit = 10) {
+export function paginateData<T>(data: T[], page = 1, limit = 10) {
   // Tính toán vị trí bắt đầu và kết thúc của dữ liệu cần lấy
   const startIndex = (page - 1) * limit;
   const endIndex = startIndex + limit;

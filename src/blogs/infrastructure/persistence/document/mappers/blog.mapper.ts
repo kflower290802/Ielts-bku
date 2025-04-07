@@ -8,7 +8,6 @@ export class BlogMapper {
     domainEntity.content = raw.content;
     domainEntity.image = raw.image;
     domainEntity.title = raw.title;
-    domainEntity.status = raw.status;
     domainEntity.createdAt = raw.createdAt;
     domainEntity.updatedAt = raw.updatedAt;
 
@@ -22,7 +21,6 @@ export class BlogMapper {
     }
     persistenceSchema.content = domainEntity.content;
     persistenceSchema.image = domainEntity.image;
-    persistenceSchema.status = domainEntity.status;
     persistenceSchema.title = domainEntity.title;
     persistenceSchema.createdAt = domainEntity.createdAt;
     persistenceSchema.updatedAt = domainEntity.updatedAt;

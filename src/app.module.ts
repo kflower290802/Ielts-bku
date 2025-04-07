@@ -102,8 +102,17 @@ const infrastructureDatabaseModule = MongooseModule.forRootAsync({
 
 import { ExamSpeakPartsModule } from './exam-speak-parts/exam-speak-parts.module';
 
+import { BlogTopicsModule } from './blog-topics/blog-topics.module';
+
+import { GrammarPointsModule } from './grammar-points/grammar-points.module';
+
+import { BlogGrammarPointsModule } from './blog-grammar-points/blog-grammar-points.module';
+
 @Module({
   imports: [
+    BlogGrammarPointsModule,
+    GrammarPointsModule,
+    BlogTopicsModule,
     ExamSpeakPartsModule,
     ExamSpeakQuestionsModule,
     UserPracticeSessionsModule,

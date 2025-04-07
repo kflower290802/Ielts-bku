@@ -115,14 +115,15 @@ export class UserExamsService {
         const userExamSession =
           await this.userExamSessionsService.findByUserExamId(userExam.id);
         const startTime = userExamSession[0].startTime;
-        const endTime =
-          userExam.progress === 100
-            ? userExamSession[userExamSession.length - 1].endTime
-            : null;
+        const isCompleted = userExam.progress === 100;
+        const endTime = isCompleted
+          ? userExamSession[userExamSession.length - 1].endTime
+          : null;
         return {
           ...userExam,
           startTime,
           endTime,
+          isCompleted,
         };
       }),
     );

@@ -1,6 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEnum, IsNotEmpty, IsOptional, IsString } from 'class-validator';
-import { BlogStatus } from '../blog.type';
+import { IsMongoId, IsNotEmpty, IsString } from 'class-validator';
 
 export class CreateBlogDto {
   @ApiProperty()
@@ -8,14 +7,25 @@ export class CreateBlogDto {
   @IsString()
   title: string;
 
-  @ApiProperty()
-  @IsString()
-  content?: string;
+  @ApiProperty({
+    type: String,
+    required: true,
+    format: 'binary',
+  })
+  image: Express.Multer.File;
 
   @ApiProperty()
-  @IsOptional()
-  @IsEnum(BlogStatus, {
-    message: 'invalidBlogStatus',
-  })
-  status?: BlogStatus;
+  @IsString()
+  @IsNotEmpty()
+  content: string;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsMongoId()
+  topicId: string;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsMongoId()
+  grammarPointId: string;
 }
