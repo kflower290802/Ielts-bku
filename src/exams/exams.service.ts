@@ -355,7 +355,15 @@ export class ExamsService {
         }),
       );
     }
+    // if (exam.type === ExamType.Writing) {
+    //   answers.map(async (answer) => {
+    //     const result = await this.examWritingsService.gradeEssay(
+    //       answer.answer as string,
+    //     );
+    //   });
 
+    //   console.log(result);
+    // }
     const correctScore = summary.filter((s) => s.isCorrect).length;
     const score = (correctScore / summary.length) * 10 || 0;
     await this.userExamsService.update(userExam.id, {

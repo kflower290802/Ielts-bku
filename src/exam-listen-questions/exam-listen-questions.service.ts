@@ -21,17 +21,32 @@ export class ExamListenQuestionsService {
   ) {}
 
   async create(createExamListenQuestionDto: CreateExamListenQuestionDto) {
-    const { examListenTypeId, ...rest } = createExamListenQuestionDto;
+    const { examListenTypeId, answers, ...rest } = createExamListenQuestionDto;
     const examListenType =
       await this.examListenTypesService.findById(examListenTypeId);
 
     if (!examListenType)
       throw new NotFoundException('Exam listen type not found');
 
-    return this.examListenQuestionRepository.create({
+    const question = await this.examListenQuestionRepository.create({
       examListenType,
       ...rest,
     });
+    const answerQuestions = await Promise.all(
+      answers.map(async (answer) => {
+        const { answer: title, isCorrect } = answer;
+        const answerQuestion = await this.examListenAnswersService.create({
+          examListenQuestionId: question.id,
+          answer: title,
+          isCorrect,
+        });
+        return answerQuestion;
+      }),
+    );
+    return {
+      ...question,
+      answers: answerQuestions,
+    };
   }
 
   findById(id: ExamListenQuestion['id']) {

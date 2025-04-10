@@ -9,7 +9,7 @@ import {
 } from 'class-validator';
 import { Type } from 'class-transformer';
 
-class AnswerDto {
+export class AnswerDto {
   @ApiProperty({ description: 'The answer text' })
   @IsString()
   @IsNotEmpty()
@@ -31,7 +31,19 @@ export class CreateExamPassageQuestionDto {
   @IsNotEmpty()
   examReadingTypeId: string;
 
-  @ApiProperty()
+  @ApiProperty({
+    type: [AnswerDto],
+    example: [
+      {
+        answer: 'Answer 1',
+        isCorrect: true,
+      },
+      {
+        answer: 'Answer 2',
+        isCorrect: false,
+      },
+    ],
+  })
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => AnswerDto)

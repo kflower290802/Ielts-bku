@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import OpenAI from 'openai';
 import { CreateExamWritingDto } from './dto/create-exam-writing.dto';
 import { UpdateExamWritingDto } from './dto/update-exam-writing.dto';
 import { ExamWritingRepository } from './infrastructure/persistence/exam-writing.repository';
@@ -7,13 +8,20 @@ import { CloudinaryService } from '../cloudinary/cloudinary.service';
 import { Exam } from '../exams/domain/exam';
 import { User } from '../users/domain/user';
 import { UserExamWritingsService } from '../user-exam-writings/user-exam-writings.service';
+import { ConfigService } from '@nestjs/config';
 @Injectable()
 export class ExamWritingsService {
+  private openai: OpenAI;
   constructor(
     private readonly examWritingRepository: ExamWritingRepository,
     private readonly cloudinaryService: CloudinaryService,
     private readonly userExamWritingService: UserExamWritingsService,
-  ) {}
+    private configService: ConfigService,
+  ) {
+    this.openai = new OpenAI({
+      apiKey: this.configService.get('app.openaiApiKey', { infer: true }),
+    });
+  }
 
   async create(createExamWritingDto: CreateExamWritingDto) {
     const { content, examId, image } = createExamWritingDto;
@@ -72,5 +80,27 @@ export class ExamWritingsService {
       );
       return { ...examWriting, answer };
     });
+  }
+
+  async gradeEssay(essay: string) {
+    const prompt = `
+    You are an IELTS writing examiner. Please grade the following IELTS Writing Task 2 essay.
+    Give a band score (0-9) and explain your reasoning based on the four criteria:
+    1. Task Response
+    2. Coherence and Cohesion
+    3. Lexical Resource
+    4. Grammatical Range and Accuracy.
+    Finally, provide suggestions for improvement.
+    
+    Here is the essay:
+    """
+    ${essay}
+    """
+    `;
+    const response = await this.openai.chat.completions.create({
+      model: 'gpt-4o-mini',
+      messages: [{ role: 'user', content: prompt }],
+    });
+    return response.choices[0].message.content;
   }
 }
