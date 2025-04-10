@@ -18,8 +18,14 @@ export class ExamWritingsService {
     private readonly userExamWritingService: UserExamWritingsService,
     private configService: ConfigService,
   ) {
+    const openaiApiKey = this.configService.get('app.openaiApiKey', {
+      infer: true,
+    });
+    if (!openaiApiKey) {
+      throw new Error('OpenAI API key is not set');
+    }
     this.openai = new OpenAI({
-      apiKey: this.configService.get('app.openaiApiKey', { infer: true }),
+      apiKey: openaiApiKey,
     });
   }
 

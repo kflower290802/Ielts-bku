@@ -28,7 +28,6 @@ import { UserExamWritingsService } from '../user-exam-writings/user-exam-writing
 import isEqual from 'lodash/isEqual';
 import sortBy from 'lodash/sortBy';
 import { ExamListenAnswersService } from '../exam-listen-answers/exam-listen-answers.service';
-import { UserPracticeSessionsService } from '../user-practice-sessions/user-practice-sessions.service';
 @Injectable()
 export class ExamsService {
   constructor(
@@ -49,7 +48,6 @@ export class ExamsService {
     private readonly examWritingsService: ExamWritingsService,
     private readonly userExamWritingsService: UserExamWritingsService,
     private readonly examListenAnswersService: ExamListenAnswersService,
-    private readonly userPracticeSessionService: UserPracticeSessionsService,
   ) {}
 
   async create(createExamDto: CreateExamDto) {
@@ -494,5 +492,9 @@ export class ExamsService {
       startTime,
       endTime,
     );
+  }
+
+  findAllExamsByType(type: ExamType) {
+    return this.examRepository.findAllExamsByType(type);
   }
 }

@@ -260,4 +260,17 @@ export class UserExamDocumentRepository implements UserExamRepository {
       .limit(limit);
     return entityObjects.map(UserExamMapper.toDomain);
   }
+
+  async getRecentExams(userId: User['id']): Promise<UserExam[]> {
+    const entityObjects = await this.userExamModel
+      .find({
+        user: {
+          _id: userId,
+        },
+      })
+      .populate('exam')
+      .sort({ createdAt: -1 })
+      .limit(5);
+    return entityObjects.map(UserExamMapper.toDomain);
+  }
 }

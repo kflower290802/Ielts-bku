@@ -20,3 +20,10 @@ export class CreateExamWritingDto {
   @IsOptional()
   image?: Express.Multer.File;
 }
+
+export class GradeEssayDto {
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsString()
+  essay: string;
+}

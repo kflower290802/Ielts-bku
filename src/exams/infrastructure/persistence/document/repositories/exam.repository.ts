@@ -94,4 +94,9 @@ export class examDocumentRepository implements ExamRepository {
     const entities = await this.examModel.find();
     return entities.map(ExamMapper.toDomain);
   }
+
+  async findAllExamsByType(type: ExamType): Promise<Exam[]> {
+    const entities = await this.examModel.find({ type }).limit(5);
+    return entities.map(ExamMapper.toDomain);
+  }
 }

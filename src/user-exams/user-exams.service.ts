@@ -128,4 +128,22 @@ export class UserExamsService {
       }),
     );
   }
+
+  async getRecentExams(userId: User['id']) {
+    const exams = await this.userExamRepository.getRecentExams(userId);
+    return exams.map((exam) => {
+      return {
+        ...exam,
+        isCompleted: exam.progress === 100,
+      };
+    });
+  }
+
+  async getSuggestionExams(userId: User['id']) {
+    const { reading, listening } = await this.getAvgScore(userId);
+    if (reading > listening) {
+      return this.examsService.findAllExamsByType(ExamType.Listening);
+    }
+    return this.examsService.findAllExamsByType(ExamType.Reading);
+  }
 }

@@ -93,6 +93,25 @@ export class UserExamsController {
     const userId = request.user.id;
     return this.userExamsService.getAvgScore(userId);
   }
+
+  @Get('recent-exams')
+  @ApiOkResponse({
+    type: UserExam,
+  })
+  getRecentExams(@Request() request) {
+    const userId = request.user.id;
+    return this.userExamsService.getRecentExams(userId);
+  }
+
+  @Get('suggestion-exams')
+  @ApiOkResponse({
+    type: UserExam,
+  })
+  getSuggestionExams(@Request() request) {
+    const userId = request.user.id;
+    return this.userExamsService.getSuggestionExams(userId);
+  }
+
   @Get(':id')
   @ApiParam({
     name: 'id',

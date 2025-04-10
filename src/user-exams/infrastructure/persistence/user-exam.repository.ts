@@ -51,4 +51,6 @@ export abstract class UserExamRepository {
     userId: User['id'],
     limit: number,
   ): Promise<UserExam[]>;
+
+  abstract getRecentExams(userId: User['id']): Promise<UserExam[]>;
 }
