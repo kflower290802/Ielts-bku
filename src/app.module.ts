@@ -21,8 +21,6 @@ import { AccountsModule } from './accounts/accounts.module';
 
 import { SubscriptionsModule } from './subscriptions/subscriptions.module';
 
-import { HistoriesModule } from './histories/histories.module';
-
 import { BlogsModule } from './blogs/blogs.module';
 import { CloudinaryModule } from './cloudinary/cloudinary.module';
 
@@ -154,7 +152,6 @@ import { BlogGrammarPointsModule } from './blog-grammar-points/blog-grammar-poin
     VideosModule,
     CloudinaryModule,
     BlogsModule,
-    HistoriesModule,
     SubscriptionsModule,
     AccountsModule,
     ConfigModule.forRoot({
