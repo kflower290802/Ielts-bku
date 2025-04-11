@@ -46,7 +46,7 @@ export class ExamPassagesService {
       },
     });
   }
-  async findAllByExamId(id: Exam['id'], userId: User['id']) {
+  async findAllByExamIdAndUserId(id: Exam['id'], userId: User['id']) {
     const examPassages = await this.examPassageRepository.findByExamId(id);
     return Promise.all(
       examPassages.map(async (passage) => {
@@ -85,5 +85,18 @@ export class ExamPassagesService {
 
   remove(id: ExamPassage['id']) {
     return this.examPassageRepository.remove(id);
+  }
+
+  async findAllByExamId(id: Exam['id']) {
+    const examPassages = await this.examPassageRepository.findByExamId(id);
+    return Promise.all(
+      examPassages.map(async (passage) => {
+        const examPassageTypes =
+          await this.examReadingTypesService.findByPassageIdWithQuestionAndAnswer(
+            passage.id,
+          );
+        return { ...passage, types: examPassageTypes };
+      }),
+    );
   }
 }

@@ -29,7 +29,7 @@ export class ExamListenSectionsService {
     });
   }
 
-  async findAllByExamId(examId: Exam['id'], userId: User['id']) {
+  async findAllByExamIdAndUserId(examId: Exam['id'], userId: User['id']) {
     const sections =
       await this.examListenSectionRepository.findSectionsByExamId(examId);
     const examPassagesQuestions = sections.map(async (passage) => {
@@ -54,5 +54,18 @@ export class ExamListenSectionsService {
 
   remove(id: ExamListenSection['id']) {
     return this.examListenSectionRepository.remove(id);
+  }
+
+  async findAllByExamId(id: Exam['id']) {
+    const sections =
+      await this.examListenSectionRepository.findSectionsByExamId(id);
+    const examPassagesQuestions = sections.map(async (passage) => {
+      const examPassageTypes =
+        await this.examListenTypesService.findByPassageIdWithQuestionAndAnswer(
+          passage.id,
+        );
+      return { ...passage, types: examPassageTypes };
+    });
+    return Promise.all(examPassagesQuestions);
   }
 }

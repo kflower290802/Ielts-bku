@@ -86,4 +86,24 @@ export class ExamReadingTypesService {
       }),
     );
   }
+
+  async findByPassageIdWithQuestionAndAnswer(id: string) {
+    const types = await this.examReadingTypeRepository.findByPassageId(id);
+    return Promise.all(
+      types.map(async (type) => {
+        const questions =
+          await this.examPassageQuestionsService.findByExamTypeId(type.id);
+        const questionWithAnswers = await Promise.all(
+          questions.map(async (question) => {
+            const answers =
+              await this.examPassageAnswersService.findAllByQuestionId(
+                question.id,
+              );
+            return { ...question, answers };
+          }),
+        );
+        return { ...type, questions: questionWithAnswers };
+      }),
+    );
+  }
 }

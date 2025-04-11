@@ -58,7 +58,7 @@ export class ExamSpeaksService {
     return this.examSpeakRepository.remove(id);
   }
 
-  async findAllByExamId(examId: string, userId: string) {
+  async findAllByExamIdAndUserId(examId: string, userId: string) {
     const examSpeak = await this.examSpeakRepository.findByExamId(examId);
     if (!examSpeak) throw new NotFoundException('Exam speak not found');
     const [parts, answers] = await Promise.all([
@@ -80,6 +80,25 @@ export class ExamSpeaksService {
                   ?.answer || '',
             };
           }),
+        };
+      }),
+    );
+  }
+
+  async findAllByExamId(examId: string) {
+    const examSpeak = await this.examSpeakRepository.findByExamId(examId);
+    if (!examSpeak) throw new NotFoundException('Exam speak not found');
+    const parts = await this.examSpeakPartsService.findAllByExamId(
+      examSpeak.id,
+    );
+    return Promise.all(
+      parts.map(async (part) => {
+        const questions = await this.examSpeakQuestionsService.findAllByPartId(
+          part.id,
+        );
+        return {
+          ...part,
+          questions,
         };
       }),
     );

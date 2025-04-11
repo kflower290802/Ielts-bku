@@ -74,7 +74,7 @@ export class ExamWritingsService {
     return this.examWritingRepository.findByExamId(id);
   }
 
-  async findAllByExamId(id: string, userId: User['id']) {
+  async findAllByExamIdAndUserId(id: string, userId: User['id']) {
     const examWriting = await this.examWritingRepository.findByExamId(id);
     const answers = await this.userExamWritingService.findByUserIdAndExamId(
       userId,
@@ -88,15 +88,22 @@ export class ExamWritingsService {
     });
   }
 
+  async findAllByExamId(id: string) {
+    const examWriting = await this.examWritingRepository.findByExamId(id);
+    return examWriting;
+  }
+
   async gradeEssay(essay: string) {
     const prompt = `
-    You are an IELTS writing examiner. Please grade the following IELTS Writing Task 2 essay.
-    Give a band score (0-9) and explain your reasoning based on the four criteria:
-    1. Task Response
-    2. Coherence and Cohesion
-    3. Lexical Resource
-    4. Grammatical Range and Accuracy.
-    Finally, provide suggestions for improvement.
+    You are an IELTS writing examiner. Please grade the following IELTS Writing essay.
+    Give a band score (0-9) as a json:
+    {
+      "taskResponse": 0-9,
+      "coherenceAndCohesion": 0-9,
+      "lexicalResource": 0-9,
+      "grammaticalRangeAndAccuracy": 0-9,
+      "overallBandScore": 0-9
+    }
     
     Here is the essay:
     """
@@ -104,7 +111,7 @@ export class ExamWritingsService {
     """
     `;
     const response = await this.openai.chat.completions.create({
-      model: 'gpt-4o-mini',
+      model: 'gpt-3.5-turbo',
       messages: [{ role: 'user', content: prompt }],
     });
     return response.choices[0].message.content;

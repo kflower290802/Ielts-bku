@@ -120,19 +120,29 @@ export class ExamsService {
     if (!exam) throw new NotFoundException('Exam not found');
     let examPassage = [] as any[];
     if (exam?.type === ExamType.Reading) {
-      examPassage = await this.examPassagesService.findAllByExamId(id, userId);
-    }
-    if (exam?.type === ExamType.Listening) {
-      examPassage = await this.examListenSectionsService.findAllByExamId(
+      examPassage = await this.examPassagesService.findAllByExamIdAndUserId(
         id,
         userId,
       );
     }
+    if (exam?.type === ExamType.Listening) {
+      examPassage =
+        await this.examListenSectionsService.findAllByExamIdAndUserId(
+          id,
+          userId,
+        );
+    }
     if (exam?.type === ExamType.Speaking) {
-      examPassage = await this.examSpeakService.findAllByExamId(id, userId);
+      examPassage = await this.examSpeakService.findAllByExamIdAndUserId(
+        id,
+        userId,
+      );
     }
     if (exam.type === ExamType.Writing) {
-      examPassage = await this.examWritingsService.findAllByExamId(id, userId);
+      examPassage = await this.examWritingsService.findAllByExamIdAndUserId(
+        id,
+        userId,
+      );
     }
     return {
       ...exam,
@@ -496,5 +506,27 @@ export class ExamsService {
 
   findAllExamsByType(type: ExamType) {
     return this.examRepository.findAllExamsByType(type);
+  }
+
+  async getExamDetail(id: Exam['id']) {
+    const exam = await this.examRepository.findById(id);
+    if (!exam) throw new NotFoundException('Exam not found');
+    let examPassage = [] as any[];
+    if (exam?.type === ExamType.Reading) {
+      examPassage = await this.examPassagesService.findAllByExamId(id);
+    }
+    if (exam?.type === ExamType.Listening) {
+      examPassage = await this.examListenSectionsService.findAllByExamId(id);
+    }
+    if (exam?.type === ExamType.Speaking) {
+      examPassage = await this.examSpeakService.findAllByExamId(id);
+    }
+    if (exam.type === ExamType.Writing) {
+      examPassage = await this.examWritingsService.findAllByExamId(id);
+    }
+    return {
+      ...exam,
+      examPassage,
+    };
   }
 }

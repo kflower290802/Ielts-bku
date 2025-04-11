@@ -94,4 +94,23 @@ export class ExamListenTypesService {
     );
     return questions;
   }
+
+  async findByPassageIdWithQuestionAndAnswer(id: string) {
+    const types = await this.examListenTypeRepository.findBySectionId(id);
+    const questions = await Promise.all(
+      types.map(async (type) => {
+        const questions =
+          await this.examListenQuestionsService.findByExamTypeId(type.id);
+        const questionWithAnswers = await Promise.all(
+          questions.map(async (question) => {
+            const answers =
+              await this.examListenAnswersService.findByQuestionId(question.id);
+            return { ...question, answers };
+          }),
+        );
+        return { ...type, questions: questionWithAnswers };
+      }),
+    );
+    return questions;
+  }
 }

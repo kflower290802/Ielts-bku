@@ -203,4 +203,14 @@ export class ExamsController {
     const userId = request.user.id;
     return this.examsService.submitExam(id, userId, submitExamsDto);
   }
+
+  @Get('exam-detail/:id')
+  @ApiParam({
+    name: 'id',
+    type: String,
+    required: true,
+  })
+  getExamDetail(@Param('id') id: string) {
+    return this.examsService.getExamDetail(id);
+  }
 }
