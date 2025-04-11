@@ -90,4 +90,10 @@ export class PracticeWritingsService {
       );
     return { ...practice, answer };
   }
+
+  async getPracticeDataWithQuestionAndAnswer(id: string) {
+    const practice = await this.practiceWritingRepository.findByPracticeId(id);
+    if (!practice) throw new NotFoundException('Practice not found');
+    return practice;
+  }
 }

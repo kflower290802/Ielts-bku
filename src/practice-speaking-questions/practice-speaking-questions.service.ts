@@ -48,4 +48,8 @@ export class PracticeSpeakingQuestionsService {
     });
     return questionsWithAnswers;
   }
+
+  async getPracticeDataWithQuestionAndAnswer(id: string) {
+    return this.practiceSpeakingQuestionRepository.findByPracticeId(id);
+  }
 }

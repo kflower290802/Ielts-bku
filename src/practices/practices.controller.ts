@@ -117,4 +117,9 @@ export class PracticesController {
     const userId = request.user.id;
     return this.practicesService.exitPractice(id, userId, submitPracticeDto);
   }
+
+  @Get('detail/:id')
+  getPracticeDetail(@Param('id') id: string) {
+    return this.practicesService.getPracticeDetail(id);
+  }
 }

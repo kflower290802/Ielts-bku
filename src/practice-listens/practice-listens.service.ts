@@ -61,4 +61,14 @@ export class PracticeListensService {
     }));
     return { practiceListen, types: typesAnswers };
   }
+
+  async getPracticeDataWithQuestionAndAnswer(id: string) {
+    const practiceListen =
+      await this.practiceListenRepository.findByPracticeId(id);
+    if (!practiceListen) throw new NotFoundException('Practice not found');
+    const types = await this.practiceListenTypesService.findByPracticeListenId(
+      practiceListen.id,
+    );
+    return types;
+  }
 }

@@ -71,6 +71,19 @@ export class PracticeReadingsService {
     return { practiceReading, types: typesAnswers };
   }
 
+  async getPracticeDataWithQuestionAndAnswer(id: string) {
+    const practiceReading =
+      await this.practiceReadingRepository.findByPracticeId(id);
+    if (!practiceReading)
+      throw new NotFoundException('Practice reading not found');
+    const practiceReadingId = practiceReading.id;
+    const types =
+      await this.practiceReadingTypesService.findByPracticeReadingId(
+        practiceReadingId,
+      );
+    return types;
+  }
+
   async isIncludesTypes(id: string, type?: QuestionType) {
     if (!type) return true;
     const practiceReading =
