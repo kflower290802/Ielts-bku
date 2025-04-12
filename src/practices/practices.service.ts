@@ -30,6 +30,8 @@ import { UserPracticeWritingAnswersService } from '../user-practice-writing-answ
 import { UserPracticeSpeakAnswersService } from '../user-practice-speak-answers/user-practice-speak-answers.service';
 import { PracticeSpeakingQuestion } from '../practice-speaking-questions/domain/practice-speaking-question';
 import { UserPracticeSessionsService } from '../user-practice-sessions/user-practice-sessions.service';
+import { ExamWritingsService } from '../exam-writings/exam-writings.service';
+
 @Injectable()
 export class PracticesService {
   constructor(
@@ -50,6 +52,7 @@ export class PracticesService {
     private readonly userPracticeWritingAnswersService: UserPracticeWritingAnswersService,
     private readonly userPracticeSpeakAnswersService: UserPracticeSpeakAnswersService,
     private readonly userPracticeSessionsService: UserPracticeSessionsService,
+    private readonly examWritingsService: ExamWritingsService,
   ) {}
 
   async create(createPracticeDto: CreatePracticeDto) {
@@ -220,9 +223,6 @@ export class PracticesService {
       await this.userPracticeSpeakAnswersService.createMany(answerQuestions);
     }
 
-    await this.userPracticesService.update(userPractice.id, {
-      isCompleted: true,
-    });
     const userPracticeSession =
       await this.userPracticeSessionsService.findByUserPracticeId(
         userPractice.id,
@@ -232,6 +232,67 @@ export class PracticesService {
         endTime: new Date(),
       });
     }
+
+    let summary = [] as any[];
+
+    if (practice.type === PracticeType.Reading) {
+      summary = await Promise.all(
+        answers.map(async (a) => {
+          const answers =
+            await this.practiceReadingAnswersService.findByCorrectQuestionId(
+              a.question.id,
+            );
+          const correctAnswer = answers.map((answer) =>
+            answer.answer.toLowerCase(),
+          );
+          const userAnswer = Array.isArray(a.answer)
+            ? a.answer.map((answer) => answer.toLowerCase())
+            : [a.answer.toLowerCase()];
+          return {
+            isCorrect: isEqual(sortBy(correctAnswer), sortBy(userAnswer)),
+          };
+        }),
+      );
+    }
+    if (practice.type === PracticeType.Listening) {
+      summary = await Promise.all(
+        answers.map(async (a) => {
+          const answers =
+            await this.practiceListenAnswersService.findByCorrectQuestionId(
+              a.question.id,
+            );
+          const correctAnswer = answers.map((answer) =>
+            answer.answer.toLowerCase(),
+          );
+          const userAnswer = Array.isArray(a.answer)
+            ? a.answer.map((answer) => answer.toLowerCase())
+            : [a.answer.toLowerCase()];
+          return {
+            isCorrect: isEqual(sortBy(correctAnswer), sortBy(userAnswer)),
+          };
+        }),
+      );
+    }
+
+    if (practice.type === PracticeType.Writing) {
+      const overall = await this.examWritingsService.gradeEssay(answers.answer);
+      await this.userPracticesService.update(userPractice.id, {
+        ...overall,
+        score: overall.overallBandScore,
+        isCompleted: true,
+      });
+      return userPractice.id;
+    }
+
+    if (practice.type === PracticeType.Speaking) {
+      return userPractice.id;
+    }
+    const correctScore = summary.filter((s) => s.isCorrect).length;
+    const score = (correctScore / summary.length) * 10;
+    await this.userPracticesService.update(userPractice.id, {
+      score,
+      isCompleted: true,
+    });
 
     return userPractice.id;
   }
@@ -312,16 +373,18 @@ export class PracticesService {
         }),
       );
     }
-    if (
-      practice.type === PracticeType.Speaking ||
-      practice.type === PracticeType.Writing
-    ) {
+
+    if (practice.type === PracticeType.Writing) {
+      return { ...userPractice, answers };
+    }
+
+    if (practice.type === PracticeType.Speaking) {
       return answers;
     }
     const correctScore = summary.filter((s) => s.isCorrect).length;
     const score = (correctScore / summary.length) * 10;
     return {
-      score,
+      score: userPractice.score || score,
       summary,
     };
   }

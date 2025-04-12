@@ -14,6 +14,21 @@ export class UserPractice {
   @ApiProperty()
   practice: Practice;
 
+  @ApiProperty({ type: Number, required: false })
+  score?: number;
+
+  @ApiProperty()
+  taskResponse?: number;
+
+  @ApiProperty()
+  coherenceAndCohesion?: number;
+
+  @ApiProperty()
+  lexicalResource?: number;
+
+  @ApiProperty()
+  grammaticalRangeAndAccuracy?: number;
+
   @ApiProperty({ type: Boolean, required: false })
   isCompleted?: boolean;
 

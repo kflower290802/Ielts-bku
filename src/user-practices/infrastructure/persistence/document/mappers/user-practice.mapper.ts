@@ -16,6 +16,11 @@ export class UserPracticeMapper {
     domainEntity.isCompleted = raw.isCompleted;
     user.id = raw.user._id.toString();
     domainEntity.user = user;
+    domainEntity.score = raw.score;
+    domainEntity.taskResponse = raw.taskResponse;
+    domainEntity.coherenceAndCohesion = raw.coherenceAndCohesion;
+    domainEntity.lexicalResource = raw.lexicalResource;
+    domainEntity.grammaticalRangeAndAccuracy = raw.grammaticalRangeAndAccuracy;
     domainEntity.createdAt = raw.createdAt;
     domainEntity.updatedAt = raw.updatedAt;
 
@@ -36,6 +41,12 @@ export class UserPracticeMapper {
     practiceSchema._id = domainEntity.practice.id;
     persistenceSchema.practice = practiceSchema;
     persistenceSchema.isCompleted = domainEntity.isCompleted;
+    persistenceSchema.score = domainEntity.score;
+    persistenceSchema.taskResponse = domainEntity.taskResponse;
+    persistenceSchema.coherenceAndCohesion = domainEntity.coherenceAndCohesion;
+    persistenceSchema.lexicalResource = domainEntity.lexicalResource;
+    persistenceSchema.grammaticalRangeAndAccuracy =
+      domainEntity.grammaticalRangeAndAccuracy;
     persistenceSchema.createdAt = domainEntity.createdAt;
     persistenceSchema.updatedAt = domainEntity.updatedAt;
 

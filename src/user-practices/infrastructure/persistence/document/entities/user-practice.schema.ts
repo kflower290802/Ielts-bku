@@ -37,6 +37,36 @@ export class UserPracticeSchemaClass extends EntityDocumentHelper {
   })
   isCompleted?: boolean;
 
+  @Prop({
+    required: false,
+    type: Number,
+  })
+  score?: number;
+
+  @Prop({
+    required: false,
+    type: Number,
+  })
+  taskResponse?: number;
+
+  @Prop({
+    required: false,
+    type: Number,
+  })
+  coherenceAndCohesion?: number;
+
+  @Prop({
+    required: false,
+    type: Number,
+  })
+  lexicalResource?: number;
+
+  @Prop({
+    required: false,
+    type: Number,
+  })
+  grammaticalRangeAndAccuracy?: number;
+
   @Prop({ default: now })
   createdAt: Date;
 
