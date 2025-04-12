@@ -16,6 +16,11 @@ export class UserExamWritingMapper {
     const userExam = new UserExam();
     userExam.id = raw.userExam._id.toString();
     domainEntity.userExam = userExam;
+    domainEntity.taskResponse = raw.taskResponse;
+    domainEntity.coherenceAndCohesion = raw.coherenceAndCohesion;
+    domainEntity.lexicalResource = raw.lexicalResource;
+    domainEntity.grammaticalRangeAndAccuracy = raw.grammaticalRangeAndAccuracy;
+    domainEntity.overallBandScore = raw.overallBandScore;
     domainEntity.createdAt = raw.createdAt;
     domainEntity.updatedAt = raw.updatedAt;
 
@@ -36,6 +41,12 @@ export class UserExamWritingMapper {
     const userExam = new UserExamSchemaClass();
     userExam._id = domainEntity.userExam.id;
     persistenceSchema.userExam = userExam;
+    persistenceSchema.taskResponse = domainEntity.taskResponse;
+    persistenceSchema.coherenceAndCohesion = domainEntity.coherenceAndCohesion;
+    persistenceSchema.lexicalResource = domainEntity.lexicalResource;
+    persistenceSchema.grammaticalRangeAndAccuracy =
+      domainEntity.grammaticalRangeAndAccuracy;
+    persistenceSchema.overallBandScore = domainEntity.overallBandScore;
     persistenceSchema.createdAt = domainEntity.createdAt;
     persistenceSchema.updatedAt = domainEntity.updatedAt;
 

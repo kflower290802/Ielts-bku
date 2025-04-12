@@ -29,6 +29,21 @@ export class UserExamWritingSchemaClass extends EntityDocumentHelper {
   @Prop({ required: false })
   answer: string;
 
+  @Prop({ required: false })
+  taskResponse?: number;
+
+  @Prop({ required: false })
+  coherenceAndCohesion?: number;
+
+  @Prop({ required: false })
+  lexicalResource?: number;
+
+  @Prop({ required: false })
+  grammaticalRangeAndAccuracy?: number;
+
+  @Prop({ required: false })
+  overallBandScore?: number;
+
   @Prop({ default: now })
   createdAt: Date;
 

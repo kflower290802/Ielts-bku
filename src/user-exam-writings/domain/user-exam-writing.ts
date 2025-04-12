@@ -18,6 +18,21 @@ export class UserExamWriting {
   answer: string;
 
   @ApiProperty()
+  taskResponse?: number;
+
+  @ApiProperty()
+  coherenceAndCohesion?: number;
+
+  @ApiProperty()
+  lexicalResource?: number;
+
+  @ApiProperty()
+  grammaticalRangeAndAccuracy?: number;
+
+  @ApiProperty()
+  overallBandScore?: number;
+
+  @ApiProperty()
   createdAt: Date;
 
   @ApiProperty()

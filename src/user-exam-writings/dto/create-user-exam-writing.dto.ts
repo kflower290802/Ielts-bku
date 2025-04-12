@@ -1,5 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsMongoId, IsNotEmpty, IsString } from 'class-validator';
+import {
+  IsMongoId,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 
 export class CreateUserExamWritingDto {
   @ApiProperty()
@@ -16,4 +22,29 @@ export class CreateUserExamWritingDto {
   @IsNotEmpty()
   @IsString()
   answer: string;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsNumber()
+  taskResponse?: number;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsNumber()
+  coherenceAndCohesion?: number;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsNumber()
+  lexicalResource?: number;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsNumber()
+  grammaticalRangeAndAccuracy?: number;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsNumber()
+  overallBandScore?: number;
 }

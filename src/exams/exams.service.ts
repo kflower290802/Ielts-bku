@@ -363,17 +363,20 @@ export class ExamsService {
         }),
       );
     }
-    // if (exam.type === ExamType.Writing) {
-    //   answers.map(async (answer) => {
-    //     const result = await this.examWritingsService.gradeEssay(
-    //       answer.answer as string,
-    //     );
-    //   });
-
-    //   console.log(result);
-    // }
+    if (exam.type === ExamType.Writing) {
+      const taskOne = await this.examWritingsService.gradeEssay(
+        answers[0].answer as string,
+      );
+      const taskTwo = await this.examWritingsService.gradeEssay(
+        answers[1].answer as string,
+      );
+      summary = [taskOne, taskTwo];
+    }
     const correctScore = summary.filter((s) => s.isCorrect).length;
-    const score = (correctScore / summary.length) * 10 || 0;
+    const score =
+      exam.type === ExamType.Writing
+        ? (summary[0].overallBandScore + summary[1].overallBandScore * 2) / 3
+        : (correctScore / summary.length) * 10 || 0;
     await this.userExamsService.update(userExam.id, {
       score,
       progress: 100,
@@ -411,10 +414,16 @@ export class ExamsService {
     }
     if (exam.type === ExamType.Writing) {
       await this.userExamWritingsService.create(
-        answers.map((a) => ({
+        answers.map((a, index) => ({
           examId: id,
           examWritingId: a.questionId,
           answer: Array.isArray(a.answer) ? a.answer[0] : a.answer,
+          taskResponse: summary[index].taskResponse,
+          coherenceAndCohesion: summary[index].coherenceAndCohesion,
+          lexicalResource: summary[index].lexicalResource,
+          grammaticalRangeAndAccuracy:
+            summary[index].grammaticalRangeAndAccuracy,
+          overallBandScore: summary[index].overallBandScore,
         })),
         userId,
       );
@@ -436,6 +445,13 @@ export class ExamsService {
         userExam.exam.id,
       );
     }
+    if (exam.type === ExamType.Writing) {
+      answers = await this.userExamWritingsService.findByUserIdAndExamId(
+        userExam.user.id,
+        userExam.exam.id,
+      );
+    }
+
     let summary = [] as any[];
     if (exam.type === ExamType.Reading) {
       summary = await Promise.all(
@@ -484,6 +500,20 @@ export class ExamsService {
         }),
       );
     }
+
+    if (exam.type === ExamType.Writing) {
+      summary = answers.map((a) => {
+        return {
+          questionId: a.examWriting.id,
+          overallBandScore: a.overallBandScore,
+          taskResponse: a.taskResponse,
+          coherenceAndCohesion: a.coherenceAndCohesion,
+          lexicalResource: a.lexicalResource,
+          grammaticalRangeAndAccuracy: a.grammaticalRangeAndAccuracy,
+        };
+      });
+    }
+
     return {
       summary,
       score: userExam.score,
