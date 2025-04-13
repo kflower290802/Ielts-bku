@@ -31,7 +31,7 @@ import { UserPracticeSpeakAnswersService } from '../user-practice-speak-answers/
 import { PracticeSpeakingQuestion } from '../practice-speaking-questions/domain/practice-speaking-question';
 import { UserPracticeSessionsService } from '../user-practice-sessions/user-practice-sessions.service';
 import { ExamWritingsService } from '../exam-writings/exam-writings.service';
-
+import { getIELTSBandScore } from '../utils/band-score';
 @Injectable()
 export class PracticesService {
   constructor(
@@ -288,7 +288,7 @@ export class PracticesService {
       return userPractice.id;
     }
     const correctScore = summary.filter((s) => s.isCorrect).length;
-    const score = (correctScore / summary.length) * 10;
+    const score = getIELTSBandScore(correctScore, practice.type);
     await this.userPracticesService.update(userPractice.id, {
       score,
       isCompleted: true,
