@@ -79,10 +79,7 @@ export class PracticeWritingsService {
     const practice = await this.practiceWritingRepository.findByPracticeId(id);
     if (!practice) throw new NotFoundException('Practice not found');
     const userPractice =
-      await this.userPracticesService.findUnCompletedUserPracticeByPracticeIdAndUserId(
-        id,
-        userId,
-      );
+      await this.userPracticesService.findByPracticeIdAndUserId(id, userId);
     if (!userPractice) throw new NotFoundException('User practice not found');
     const answer =
       await this.userPracticeWritingAnswersService.findByUserPracticeId(
