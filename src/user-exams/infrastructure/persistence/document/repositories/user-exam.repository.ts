@@ -269,8 +269,23 @@ export class UserExamDocumentRepository implements UserExamRepository {
         },
       })
       .populate('exam')
-      .sort({ createdAt: -1 })
-      .limit(5);
-    return entityObjects.map(UserExamMapper.toDomain);
+      .sort({ createdAt: -1 });
+
+    // Sử dụng Map để lưu trữ các exam duy nhất, lấy exam gần nhất cho mỗi exam type
+    const uniqueExamsMap = new Map();
+
+    entityObjects.forEach((userExam) => {
+      const examId = userExam.exam._id.toString();
+      if (!uniqueExamsMap.has(examId)) {
+        uniqueExamsMap.set(examId, userExam);
+      }
+    });
+
+    // Chuyển Map thành mảng và giới hạn 5 exam gần nhất
+    const uniqueExams = Array.from(uniqueExamsMap.values())
+      .slice(0, 5)
+      .map(UserExamMapper.toDomain);
+
+    return uniqueExams;
   }
 }
