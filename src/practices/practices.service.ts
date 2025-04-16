@@ -31,7 +31,6 @@ import { UserPracticeSpeakAnswersService } from '../user-practice-speak-answers/
 import { PracticeSpeakingQuestion } from '../practice-speaking-questions/domain/practice-speaking-question';
 import { UserPracticeSessionsService } from '../user-practice-sessions/user-practice-sessions.service';
 import { ExamWritingsService } from '../exam-writings/exam-writings.service';
-import { getIELTSBandScore } from '../utils/band-score';
 @Injectable()
 export class PracticesService {
   constructor(
@@ -240,7 +239,7 @@ export class PracticesService {
         answers.map(async (a) => {
           const answers =
             await this.practiceReadingAnswersService.findByCorrectQuestionId(
-              a.question.id,
+              a.questionId,
             );
           const correctAnswer = answers.map((answer) =>
             answer.answer.toLowerCase(),
@@ -259,7 +258,7 @@ export class PracticesService {
         answers.map(async (a) => {
           const answers =
             await this.practiceListenAnswersService.findByCorrectQuestionId(
-              a.question.id,
+              a.questionId,
             );
           const correctAnswer = answers.map((answer) =>
             answer.answer.toLowerCase(),
@@ -288,7 +287,7 @@ export class PracticesService {
       return userPractice.id;
     }
     const correctScore = summary.filter((s) => s.isCorrect).length;
-    const score = getIELTSBandScore(correctScore, practice.type);
+    const score = (correctScore / summary.length) * 10;
     await this.userPracticesService.update(userPractice.id, {
       score,
       isCompleted: true,

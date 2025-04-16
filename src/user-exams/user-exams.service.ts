@@ -85,6 +85,9 @@ export class UserExamsService {
     const examListeningIds = exams
       .filter((exam) => exam.type === ExamType.Listening)
       .map((exam) => exam.id);
+    const examWritingIds = exams
+      .filter((exam) => exam.type === ExamType.Writing)
+      .map((exam) => exam.id);
     const reading = await this.userExamRepository.getAvgScore(
       userId,
       examReadingIds,
@@ -93,9 +96,14 @@ export class UserExamsService {
       userId,
       examListeningIds,
     );
+    const writing = await this.userExamRepository.getAvgScore(
+      userId,
+      examWritingIds,
+    );
     return {
       reading,
       listening,
+      writing,
     };
   }
 

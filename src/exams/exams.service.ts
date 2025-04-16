@@ -28,6 +28,7 @@ import { UserExamWritingsService } from '../user-exam-writings/user-exam-writing
 import isEqual from 'lodash/isEqual';
 import sortBy from 'lodash/sortBy';
 import { ExamListenAnswersService } from '../exam-listen-answers/exam-listen-answers.service';
+import { getIELTSBandScore } from '../utils/band-score';
 @Injectable()
 export class ExamsService {
   constructor(
@@ -376,7 +377,7 @@ export class ExamsService {
     const score =
       exam.type === ExamType.Writing
         ? (summary[0].overallBandScore + summary[1].overallBandScore * 2) / 3
-        : (correctScore / summary.length) * 10 || 0;
+        : getIELTSBandScore(correctScore, exam.type);
     await this.userExamsService.update(userExam.id, {
       score,
       progress: 100,

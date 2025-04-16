@@ -1,8 +1,9 @@
+import { ExamType } from '../exams/exams.type';
 import { PracticeType } from '../practices/pratices.type';
 
 export function getIELTSBandScore(
   correctAnswers: number,
-  type: PracticeType,
+  type: PracticeType | ExamType,
 ): number {
   const scoreTables: Record<
     string,
