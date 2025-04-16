@@ -78,9 +78,6 @@ export class UsersService {
     id: User['id'],
     updateUserDto: UpdateUserDto,
   ): Promise<User | null> {
-    // Do not remove comment below.
-    // <updating-property />
-
     let email: string | null | undefined = undefined;
 
     if (updateUserDto.email) {
@@ -103,11 +100,10 @@ export class UsersService {
     }
 
     return this.usersRepository.update(id, {
-      // Do not remove comment below.
-      // <updating-property-payload />
       name: updateUserDto.name,
       email: email!,
       address: updateUserDto.address,
+      target: updateUserDto.target,
     });
   }
 
