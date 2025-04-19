@@ -472,9 +472,6 @@ export class PracticesService {
           id,
         );
     }
-    return {
-      ...practice,
-      practiceData,
-    };
+    return practiceData;
   }
 }

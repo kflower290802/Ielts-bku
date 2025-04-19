@@ -111,7 +111,7 @@ export class ExamWritingsService {
     """
     `;
     const response = await this.openai.chat.completions.create({
-      model: 'gpt-3.5-turbo',
+      model: 'gpt-4o-mini',
       messages: [{ role: 'user', content: prompt }],
     });
     return JSON.parse(response.choices[0].message.content || '{}') as {

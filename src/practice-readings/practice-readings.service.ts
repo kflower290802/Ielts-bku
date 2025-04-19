@@ -81,7 +81,10 @@ export class PracticeReadingsService {
       await this.practiceReadingTypesService.findByPracticeReadingId(
         practiceReadingId,
       );
-    return types;
+    return {
+      ...practiceReading,
+      types,
+    };
   }
 
   async isIncludesTypes(id: string, type?: QuestionType) {

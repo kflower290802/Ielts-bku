@@ -69,6 +69,9 @@ export class PracticeListensService {
     const types = await this.practiceListenTypesService.findByPracticeListenId(
       practiceListen.id,
     );
-    return types;
+    return {
+      ...practiceListen,
+      types,
+    };
   }
 }
