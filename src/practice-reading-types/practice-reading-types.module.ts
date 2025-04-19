@@ -4,12 +4,13 @@ import { PracticeReadingTypesController } from './practice-reading-types.control
 import { DocumentPracticeReadingTypePersistenceModule } from './infrastructure/persistence/document/document-persistence.module';
 import { PracticeReadingsModule } from '../practice-readings/practice-readings.module';
 import { PracticeReadingQuestionsModule } from '../practice-reading-questions/practice-reading-questions.module';
-
+import { CloudinaryModule } from '../cloudinary/cloudinary.module';
 @Module({
   imports: [
     DocumentPracticeReadingTypePersistenceModule,
     forwardRef(() => PracticeReadingsModule),
     forwardRef(() => PracticeReadingQuestionsModule),
+    CloudinaryModule,
   ],
   controllers: [PracticeReadingTypesController],
   providers: [PracticeReadingTypesService],

@@ -18,6 +18,9 @@ export class PracticeReadingType {
   content?: string;
 
   @ApiProperty()
+  image?: string;
+
+  @ApiProperty()
   createdAt: Date;
 
   @ApiProperty()

@@ -13,6 +13,8 @@ export class PracticeReadingTypeMapper {
     practiceReading.id = raw.practiceReading._id.toString();
     domainEntity.practiceReading = practiceReading;
     domainEntity.type = raw.type;
+    domainEntity.content = raw.content;
+    domainEntity.image = raw.image;
     domainEntity.createdAt = raw.createdAt;
     domainEntity.updatedAt = raw.updatedAt;
 
@@ -30,6 +32,8 @@ export class PracticeReadingTypeMapper {
     practiceReading._id = domainEntity.practiceReading.id;
     persistenceSchema.practiceReading = practiceReading;
     persistenceSchema.type = domainEntity.type;
+    persistenceSchema.content = domainEntity.content;
+    persistenceSchema.image = domainEntity.image;
     persistenceSchema.createdAt = domainEntity.createdAt;
     persistenceSchema.updatedAt = domainEntity.updatedAt;
 

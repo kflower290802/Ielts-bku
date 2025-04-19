@@ -10,7 +10,7 @@ import { PracticeReadingTypeRepository } from './infrastructure/persistence/prac
 import { PracticeReadingType } from './domain/practice-reading-type';
 import { PracticeReadingsService } from '../practice-readings/practice-readings.service';
 import { PracticeReadingQuestionsService } from '../practice-reading-questions/practice-reading-questions.service';
-
+import { CloudinaryService } from '../cloudinary/cloudinary.service';
 @Injectable()
 export class PracticeReadingTypesService {
   constructor(
@@ -18,17 +18,24 @@ export class PracticeReadingTypesService {
     @Inject(forwardRef(() => PracticeReadingsService))
     private readonly practiceReadingsService: PracticeReadingsService,
     private readonly practiceReadingQuestionsService: PracticeReadingQuestionsService,
+    private readonly cloudinaryService: CloudinaryService,
   ) {}
 
   async create(createPracticeReadingTypeDto: CreatePracticeReadingTypeDto) {
-    const { practiceReadingId, ...rest } = createPracticeReadingTypeDto;
+    const { practiceReadingId, image, ...rest } = createPracticeReadingTypeDto;
     const practiceReading =
       await this.practiceReadingsService.findById(practiceReadingId);
     if (!practiceReading)
       throw new NotFoundException('Practice reading not found');
+    let imageResponse: string | undefined;
+    if (image) {
+      const { secure_url } = await this.cloudinaryService.uploadImage(image);
+      imageResponse = secure_url;
+    }
     return this.practiceReadingTypeRepository.create({
       practiceReading,
       ...rest,
+      image: imageResponse,
     });
   }
 

@@ -1,8 +1,15 @@
-import { Controller, Post, Body } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  UseInterceptors,
+  UploadedFile,
+} from '@nestjs/common';
 import { PracticeReadingTypesService } from './practice-reading-types.service';
 import { CreatePracticeReadingTypeDto } from './dto/create-practice-reading-type.dto';
-import { ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
+import { ApiConsumes, ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
 import { PracticeReadingType } from './domain/practice-reading-type';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @ApiTags('Practicereadingtypes')
 @Controller({
@@ -18,9 +25,16 @@ export class PracticeReadingTypesController {
   @ApiCreatedResponse({
     type: PracticeReadingType,
   })
-  create(@Body() createPracticeReadingTypeDto: CreatePracticeReadingTypeDto) {
-    return this.practiceReadingTypesService.create(
-      createPracticeReadingTypeDto,
-    );
+  @UseInterceptors(FileInterceptor('image'))
+  @ApiConsumes('multipart/form-data')
+  create(
+    @Body() createPracticeReadingTypeDto: CreatePracticeReadingTypeDto,
+    @UploadedFile()
+    image?: Express.Multer.File,
+  ) {
+    return this.practiceReadingTypesService.create({
+      ...createPracticeReadingTypeDto,
+      image,
+    });
   }
 }

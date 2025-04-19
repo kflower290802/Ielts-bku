@@ -26,6 +26,12 @@ export class PracticeReadingTypeSchemaClass extends EntityDocumentHelper {
   @Prop({ required: true, type: String, enum: Object.values(QuestionType) })
   type: QuestionType;
 
+  @Prop({ required: false, type: String })
+  content?: string;
+
+  @Prop({ required: false, type: String })
+  image?: string;
+
   @Prop({ default: now })
   createdAt: Date;
 
