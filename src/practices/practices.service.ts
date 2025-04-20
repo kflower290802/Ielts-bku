@@ -274,9 +274,27 @@ export class PracticesService {
     }
 
     if (practice.type === PracticeType.Writing) {
-      const overall = await this.examWritingsService.gradeEssay(answers.answer);
+      const practiceWriting = await this.practiceWritingsService.findById(
+        userPractice.practice.id,
+      );
+      if (!practiceWriting)
+        throw new NotFoundException('Practice writing not found');
+      const overall = await this.examWritingsService.gradeEssay(
+        answers.answer,
+        practiceWriting.content,
+        1,
+        practiceWriting.imageDetails,
+      );
       await this.userPracticesService.update(userPractice.id, {
-        ...overall,
+        taskResponse: overall.taskResponse.score,
+        taskResponseDetails: overall.taskResponse.comment,
+        coherenceAndCohesion: overall.coherenceAndCohesion.score,
+        coherenceAndCohesionDetails: overall.coherenceAndCohesion.comment,
+        lexicalResource: overall.lexicalResource.score,
+        lexicalResourceDetails: overall.lexicalResource.comment,
+        grammaticalRangeAndAccuracy: overall.grammaticalRangeAndAccuracy.score,
+        grammaticalRangeAndAccuracyDetails:
+          overall.grammaticalRangeAndAccuracy.comment,
         score: overall.overallBandScore,
         isCompleted: true,
       });

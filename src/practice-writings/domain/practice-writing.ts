@@ -14,6 +14,9 @@ export class PracticeWriting {
   image?: string;
 
   @ApiProperty()
+  imageDetails?: string;
+
+  @ApiProperty()
   practice: Practice;
 
   @ApiProperty()

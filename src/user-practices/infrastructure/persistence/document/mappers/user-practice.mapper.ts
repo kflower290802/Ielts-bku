@@ -21,6 +21,11 @@ export class UserPracticeMapper {
     domainEntity.coherenceAndCohesion = raw.coherenceAndCohesion;
     domainEntity.lexicalResource = raw.lexicalResource;
     domainEntity.grammaticalRangeAndAccuracy = raw.grammaticalRangeAndAccuracy;
+    domainEntity.taskResponseDetails = raw.taskResponseDetails;
+    domainEntity.coherenceAndCohesionDetails = raw.coherenceAndCohesionDetails;
+    domainEntity.lexicalResourceDetails = raw.lexicalResourceDetails;
+    domainEntity.grammaticalRangeAndAccuracyDetails =
+      raw.grammaticalRangeAndAccuracyDetails;
     domainEntity.createdAt = raw.createdAt;
     domainEntity.updatedAt = raw.updatedAt;
 
@@ -43,10 +48,17 @@ export class UserPracticeMapper {
     persistenceSchema.isCompleted = domainEntity.isCompleted;
     persistenceSchema.score = domainEntity.score;
     persistenceSchema.taskResponse = domainEntity.taskResponse;
+    persistenceSchema.taskResponseDetails = domainEntity.taskResponseDetails;
     persistenceSchema.coherenceAndCohesion = domainEntity.coherenceAndCohesion;
+    persistenceSchema.coherenceAndCohesionDetails =
+      domainEntity.coherenceAndCohesionDetails;
     persistenceSchema.lexicalResource = domainEntity.lexicalResource;
+    persistenceSchema.lexicalResourceDetails =
+      domainEntity.lexicalResourceDetails;
     persistenceSchema.grammaticalRangeAndAccuracy =
       domainEntity.grammaticalRangeAndAccuracy;
+    persistenceSchema.grammaticalRangeAndAccuracyDetails =
+      domainEntity.grammaticalRangeAndAccuracyDetails;
     persistenceSchema.createdAt = domainEntity.createdAt;
     persistenceSchema.updatedAt = domainEntity.updatedAt;
 

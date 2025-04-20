@@ -28,6 +28,9 @@ export class PracticeWritingSchemaClass extends EntityDocumentHelper {
   @Prop({ required: false, type: String })
   image?: string;
 
+  @Prop({ required: false, type: String })
+  imageDetails?: string;
+
   @Prop({ default: now })
   createdAt: Date;
 

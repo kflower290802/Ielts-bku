@@ -8,24 +8,60 @@ import { CloudinaryService } from '../cloudinary/cloudinary.service';
 import { Practice } from '../practices/domain/practice';
 import { UserPracticeWritingAnswersService } from '../user-practice-writing-answers/user-practice-writing-answers.service';
 import { UserPracticesService } from '../user-practices/user-practices.service';
+import { ConfigService } from '@nestjs/config';
+import OpenAI from 'openai';
 
 @Injectable()
 export class PracticeWritingsService {
+  private openai: OpenAI;
   constructor(
     private readonly practiceWritingRepository: PracticeWritingRepository,
     private readonly cloudinaryService: CloudinaryService,
     private readonly userPracticeWritingAnswersService: UserPracticeWritingAnswersService,
     private readonly userPracticesService: UserPracticesService,
-  ) {}
-
+    private configService: ConfigService,
+  ) {
+    const openaiApiKey = this.configService.get('app.openaiApiKey', {
+      infer: true,
+    });
+    if (!openaiApiKey) {
+      throw new Error('OpenAI API key is not set');
+    }
+    this.openai = new OpenAI({
+      apiKey: openaiApiKey,
+    });
+  }
   async create(createPracticeWritingDto: CreatePracticeWritingDto) {
     const { image, practiceId, ...rest } = createPracticeWritingDto;
     const practice = new Practice();
     practice.id = practiceId;
     if (image) {
       const { secure_url } = await this.cloudinaryService.uploadImage(image);
+      const base64Image = image.buffer.toString('base64');
+      const response = await this.openai.chat.completions.create({
+        model: 'gpt-4o-mini',
+        messages: [
+          {
+            role: 'user',
+            content: [
+              {
+                type: 'text',
+                text: 'Analyze the image and provide a detailed description of the image.',
+              },
+              {
+                type: 'image_url',
+                image_url: {
+                  url: `data:image/jpeg;base64,${base64Image}`,
+                },
+              },
+            ],
+          },
+        ],
+        max_tokens: 1000,
+      });
       return this.practiceWritingRepository.create({
         image: secure_url,
+        imageDetails: response.choices[0].message.content || undefined,
         practice,
         ...rest,
       });
@@ -34,6 +70,10 @@ export class PracticeWritingsService {
       practice,
       ...rest,
     });
+  }
+
+  findByPracticeId(practiceId: Practice['id']) {
+    return this.practiceWritingRepository.findByPracticeId(practiceId);
   }
 
   findAllWithPagination({

@@ -365,11 +365,15 @@ export class ExamsService {
       );
     }
     if (exam.type === ExamType.Writing) {
-      const taskOne = await this.examWritingsService.gradeEssay(
+      const taskOne = await this.examWritingsService.gradeEssayExamWriting(
         answers[0].answer as string,
+        answers[0].questionId,
+        1,
       );
-      const taskTwo = await this.examWritingsService.gradeEssay(
+      const taskTwo = await this.examWritingsService.gradeEssayExamWriting(
         answers[1].answer as string,
+        answers[1].questionId,
+        2,
       );
       summary = [taskOne, taskTwo];
     }
@@ -420,10 +424,16 @@ export class ExamsService {
           examWritingId: a.questionId,
           answer: Array.isArray(a.answer) ? a.answer[0] : a.answer,
           taskResponse: summary[index].taskResponse,
+          taskResponseDetails: summary[index].taskResponseDetails,
           coherenceAndCohesion: summary[index].coherenceAndCohesion,
+          coherenceAndCohesionDetails:
+            summary[index].coherenceAndCohesionDetails,
           lexicalResource: summary[index].lexicalResource,
+          lexicalResourceDetails: summary[index].lexicalResourceDetails,
           grammaticalRangeAndAccuracy:
             summary[index].grammaticalRangeAndAccuracy,
+          grammaticalRangeAndAccuracyDetails:
+            summary[index].grammaticalRangeAndAccuracyDetails,
           overallBandScore: summary[index].overallBandScore,
         })),
         userId,

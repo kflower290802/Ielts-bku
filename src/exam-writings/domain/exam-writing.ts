@@ -14,6 +14,9 @@ export class ExamWriting {
   content: string;
 
   @ApiProperty()
+  imageDetails?: string;
+
+  @ApiProperty()
   image?: string;
 
   @ApiProperty()

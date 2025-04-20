@@ -24,6 +24,9 @@ export class ExamWritingSchemaClass extends EntityDocumentHelper {
   @Prop({ required: false })
   image?: string;
 
+  @Prop({ required: false })
+  imageDetails?: string;
+
   @Prop({ default: now })
   createdAt: Date;
 
