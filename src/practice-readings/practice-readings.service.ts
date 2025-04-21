@@ -74,8 +74,7 @@ export class PracticeReadingsService {
   async getPracticeDataWithQuestionAndAnswer(id: string) {
     const practiceReading =
       await this.practiceReadingRepository.findByPracticeId(id);
-    if (!practiceReading)
-      throw new NotFoundException('Practice reading not found');
+    if (!practiceReading) return {};
     const practiceReadingId = practiceReading.id;
     const types =
       await this.practiceReadingTypesService.findByPracticeReadingId(
