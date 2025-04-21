@@ -55,7 +55,12 @@ export class PracticeListenTypesService {
       types.map(async (type) => {
         const questions =
           await this.practiceListenQuestionsService.findByTypeId(type.id);
-        return { type: type.type, questions, content: type.content };
+        return {
+          type: type.type,
+          questions,
+          content: type.content,
+          id: type.id,
+        };
       }),
     );
   }
