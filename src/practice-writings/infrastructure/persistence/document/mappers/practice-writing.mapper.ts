@@ -9,6 +9,7 @@ export class PracticeWritingMapper {
     domainEntity.id = raw._id.toString();
     domainEntity.content = raw.content;
     domainEntity.image = raw.image;
+    domainEntity.imageDetails = raw.imageDetails;
     const practice = new Practice();
     practice.id = raw.practice._id.toString();
     domainEntity.practice = practice;
@@ -27,6 +28,7 @@ export class PracticeWritingMapper {
     }
     persistenceSchema.content = domainEntity.content;
     persistenceSchema.image = domainEntity.image;
+    persistenceSchema.imageDetails = domainEntity.imageDetails;
     const practice = new PracticeSchemaClass();
     practice._id = domainEntity.practice.id;
     persistenceSchema.practice = practice;

@@ -45,6 +45,12 @@ export class UserPracticeSchemaClass extends EntityDocumentHelper {
 
   @Prop({
     required: false,
+    type: String,
+  })
+  taskResponseDetails?: string;
+
+  @Prop({
+    required: false,
     type: Number,
   })
   taskResponse?: number;
@@ -57,15 +63,33 @@ export class UserPracticeSchemaClass extends EntityDocumentHelper {
 
   @Prop({
     required: false,
+    type: String,
+  })
+  coherenceAndCohesionDetails?: string;
+
+  @Prop({
+    required: false,
     type: Number,
   })
   lexicalResource?: number;
 
   @Prop({
     required: false,
+    type: String,
+  })
+  lexicalResourceDetails?: string;
+
+  @Prop({
+    required: false,
     type: Number,
   })
   grammaticalRangeAndAccuracy?: number;
+
+  @Prop({
+    required: false,
+    type: String,
+  })
+  grammaticalRangeAndAccuracyDetails?: string;
 
   @Prop({ default: now })
   createdAt: Date;

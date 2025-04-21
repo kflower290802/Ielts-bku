@@ -6,10 +6,7 @@ import {
   UploadedFile,
 } from '@nestjs/common';
 import { ExamWritingsService } from './exam-writings.service';
-import {
-  CreateExamWritingDto,
-  GradeEssayDto,
-} from './dto/create-exam-writing.dto';
+import { CreateExamWritingDto } from './dto/create-exam-writing.dto';
 import { ApiConsumes, ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
 import { ExamWriting } from './domain/exam-writing';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -34,10 +31,5 @@ export class ExamWritingsController {
     image: Express.Multer.File,
   ) {
     return this.examWritingsService.create({ ...createExamWritingDto, image });
-  }
-
-  @Post('grade')
-  gradeEssay(@Body() body: GradeEssayDto) {
-    return this.examWritingsService.gradeEssay(body.essay);
   }
 }

@@ -21,13 +21,25 @@ export class UserPractice {
   taskResponse?: number;
 
   @ApiProperty()
+  taskResponseDetails?: string;
+
+  @ApiProperty()
   coherenceAndCohesion?: number;
+
+  @ApiProperty()
+  coherenceAndCohesionDetails?: string;
 
   @ApiProperty()
   lexicalResource?: number;
 
   @ApiProperty()
+  lexicalResourceDetails?: string;
+
+  @ApiProperty()
   grammaticalRangeAndAccuracy?: number;
+
+  @ApiProperty()
+  grammaticalRangeAndAccuracyDetails?: string;
 
   @ApiProperty({ type: Boolean, required: false })
   isCompleted?: boolean;

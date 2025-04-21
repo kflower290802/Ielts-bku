@@ -12,6 +12,7 @@ export class ExamWritingMapper {
     exam.id = raw.exam._id.toString();
     domainEntity.exam = exam;
     domainEntity.image = raw.image;
+    domainEntity.imageDetails = raw.imageDetails;
     domainEntity.createdAt = raw.createdAt;
     domainEntity.updatedAt = raw.updatedAt;
 
@@ -30,6 +31,7 @@ export class ExamWritingMapper {
     exam._id = domainEntity.exam.id;
     persistenceSchema.exam = exam;
     persistenceSchema.image = domainEntity.image;
+    persistenceSchema.imageDetails = domainEntity.imageDetails;
     persistenceSchema.createdAt = domainEntity.createdAt;
     persistenceSchema.updatedAt = domainEntity.updatedAt;
 
