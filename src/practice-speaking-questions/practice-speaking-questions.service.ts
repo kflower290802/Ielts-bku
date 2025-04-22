@@ -50,6 +50,8 @@ export class PracticeSpeakingQuestionsService {
   }
 
   async getPracticeDataWithQuestionAndAnswer(id: string) {
-    return this.practiceSpeakingQuestionRepository.findByPracticeId(id);
+    const practice =
+      await this.practiceSpeakingQuestionRepository.findByPracticeId(id);
+    return practice ?? {};
   }
 }

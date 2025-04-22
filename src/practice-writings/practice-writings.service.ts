@@ -130,7 +130,7 @@ export class PracticeWritingsService {
 
   async getPracticeDataWithQuestionAndAnswer(id: string) {
     const practice = await this.practiceWritingRepository.findByPracticeId(id);
-    if (!practice) throw new NotFoundException('Practice not found');
+    if (!practice) return {};
     return practice;
   }
 }
