@@ -17,9 +17,14 @@ export class UserExamWritingMapper {
     userExam.id = raw.userExam._id.toString();
     domainEntity.userExam = userExam;
     domainEntity.taskResponse = raw.taskResponse;
+    domainEntity.taskResponseDetails = raw.taskResponseDetails;
     domainEntity.coherenceAndCohesion = raw.coherenceAndCohesion;
+    domainEntity.coherenceAndCohesionDetails = raw.coherenceAndCohesionDetails;
     domainEntity.lexicalResource = raw.lexicalResource;
+    domainEntity.lexicalResourceDetails = raw.lexicalResourceDetails;
     domainEntity.grammaticalRangeAndAccuracy = raw.grammaticalRangeAndAccuracy;
+    domainEntity.grammaticalRangeAndAccuracyDetails =
+      raw.grammaticalRangeAndAccuracyDetails;
     domainEntity.overallBandScore = raw.overallBandScore;
     domainEntity.createdAt = raw.createdAt;
     domainEntity.updatedAt = raw.updatedAt;
@@ -42,10 +47,17 @@ export class UserExamWritingMapper {
     userExam._id = domainEntity.userExam.id;
     persistenceSchema.userExam = userExam;
     persistenceSchema.taskResponse = domainEntity.taskResponse;
+    persistenceSchema.taskResponseDetails = domainEntity.taskResponseDetails;
     persistenceSchema.coherenceAndCohesion = domainEntity.coherenceAndCohesion;
+    persistenceSchema.coherenceAndCohesionDetails =
+      domainEntity.coherenceAndCohesionDetails;
     persistenceSchema.lexicalResource = domainEntity.lexicalResource;
+    persistenceSchema.lexicalResourceDetails =
+      domainEntity.lexicalResourceDetails;
     persistenceSchema.grammaticalRangeAndAccuracy =
       domainEntity.grammaticalRangeAndAccuracy;
+    persistenceSchema.grammaticalRangeAndAccuracyDetails =
+      domainEntity.grammaticalRangeAndAccuracyDetails;
     persistenceSchema.overallBandScore = domainEntity.overallBandScore;
     persistenceSchema.createdAt = domainEntity.createdAt;
     persistenceSchema.updatedAt = domainEntity.updatedAt;

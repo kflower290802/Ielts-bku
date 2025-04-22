@@ -422,6 +422,7 @@ export class ExamsService {
       );
     }
     if (exam.type === ExamType.Writing) {
+      console.log({ summary });
       await this.userExamWritingsService.create(
         answers.map((a, index) => ({
           examId: id,
@@ -438,7 +439,7 @@ export class ExamsService {
             summary[index].grammaticalRangeAndAccuracy.score,
           grammaticalRangeAndAccuracyDetails:
             summary[index].grammaticalRangeAndAccuracy.comment,
-          overallBandScore: summary[index].overallBandScore.score,
+          overallBandScore: summary[index].overallBandScore,
         })),
         userId,
       );
@@ -522,9 +523,14 @@ export class ExamsService {
           questionId: a.examWriting.id,
           overallBandScore: a.overallBandScore,
           taskResponse: a.taskResponse,
+          taskResponseDetails: a.taskResponseDetails,
           coherenceAndCohesion: a.coherenceAndCohesion,
+          coherenceAndCohesionDetails: a.coherenceAndCohesionDetails,
           lexicalResource: a.lexicalResource,
+          lexicalResourceDetails: a.lexicalResourceDetails,
           grammaticalRangeAndAccuracy: a.grammaticalRangeAndAccuracy,
+          grammaticalRangeAndAccuracyDetails:
+            a.grammaticalRangeAndAccuracyDetails,
         };
       });
     }
