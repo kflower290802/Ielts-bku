@@ -274,9 +274,10 @@ export class PracticesService {
     }
 
     if (practice.type === PracticeType.Writing) {
-      const practiceWriting = await this.practiceWritingsService.findById(
-        userPractice.practice.id,
-      );
+      const practiceWriting =
+        await this.practiceWritingsService.findByPracticeId(
+          userPractice.practice.id,
+        );
       if (!practiceWriting)
         throw new NotFoundException('Practice writing not found');
       const overall = await this.examWritingsService.gradeEssay(

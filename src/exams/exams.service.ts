@@ -365,17 +365,21 @@ export class ExamsService {
       );
     }
     if (exam.type === ExamType.Writing) {
-      const taskOne = await this.examWritingsService.gradeEssayExamWriting(
-        answers[0].answer as string,
-        answers[0].questionId,
-        1,
-      );
-      const taskTwo = await this.examWritingsService.gradeEssayExamWriting(
-        answers[1].answer as string,
-        answers[1].questionId,
-        2,
-      );
-      summary = [taskOne, taskTwo];
+      if (answers.length !== 2)
+        throw new BadRequestException('Writing exam must have 2 answers');
+      const task = await Promise.all([
+        this.examWritingsService.gradeEssayExamWriting(
+          answers[0].answer as string,
+          answers[0].questionId,
+          1,
+        ),
+        this.examWritingsService.gradeEssayExamWriting(
+          answers[1].answer as string,
+          answers[1].questionId,
+          2,
+        ),
+      ]);
+      summary = task;
     }
     const correctScore = summary.filter((s) => s.isCorrect).length;
     const score =
@@ -423,18 +427,18 @@ export class ExamsService {
           examId: id,
           examWritingId: a.questionId,
           answer: Array.isArray(a.answer) ? a.answer[0] : a.answer,
-          taskResponse: summary[index].taskResponse,
-          taskResponseDetails: summary[index].taskResponseDetails,
-          coherenceAndCohesion: summary[index].coherenceAndCohesion,
+          taskResponse: summary[index].taskResponse.score,
+          taskResponseDetails: summary[index].taskResponse.comment,
+          coherenceAndCohesion: summary[index].coherenceAndCohesion.score,
           coherenceAndCohesionDetails:
-            summary[index].coherenceAndCohesionDetails,
-          lexicalResource: summary[index].lexicalResource,
-          lexicalResourceDetails: summary[index].lexicalResourceDetails,
+            summary[index].coherenceAndCohesion.comment,
+          lexicalResource: summary[index].lexicalResource.score,
+          lexicalResourceDetails: summary[index].lexicalResource.comment,
           grammaticalRangeAndAccuracy:
-            summary[index].grammaticalRangeAndAccuracy,
+            summary[index].grammaticalRangeAndAccuracy.score,
           grammaticalRangeAndAccuracyDetails:
-            summary[index].grammaticalRangeAndAccuracyDetails,
-          overallBandScore: summary[index].overallBandScore,
+            summary[index].grammaticalRangeAndAccuracy.comment,
+          overallBandScore: summary[index].overallBandScore.score,
         })),
         userId,
       );
