@@ -29,6 +29,8 @@ import isEqual from 'lodash/isEqual';
 import sortBy from 'lodash/sortBy';
 import { ExamListenAnswersService } from '../exam-listen-answers/exam-listen-answers.service';
 import { getIELTSBandScore } from '../utils/band-score';
+import { generateTimeByExamType } from '../utils/generate-time';
+
 @Injectable()
 export class ExamsService {
   constructor(
@@ -64,6 +66,7 @@ export class ExamsService {
       ...createExamDto,
       image,
       audio: responseAudio?.secure_url ?? undefined,
+      time: generateTimeByExamType(createExamDto.type),
     });
   }
 

@@ -132,4 +132,76 @@ export class UsersDocumentRepository implements UserRepository {
       .populate('account');
     return user ? UserMapper.toDomain(user) : null;
   }
+
+  private getAllMonthsBetween(startDate: Date, endDate: Date): string[] {
+    const months: string[] = [];
+    const currentDate = new Date(startDate);
+
+    while (currentDate <= endDate) {
+      const year = currentDate.getFullYear();
+      const month = currentDate.getMonth() + 1;
+      months.push(`${year}-${month < 10 ? '0' + month : month}`);
+
+      currentDate.setMonth(currentDate.getMonth() + 1);
+    }
+
+    return months;
+  }
+
+  async getUserRegistrationByMonth(
+    startDate: Date = new Date(new Date().getFullYear(), 0, 1), // Mặc định lấy từ đầu năm hiện tại
+    endDate: Date = new Date(),
+  ): Promise<{ month: string; count: number }[]> {
+    const result = await this.usersModel.aggregate([
+      {
+        $match: {
+          createdAt: { $gte: startDate, $lte: endDate },
+          // Có thể thêm điều kiện status: StatusEnum.Active nếu chỉ muốn đếm user active
+        },
+      },
+      {
+        $group: {
+          _id: {
+            year: { $year: '$createdAt' },
+            month: { $month: '$createdAt' },
+          },
+          count: { $sum: 1 },
+        },
+      },
+      {
+        $sort: {
+          '_id.year': 1,
+          '_id.month': 1,
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          month: {
+            $concat: [
+              { $toString: '$_id.year' },
+              '-',
+              {
+                $cond: {
+                  if: { $lt: ['$_id.month', 10] },
+                  then: { $concat: ['0', { $toString: '$_id.month' }] },
+                  else: { $toString: '$_id.month' },
+                },
+              },
+            ],
+          },
+          count: 1,
+        },
+      },
+    ]);
+
+    // Đảm bảo tất cả các tháng đều có dữ liệu (kể cả tháng không có đăng ký)
+    const allMonths = this.getAllMonthsBetween(startDate, endDate);
+    const resultMap = new Map(result.map((item) => [item.month, item.count]));
+
+    return allMonths.map((month) => ({
+      month,
+      count: resultMap.get(month) || 0,
+    }));
+  }
 }

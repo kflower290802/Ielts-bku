@@ -6,7 +6,6 @@ import {
   Patch,
   Param,
   Delete,
-  // UseGuards,
   Query,
   HttpStatus,
   HttpCode,
@@ -19,10 +18,10 @@ import {
   ApiCreatedResponse,
   ApiOkResponse,
   ApiParam,
+  ApiQuery,
   ApiTags,
 } from '@nestjs/swagger';
 import { Roles } from '../roles/roles.decorator';
-// import { AuthGuard } from '@nestjs/passport';
 
 import {
   InfinityPaginationResponse,
@@ -32,9 +31,8 @@ import { NullableType } from '../utils/types/nullable.type';
 import { QueryUserDto } from './dto/query-user.dto';
 import { User } from './domain/user';
 import { UsersService } from './users.service';
-// import { RolesGuard } from '../roles/roles.guard';
 import { RoleEnum } from '../accounts/infrastructure/persistence/document/entities/account.schema';
-
+import { startOfYear, endOfYear } from 'date-fns';
 @ApiBearerAuth()
 // @UseGuards(AuthGuard('jwt'), RolesGuard)
 @ApiTags('Users')
@@ -83,6 +81,29 @@ export class UsersController {
         limit,
       },
     });
+  }
+
+  @Get('registration-stats')
+  @ApiQuery({
+    name: 'startDate',
+    required: false,
+    type: String,
+    description: 'Start date in ISO format (default: start of current year)',
+  })
+  @ApiQuery({
+    name: 'endDate',
+    required: false,
+    type: String,
+    description: 'End date in ISO format (default: current date)',
+  })
+  async getUserRegistrationByMonth(
+    @Query('startDate') startDate?: string,
+    @Query('endDate') endDate?: string,
+  ) {
+    const start = startDate ? new Date(startDate) : startOfYear(new Date());
+    const end = endDate ? new Date(endDate) : endOfYear(new Date());
+
+    return this.usersService.getUserRegistrationByMonth(start, end);
   }
 
   @ApiOkResponse({

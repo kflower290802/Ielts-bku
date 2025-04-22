@@ -35,4 +35,9 @@ export abstract class UserRepository {
   abstract findByAccountId(
     accountId: User['account']['id'],
   ): Promise<NullableType<User>>;
+
+  abstract getUserRegistrationByMonth(
+    startDate: Date,
+    endDate: Date,
+  ): Promise<{ month: string; count: number }[]>;
 }

@@ -19,9 +19,6 @@ export class UsersService {
   constructor(private readonly usersRepository: UserRepository) {}
 
   async create(createUserDto: CreateUserDto): Promise<User> {
-    // Do not remove comment below.
-    // <creating-property />
-
     let email: string | undefined = undefined;
 
     if (createUserDto.email) {
@@ -38,8 +35,6 @@ export class UsersService {
     }
 
     return this.usersRepository.create({
-      // Do not remove comment below.
-      // <creating-property-payload />
       ...createUserDto,
       email: email!,
       status: StatusEnum.Active,
@@ -113,5 +108,12 @@ export class UsersService {
 
   findByAccountId(accountId: Account['id']): Promise<NullableType<User>> {
     return this.usersRepository.findByAccountId(accountId);
+  }
+
+  getUserRegistrationByMonth(
+    startDate: Date = new Date(new Date().getFullYear(), 0, 1),
+    endDate: Date = new Date(),
+  ): Promise<{ month: string; count: number }[]> {
+    return this.usersRepository.getUserRegistrationByMonth(startDate, endDate);
   }
 }

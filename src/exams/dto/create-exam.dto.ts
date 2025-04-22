@@ -46,9 +46,4 @@ export class CreateExamDto {
   @Transform(({ value }) => +value)
   @IsNotEmpty()
   year: number;
-
-  @ApiProperty()
-  @Transform(({ value }) => +value)
-  @IsNotEmpty()
-  time: number;
 }
