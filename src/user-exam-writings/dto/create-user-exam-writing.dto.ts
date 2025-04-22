@@ -29,9 +29,19 @@ export class CreateUserExamWritingDto {
   taskResponse?: number;
 
   @ApiProperty()
+  @IsNotEmpty()
+  @IsNumber()
+  taskResponseDetails?: string;
+
+  @ApiProperty()
   @IsOptional()
   @IsNumber()
   coherenceAndCohesion?: number;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsNumber()
+  coherenceAndCohesionDetails?: string;
 
   @ApiProperty()
   @IsOptional()
@@ -41,7 +51,17 @@ export class CreateUserExamWritingDto {
   @ApiProperty()
   @IsOptional()
   @IsNumber()
+  lexicalResourceDetails?: string;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsNumber()
   grammaticalRangeAndAccuracy?: number;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsNumber()
+  grammaticalRangeAndAccuracyDetails?: string;
 
   @ApiProperty()
   @IsOptional()

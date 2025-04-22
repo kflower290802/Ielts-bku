@@ -33,13 +33,25 @@ export class UserExamWritingSchemaClass extends EntityDocumentHelper {
   taskResponse?: number;
 
   @Prop({ required: false })
+  taskResponseDetails?: string;
+
+  @Prop({ required: false })
   coherenceAndCohesion?: number;
+
+  @Prop({ required: false })
+  coherenceAndCohesionDetails?: string;
 
   @Prop({ required: false })
   lexicalResource?: number;
 
   @Prop({ required: false })
+  lexicalResourceDetails?: string;
+
+  @Prop({ required: false })
   grammaticalRangeAndAccuracy?: number;
+
+  @Prop({ required: false })
+  grammaticalRangeAndAccuracyDetails?: string;
 
   @Prop({ required: false })
   overallBandScore?: number;
