@@ -80,6 +80,11 @@ export class PracticesController {
     return paginateData(practices, page, limit);
   }
 
+  @Get('total-practice')
+  getTotalPractice() {
+    return this.practicesService.getTotalPractice();
+  }
+
   @Get(':id')
   @ApiBearerAuth()
   @UseGuards(AuthGuard('jwt'))

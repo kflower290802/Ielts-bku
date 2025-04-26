@@ -78,4 +78,8 @@ export class BlogDocumentRepository implements BlogRepository {
   async remove(id: Blog['id']): Promise<void> {
     await this.blogModel.deleteOne({ _id: id });
   }
+
+  async getTotalBlog(): Promise<number> {
+    return this.blogModel.countDocuments();
+  }
 }

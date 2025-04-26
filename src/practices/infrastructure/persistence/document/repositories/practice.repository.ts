@@ -80,4 +80,8 @@ export class PracticeDocumentRepository implements PracticeRepository {
   async remove(id: Practice['id']): Promise<void> {
     await this.practiceModel.deleteOne({ _id: id });
   }
+
+  async getTotalPractice(): Promise<number> {
+    return this.practiceModel.countDocuments();
+  }
 }

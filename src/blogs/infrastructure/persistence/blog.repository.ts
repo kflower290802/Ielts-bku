@@ -24,4 +24,6 @@ export abstract class BlogRepository {
   ): Promise<Blog | null>;
 
   abstract remove(id: Blog['id']): Promise<void>;
+
+  abstract getTotalBlog(): Promise<number>;
 }

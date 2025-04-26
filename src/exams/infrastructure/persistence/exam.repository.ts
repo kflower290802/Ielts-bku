@@ -32,4 +32,6 @@ export abstract class ExamRepository {
   abstract findAllExams(): Promise<Exam[]>;
 
   abstract findAllExamsByType(type: ExamType): Promise<Exam[]>;
+
+  abstract getTotalExam(): Promise<number>;
 }

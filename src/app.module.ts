@@ -106,8 +106,11 @@ import { GrammarPointsModule } from './grammar-points/grammar-points.module';
 
 import { BlogGrammarPointsModule } from './blog-grammar-points/blog-grammar-points.module';
 
+import { PageVisitsModule } from './page-visits/page-visits.module';
+
 @Module({
   imports: [
+    PageVisitsModule,
     BlogGrammarPointsModule,
     GrammarPointsModule,
     BlogTopicsModule,

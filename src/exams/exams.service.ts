@@ -425,7 +425,6 @@ export class ExamsService {
       );
     }
     if (exam.type === ExamType.Writing) {
-      console.log({ summary });
       await this.userExamWritingsService.create(
         answers.map((a, index) => ({
           examId: id,
@@ -582,5 +581,9 @@ export class ExamsService {
       ...exam,
       examPassage,
     };
+  }
+
+  getTotalExam() {
+    return this.examRepository.getTotalExam();
   }
 }

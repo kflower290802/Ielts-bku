@@ -124,6 +124,11 @@ export class ExamsController {
     return this.examsService.getTimeSpentByUserId(userId, startTime, endTime);
   }
 
+  @Get('total-exam')
+  getTotalExam() {
+    return this.examsService.getTotalExam();
+  }
+
   @Get(':id')
   @ApiParam({
     name: 'id',

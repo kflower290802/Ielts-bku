@@ -96,6 +96,11 @@ export class BlogsController {
     });
   }
 
+  @Get('total-blog')
+  getTotalBlog() {
+    return this.blogsService.getTotalBlog();
+  }
+
   @Get(':id')
   @ApiParam({
     name: 'id',

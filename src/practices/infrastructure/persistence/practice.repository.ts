@@ -23,4 +23,6 @@ export abstract class PracticeRepository {
   ): Promise<Practice | null>;
 
   abstract remove(id: Practice['id']): Promise<void>;
+
+  abstract getTotalPractice(): Promise<number>;
 }

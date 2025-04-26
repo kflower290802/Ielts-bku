@@ -105,4 +105,8 @@ export class BlogsService {
       grammarPointId,
     });
   }
+
+  getTotalBlog() {
+    return this.blogRepository.getTotalBlog();
+  }
 }
