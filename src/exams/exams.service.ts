@@ -30,7 +30,8 @@ import sortBy from 'lodash/sortBy';
 import { ExamListenAnswersService } from '../exam-listen-answers/exam-listen-answers.service';
 import { getIELTSBandScore } from '../utils/band-score';
 import { generateTimeByExamType } from '../utils/generate-time';
-
+import { SubscriptionsService } from '../subscriptions/subscriptions.service';
+import { SubscriptionPlan } from '../subscriptions/subscription.type';
 @Injectable()
 export class ExamsService {
   constructor(
@@ -51,6 +52,7 @@ export class ExamsService {
     private readonly examWritingsService: ExamWritingsService,
     private readonly userExamWritingsService: UserExamWritingsService,
     private readonly examListenAnswersService: ExamListenAnswersService,
+    private readonly subscriptionsService: SubscriptionsService,
   ) {}
 
   async create(createExamDto: CreateExamDto) {
@@ -177,6 +179,26 @@ export class ExamsService {
   }
 
   async startExam(id: Exam['id'], userId: User['id']) {
+    const exam = await this.examRepository.findById(id);
+    if (!exam) throw new NotFoundException('Exam not found');
+    if (exam.type === ExamType.Writing) {
+      const subscription = await this.subscriptionsService.findByUserId(userId);
+      if (!subscription)
+        throw new BadRequestException(
+          'You need to subscribe to take this exam',
+        );
+      if (subscription.plan === SubscriptionPlan.Plus) {
+        const userExam = await this.userExamsService.findByUserIdAndExamIdInDay(
+          userId,
+          id,
+        );
+        if (userExam) {
+          throw new BadRequestException(
+            'You have already taken this exam today',
+          );
+        }
+      }
+    }
     let userExam: NullableType<UserExam> = null;
     userExam = await this.userExamsService.findByUserIdAndExamId(userId, id);
     if (!userExam) {

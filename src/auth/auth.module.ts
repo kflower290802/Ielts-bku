@@ -10,7 +10,7 @@ import { MailModule } from '../mail/mail.module';
 import { SessionModule } from '../session/session.module';
 import { UsersModule } from '../users/users.module';
 import { AccountsModule } from '../accounts/accounts.module';
-
+import { SubscriptionsModule } from '../subscriptions/subscriptions.module';
 @Module({
   imports: [
     UsersModule,
@@ -19,6 +19,7 @@ import { AccountsModule } from '../accounts/accounts.module';
     MailModule,
     JwtModule.register({}),
     AccountsModule,
+    SubscriptionsModule,
   ],
   controllers: [AuthController],
   providers: [AuthService, JwtStrategy, JwtRefreshStrategy, AnonymousStrategy],

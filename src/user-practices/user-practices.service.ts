@@ -59,6 +59,13 @@ export class UserPracticesService {
     );
   }
 
+  findByUserIdAndPracticeIdInDay(userId: string, practiceId: string) {
+    return this.userPracticeRepository.findByUserIdAndPracticeIdInDay(
+      userId,
+      practiceId,
+    );
+  }
+
   findUserPracticesByUserId(userId: string) {
     return this.userPracticeRepository.findUserPracticesByUserId(userId);
   }

@@ -285,4 +285,23 @@ export class UserExamDocumentRepository implements UserExamRepository {
 
     return uniqueExams;
   }
+
+  async findByUserIdAndExamIdInDay(
+    userId: User['id'],
+    examId: UserExam['id'],
+  ): Promise<NullableType<UserExam>> {
+    const entityObject = await this.userExamModel.findOne({
+      user: {
+        _id: userId,
+      },
+      exam: {
+        _id: examId,
+      },
+      updatedAt: {
+        $gte: new Date(new Date().setDate(new Date().getDate() - 1)),
+        $lte: new Date(),
+      },
+    });
+    return entityObject ? UserExamMapper.toDomain(entityObject) : null;
+  }
 }

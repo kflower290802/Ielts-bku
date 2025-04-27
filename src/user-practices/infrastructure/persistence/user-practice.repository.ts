@@ -47,4 +47,9 @@ export abstract class UserPracticeRepository {
   abstract getUserPracticeByUserIdWithPagination(
     userId: string,
   ): Promise<UserPractice[]>;
+
+  abstract findByUserIdAndPracticeIdInDay(
+    userId: string,
+    practiceId: string,
+  ): Promise<NullableType<UserPractice>>;
 }

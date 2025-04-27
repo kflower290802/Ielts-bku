@@ -3,6 +3,7 @@ import {
   Inject,
   Injectable,
   NotFoundException,
+  BadRequestException,
 } from '@nestjs/common';
 import { CreatePracticeDto } from './dto/create-practice.dto';
 import { PracticeRepository } from './infrastructure/persistence/practice.repository';
@@ -31,6 +32,8 @@ import { UserPracticeSpeakAnswersService } from '../user-practice-speak-answers/
 import { PracticeSpeakingQuestion } from '../practice-speaking-questions/domain/practice-speaking-question';
 import { UserPracticeSessionsService } from '../user-practice-sessions/user-practice-sessions.service';
 import { ExamWritingsService } from '../exam-writings/exam-writings.service';
+import { SubscriptionsService } from '../subscriptions/subscriptions.service';
+import { SubscriptionPlan } from '../subscriptions/subscription.type';
 @Injectable()
 export class PracticesService {
   constructor(
@@ -52,6 +55,7 @@ export class PracticesService {
     private readonly userPracticeSpeakAnswersService: UserPracticeSpeakAnswersService,
     private readonly userPracticeSessionsService: UserPracticeSessionsService,
     private readonly examWritingsService: ExamWritingsService,
+    private readonly subscriptionsService: SubscriptionsService,
   ) {}
 
   async create(createPracticeDto: CreatePracticeDto) {
@@ -119,6 +123,27 @@ export class PracticesService {
     return this.practiceRepository.findByIds(ids);
   }
   async startPractice(id: string, userId: string) {
+    const practice = await this.practiceRepository.findById(id);
+    if (!practice) throw new NotFoundException('Practice not found');
+    if (practice.type === PracticeType.Writing) {
+      const subscription = await this.subscriptionsService.findByUserId(userId);
+      if (!subscription)
+        throw new BadRequestException(
+          'You need to subscribe to take this practice',
+        );
+      if (subscription.plan === SubscriptionPlan.Plus) {
+        const userPractice =
+          await this.userPracticesService.findByUserIdAndPracticeIdInDay(
+            userId,
+            id,
+          );
+        if (userPractice) {
+          throw new BadRequestException(
+            'You have already taken this practice today',
+          );
+        }
+      }
+    }
     const userPractice =
       await this.userPracticesService.findUnCompletedUserPracticeByPracticeIdAndUserId(
         id,
@@ -129,8 +154,7 @@ export class PracticesService {
     }
     const user = await this.usersService.findById(userId);
     if (!user) throw new NotFoundException('User not found');
-    const practice = await this.practiceRepository.findById(id);
-    if (!practice) throw new NotFoundException('Practice not found');
+
     const newUserPractice = await this.userPracticesService.create({
       user,
       practice,

@@ -27,6 +27,8 @@ import { User } from '../users/domain/user';
 import { Account } from '../accounts/domain/account';
 import { AccountsService } from '../accounts/accounts.service';
 import { StatusEnum } from '../users/infrastructure/persistence/document/entities/user.schema';
+import { SubscriptionsService } from '../subscriptions/subscriptions.service';
+import { SubscriptionPlan } from '../subscriptions/subscription.type';
 
 @Injectable()
 export class AuthService {
@@ -37,6 +39,7 @@ export class AuthService {
     private mailService: MailService,
     private configService: ConfigService<AllConfigType>,
     private accountsService: AccountsService,
+    private subscriptionsService: SubscriptionsService,
   ) {}
 
   async validateLogin(loginDto: AuthEmailLoginDto): Promise<LoginResponseDto> {
@@ -85,11 +88,14 @@ export class AuthService {
       hash,
     });
 
+    const subscription = await this.subscriptionsService.findByUserId(user.id);
+
     return {
       refreshToken,
       token,
       tokenExpires,
       user,
+      subscription: subscription?.plan || SubscriptionPlan.Free,
     };
   }
 

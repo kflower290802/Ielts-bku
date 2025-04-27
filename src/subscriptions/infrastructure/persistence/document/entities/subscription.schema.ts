@@ -1,6 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { now, HydratedDocument } from 'mongoose';
 import { EntityDocumentHelper } from '../../../../../utils/document-entity-helper';
+import { SubscriptionPlan } from '../../../../subscription.type';
 
 export type SubscriptionSchemaDocument =
   HydratedDocument<SubscriptionSchemaClass>;
@@ -14,6 +15,9 @@ export type SubscriptionSchemaDocument =
   collection: 'subscription',
 })
 export class SubscriptionSchemaClass extends EntityDocumentHelper {
+  @Prop({ type: String, enum: SubscriptionPlan })
+  plan: SubscriptionPlan;
+
   @Prop({ type: Date })
   startDate: Date;
 

@@ -80,4 +80,16 @@ export class SubscriptionDocumentRepository implements SubscriptionRepository {
   async remove(id: Subscription['id']): Promise<void> {
     await this.subscriptionModel.deleteOne({ _id: id });
   }
+
+  async findByUserId(userId: string): Promise<NullableType<Subscription>> {
+    const now = new Date();
+    const entityObject = await this.subscriptionModel.findOne({
+      user: {
+        _id: userId,
+      },
+      startDate: { $lte: now },
+      endDate: { $gte: now },
+    });
+    return entityObject ? SubscriptionMapper.toDomain(entityObject) : null;
+  }
 }

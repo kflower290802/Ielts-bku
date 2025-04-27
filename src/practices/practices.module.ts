@@ -18,6 +18,7 @@ import { UserPracticeWritingAnswersModule } from '../user-practice-writing-answe
 import { UserPracticeSpeakAnswersModule } from '../user-practice-speak-answers/user-practice-speak-answers.module';
 import { UserPracticeSessionsModule } from '../user-practice-sessions/user-practice-sessions.module';
 import { ExamWritingsModule } from '../exam-writings/exam-writings.module';
+import { SubscriptionsModule } from '../subscriptions/subscriptions.module';
 @Module({
   imports: [
     DocumentPracticePersistenceModule,
@@ -37,6 +38,7 @@ import { ExamWritingsModule } from '../exam-writings/exam-writings.module';
     UserPracticeSpeakAnswersModule,
     UserPracticeSessionsModule,
     ExamWritingsModule,
+    SubscriptionsModule,
   ],
   controllers: [PracticesController],
   providers: [PracticesService],

@@ -15,6 +15,7 @@ import { UserExamSpeakAnswersModule } from '../user-exam-speak-answers/user-exam
 import { ExamWritingsModule } from '../exam-writings/exam-writings.module';
 import { UserExamWritingsModule } from '../user-exam-writings/user-exam-writings.module';
 import { ExamListenAnswersModule } from '../exam-listen-answers/exam-listen-answers.module';
+import { SubscriptionsModule } from '../subscriptions/subscriptions.module';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { ExamListenAnswersModule } from '../exam-listen-answers/exam-listen-answ
     ExamWritingsModule,
     UserExamWritingsModule,
     ExamListenAnswersModule,
+    SubscriptionsModule,
   ],
   controllers: [ExamsController],
   providers: [ExamsService],

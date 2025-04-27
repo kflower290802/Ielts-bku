@@ -53,4 +53,9 @@ export abstract class UserExamRepository {
   ): Promise<UserExam[]>;
 
   abstract getRecentExams(userId: User['id']): Promise<UserExam[]>;
+
+  abstract findByUserIdAndExamIdInDay(
+    userId: User['id'],
+    examId: UserExam['id'],
+  ): Promise<NullableType<UserExam>>;
 }

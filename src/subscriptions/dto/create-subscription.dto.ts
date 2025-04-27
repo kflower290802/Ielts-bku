@@ -1,12 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty } from 'class-validator';
-
+import { SubscriptionPlan } from '../subscription.type';
 export class CreateSubscriptionDto {
-  @ApiProperty({ example: new Date() })
-  @IsNotEmpty()
-  startDate: Date;
+  userId: string;
 
-  @ApiProperty({ example: new Date() })
+  @ApiProperty({ example: SubscriptionPlan.Plus, enum: SubscriptionPlan })
   @IsNotEmpty()
-  endDate: Date;
+  plan: SubscriptionPlan;
 }

@@ -26,4 +26,6 @@ export abstract class SubscriptionRepository {
   ): Promise<Subscription | null>;
 
   abstract remove(id: Subscription['id']): Promise<void>;
+
+  abstract findByUserId(userId: string): Promise<NullableType<Subscription>>;
 }

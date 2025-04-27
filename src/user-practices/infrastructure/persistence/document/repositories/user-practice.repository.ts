@@ -160,4 +160,23 @@ export class UserPracticeDocumentRepository implements UserPracticeRepository {
       .limit(limit);
     return entities.map((entity) => UserPracticeMapper.toDomain(entity));
   }
+
+  async findByUserIdAndPracticeIdInDay(
+    userId: string,
+    practiceId: string,
+  ): Promise<NullableType<UserPractice>> {
+    const entityObject = await this.userPracticeModel.findOne({
+      user: {
+        _id: userId,
+      },
+      practice: {
+        _id: practiceId,
+      },
+      updatedAt: {
+        $gte: new Date(new Date().setDate(new Date().getDate() - 1)),
+        $lte: new Date(),
+      },
+    });
+    return entityObject ? UserPracticeMapper.toDomain(entityObject) : null;
+  }
 }

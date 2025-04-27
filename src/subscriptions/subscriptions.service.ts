@@ -1,9 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { CreateSubscriptionDto } from './dto/create-subscription.dto';
-import { UpdateSubscriptionDto } from './dto/update-subscription.dto';
 import { SubscriptionRepository } from './infrastructure/persistence/subscription.repository';
-import { IPaginationOptions } from '../utils/types/pagination-options';
 import { Subscription } from './domain/subscription';
+import { User } from '../users/domain/user';
 
 @Injectable()
 export class SubscriptionsService {
@@ -12,27 +11,22 @@ export class SubscriptionsService {
   ) {}
 
   async create(createSubscriptionDto: CreateSubscriptionDto) {
-    // Do not remove comment below.
-    // <creating-property />
-
+    const { userId, ...rest } = createSubscriptionDto;
+    const user = new User();
+    user.id = userId;
+    const startDate = new Date();
+    const endDate = new Date();
+    endDate.setDate(endDate.getDate() + 30);
     return this.subscriptionRepository.create({
-      // Do not remove comment below.
-      // <creating-property-payload />
-      ...createSubscriptionDto,
+      ...rest,
+      user,
+      startDate,
+      endDate,
     });
   }
 
-  findAllWithPagination({
-    paginationOptions,
-  }: {
-    paginationOptions: IPaginationOptions;
-  }) {
-    return this.subscriptionRepository.findAllWithPagination({
-      paginationOptions: {
-        page: paginationOptions.page,
-        limit: paginationOptions.limit,
-      },
-    });
+  findByUserId(userId: string) {
+    return this.subscriptionRepository.findByUserId(userId);
   }
 
   findById(id: Subscription['id']) {
@@ -41,20 +35,6 @@ export class SubscriptionsService {
 
   findByIds(ids: Subscription['id'][]) {
     return this.subscriptionRepository.findByIds(ids);
-  }
-
-  async update(
-    id: Subscription['id'],
-    updateSubscriptionDto: UpdateSubscriptionDto,
-  ) {
-    // Do not remove comment below.
-    // <updating-property />
-
-    return this.subscriptionRepository.update(id, {
-      ...updateSubscriptionDto,
-      // Do not remove comment below.
-      // <updating-property-payload />
-    });
   }
 
   remove(id: Subscription['id']) {

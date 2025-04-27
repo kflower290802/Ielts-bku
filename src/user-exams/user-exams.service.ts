@@ -61,6 +61,10 @@ export class UserExamsService {
     return this.userExamRepository.findByUserIdAndExamId(userId, examId);
   }
 
+  findByUserIdAndExamIdInDay(userId: User['id'], examId: UserExam['id']) {
+    return this.userExamRepository.findByUserIdAndExamIdInDay(userId, examId);
+  }
+
   findByIds(ids: UserExam['id'][]) {
     return this.userExamRepository.findByIds(ids);
   }

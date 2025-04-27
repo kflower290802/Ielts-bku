@@ -1,7 +1,19 @@
-import { Controller, Post, Body, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  UseGuards,
+  Request,
+  Get,
+} from '@nestjs/common';
 import { SubscriptionsService } from './subscriptions.service';
 import { CreateSubscriptionDto } from './dto/create-subscription.dto';
-import { ApiBearerAuth, ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiCreatedResponse,
+  ApiOkResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { Subscription } from './domain/subscription';
 import { AuthGuard } from '@nestjs/passport';
 
@@ -19,7 +31,23 @@ export class SubscriptionsController {
   @ApiCreatedResponse({
     type: Subscription,
   })
-  create(@Body() createSubscriptionDto: CreateSubscriptionDto) {
-    return this.subscriptionsService.create(createSubscriptionDto);
+  create(
+    @Body() createSubscriptionDto: CreateSubscriptionDto,
+    @Request() request,
+  ) {
+    const userId = request.user.id;
+    return this.subscriptionsService.create({
+      ...createSubscriptionDto,
+      userId,
+    });
+  }
+
+  @Get()
+  @ApiOkResponse({
+    type: Subscription,
+  })
+  findByUserId(@Request() request) {
+    const userId = request.user.id;
+    return this.subscriptionsService.findByUserId(userId);
   }
 }
