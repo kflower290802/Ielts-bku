@@ -1,7 +1,8 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { now, HydratedDocument } from 'mongoose';
+import mongoose, { now, HydratedDocument } from 'mongoose';
 import { EntityDocumentHelper } from '../../../../../utils/document-entity-helper';
 import { SubscriptionPlan } from '../../../../subscription.type';
+import { UserSchemaClass } from '../../../../../users/infrastructure/persistence/document/entities/user.schema';
 
 export type SubscriptionSchemaDocument =
   HydratedDocument<SubscriptionSchemaClass>;
@@ -15,7 +16,14 @@ export type SubscriptionSchemaDocument =
   collection: 'subscription',
 })
 export class SubscriptionSchemaClass extends EntityDocumentHelper {
-  @Prop({ type: String, enum: SubscriptionPlan })
+  @Prop({
+    ref: 'user',
+    type: mongoose.Types.ObjectId,
+    required: true,
+  })
+  user: UserSchemaClass;
+
+  @Prop({ type: String, enum: SubscriptionPlan, required: true })
   plan: SubscriptionPlan;
 
   @Prop({ type: Date })
