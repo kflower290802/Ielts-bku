@@ -521,4 +521,8 @@ export class PracticesService {
   getTotalPractice() {
     return this.practiceRepository.getTotalPractice();
   }
+
+  remove(id: string) {
+    return this.practiceRepository.remove(id);
+  }
 }

@@ -9,6 +9,7 @@ import {
   Request,
   UseGuards,
   Query,
+  Delete,
 } from '@nestjs/common';
 import { PracticesService } from './practices.service';
 import { CreatePracticeDto } from './dto/create-practice.dto';
@@ -18,6 +19,7 @@ import {
   ApiConsumes,
   ApiCreatedResponse,
   ApiOkResponse,
+  ApiParam,
   ApiTags,
 } from '@nestjs/swagger';
 import { Practice } from './domain/practice';
@@ -126,5 +128,16 @@ export class PracticesController {
   @Get('detail/:id')
   getPracticeDetail(@Param('id') id: string) {
     return this.practicesService.getPracticeDetail(id);
+  }
+
+  @Delete(':id')
+  @ApiParam({
+    name: 'id',
+    type: String,
+    required: true,
+  })
+  @UseGuards(AuthGuard('jwt'))
+  remove(@Param('id') id: string) {
+    return this.practicesService.remove(id);
   }
 }
