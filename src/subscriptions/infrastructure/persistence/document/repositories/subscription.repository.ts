@@ -83,13 +83,15 @@ export class SubscriptionDocumentRepository implements SubscriptionRepository {
 
   async findByUserId(userId: string): Promise<NullableType<Subscription>> {
     const now = new Date();
-    const entityObject = await this.subscriptionModel.findOne({
-      user: {
-        _id: userId,
-      },
-      startDate: { $lte: now },
-      endDate: { $gte: now },
-    });
+    const entityObject = await this.subscriptionModel
+      .findOne({
+        user: {
+          _id: userId,
+        },
+        startDate: { $lte: now },
+        endDate: { $gte: now },
+      })
+      .sort({ createdAt: -1 });
     return entityObject ? SubscriptionMapper.toDomain(entityObject) : null;
   }
 }
