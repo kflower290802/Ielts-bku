@@ -9,6 +9,7 @@ import {
   UseInterceptors,
   Request,
   UploadedFiles,
+  Delete,
 } from '@nestjs/common';
 import { ExamsService } from './exams.service';
 import { CreateExamDto } from './dto/create-exam.dto';
@@ -28,6 +29,7 @@ import { FindAllExamsDto } from './dto/find-all-exams.dto';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { SubmitExamDto } from './dto/submit-exam.dto';
 import { TimeSpentDto } from './dto/time-spent.dto';
+
 function paginateData(data: any[], page = 1, limit = 10) {
   // Tính toán vị trí bắt đầu và kết thúc của dữ liệu cần lấy
   const startIndex = (page - 1) * limit;
@@ -217,5 +219,15 @@ export class ExamsController {
   })
   getExamDetail(@Param('id') id: string) {
     return this.examsService.getExamDetail(id);
+  }
+  @Delete(':id')
+  @ApiParam({
+    name: 'id',
+    type: String,
+    required: true,
+  })
+  @UseGuards(AuthGuard('jwt'))
+  remove(@Param('id') id: string) {
+    return this.examsService.remove(id);
   }
 }
