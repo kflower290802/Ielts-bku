@@ -11,6 +11,9 @@ export class PageVisitsService {
 
   async create(createPageVisitDto: CreatePageVisitDto) {
     const { userId, ...rest } = createPageVisitDto;
+    if (!userId) {
+      return this.pageVisitRepository.create({ ...rest });
+    }
     const user = new User();
     user.id = userId;
     return this.pageVisitRepository.create({ ...rest, user });
