@@ -75,8 +75,12 @@ export class BlogsService {
     });
   }
 
-  remove(id: Blog['id']) {
-    return this.blogRepository.remove(id);
+  async remove(id: Blog['id']) {
+    await Promise.all([
+      this.blogTopicsService.removeByBlogId(id),
+      this.blogGrammarPointsService.removeByBlogId(id),
+      this.blogRepository.remove(id),
+    ]);
   }
 
   findAllByTopic({

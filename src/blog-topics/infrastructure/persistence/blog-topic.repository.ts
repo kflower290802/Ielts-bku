@@ -32,4 +32,6 @@ export abstract class BlogTopicRepository {
     limit: number,
     topicId?: string,
   ): Promise<InfinityPaginationResponseDto<Blog>>;
+
+  abstract removeByBlogId(blogId: Blog['id']): Promise<void>;
 }

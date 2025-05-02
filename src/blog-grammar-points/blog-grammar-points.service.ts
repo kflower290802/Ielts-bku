@@ -65,4 +65,8 @@ export class BlogGrammarPointsService {
   remove(id: BlogGrammarPoint['id']) {
     return this.blogGrammarPointRepository.remove(id);
   }
+
+  removeByBlogId(blogId: Blog['id']) {
+    return this.blogGrammarPointRepository.removeByBlogId(blogId);
+  }
 }

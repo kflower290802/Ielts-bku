@@ -11,6 +11,7 @@ export class ExamMapper {
     domainEntity.type = raw.type;
     domainEntity.year = raw.year;
     domainEntity.audio = raw.audio;
+    domainEntity.isDeleted = raw.isDeleted;
     domainEntity.createdAt = raw.createdAt;
     domainEntity.updatedAt = raw.updatedAt;
 
@@ -30,7 +31,7 @@ export class ExamMapper {
     persistenceSchema.year = domainEntity.year;
     persistenceSchema.createdAt = domainEntity.createdAt;
     persistenceSchema.updatedAt = domainEntity.updatedAt;
-
+    persistenceSchema.isDeleted = domainEntity.isDeleted;
     return persistenceSchema;
   }
 }

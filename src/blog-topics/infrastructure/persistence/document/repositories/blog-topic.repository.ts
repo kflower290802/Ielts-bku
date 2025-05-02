@@ -108,4 +108,12 @@ export class BlogTopicDocumentRepository implements BlogTopicRepository {
       total,
     });
   }
+
+  async removeByBlogId(blogId: Blog['id']): Promise<void> {
+    await this.blogTopicModel.deleteMany({
+      blog: {
+        _id: blogId,
+      },
+    });
+  }
 }

@@ -32,4 +32,6 @@ export abstract class BlogGrammarPointRepository {
   ): Promise<BlogGrammarPoint | null>;
 
   abstract remove(id: BlogGrammarPoint['id']): Promise<void>;
+
+  abstract removeByBlogId(blogId: Blog['id']): Promise<void>;
 }

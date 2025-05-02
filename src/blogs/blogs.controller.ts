@@ -10,6 +10,7 @@ import {
   HttpStatus,
   HttpCode,
   Query,
+  Delete,
 } from '@nestjs/common';
 import { BlogsService } from './blogs.service';
 import { CreateBlogDto } from './dto/create-blog.dto';
@@ -126,5 +127,19 @@ export class BlogsController {
   @Roles(RoleEnum.Teacher, RoleEnum.Admin)
   update(@Param('id') id: string, @Body() updateBlogDto: UpdateBlogDto) {
     return this.blogsService.update(id, updateBlogDto);
+  }
+
+  @Delete(':id')
+  @ApiParam({
+    name: 'id',
+    type: String,
+    required: true,
+  })
+  @ApiOkResponse({
+    type: Blog,
+  })
+  @Roles(RoleEnum.Teacher, RoleEnum.Admin)
+  remove(@Param('id') id: string) {
+    return this.blogsService.remove(id);
   }
 }

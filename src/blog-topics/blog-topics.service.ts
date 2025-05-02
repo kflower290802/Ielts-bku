@@ -3,7 +3,7 @@ import { CreateBlogTopicDto } from './dto/create-blog-topic.dto';
 import { BlogTopicRepository } from './infrastructure/persistence/blog-topic.repository';
 import { Topic } from '../topics/domain/topic';
 import { Blog } from '../blogs/domain/blog';
-
+import { BlogTopic } from './domain/blog-topic';
 @Injectable()
 export class BlogTopicsService {
   constructor(private readonly blogTopicRepository: BlogTopicRepository) {}
@@ -30,5 +30,13 @@ export class BlogTopicsService {
       limit,
       topicId,
     );
+  }
+
+  remove(id: BlogTopic['id']) {
+    return this.blogTopicRepository.remove(id);
+  }
+
+  removeByBlogId(blogId: Blog['id']) {
+    return this.blogTopicRepository.removeByBlogId(blogId);
   }
 }

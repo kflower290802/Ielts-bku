@@ -97,4 +97,12 @@ export class BlogGrammarPointDocumentRepository
   async remove(id: BlogGrammarPoint['id']): Promise<void> {
     await this.blogGrammarPointModel.deleteOne({ _id: id });
   }
+
+  async removeByBlogId(blogId: Blog['id']): Promise<void> {
+    await this.blogGrammarPointModel.deleteMany({
+      blog: {
+        _id: blogId,
+      },
+    });
+  }
 }
