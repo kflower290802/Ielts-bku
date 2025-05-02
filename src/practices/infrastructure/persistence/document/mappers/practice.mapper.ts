@@ -13,6 +13,7 @@ export class PracticeMapper {
     domainEntity.name = raw.name;
     domainEntity.image = raw.image;
     domainEntity.type = raw.type;
+    domainEntity.isDeleted = raw.isDeleted;
     domainEntity.createdAt = raw.createdAt;
     domainEntity.updatedAt = raw.updatedAt;
 
@@ -32,7 +33,7 @@ export class PracticeMapper {
     persistenceSchema.type = domainEntity.type;
     persistenceSchema.createdAt = domainEntity.createdAt;
     persistenceSchema.updatedAt = domainEntity.updatedAt;
-
+    persistenceSchema.isDeleted = domainEntity.isDeleted;
     return persistenceSchema;
   }
 }

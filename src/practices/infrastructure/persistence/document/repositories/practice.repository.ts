@@ -26,7 +26,9 @@ export class PracticeDocumentRepository implements PracticeRepository {
     topic?: string;
     type?: PracticeType;
   }): Promise<Practice[]> {
-    const filters = {} as any;
+    const filters = {
+      $or: [{ isDeleted: false }, { isDeleted: { $exists: false } }],
+    } as any;
     if (filterOptions.topic) {
       filters.topic = {
         _id: filterOptions.topic,
@@ -78,7 +80,11 @@ export class PracticeDocumentRepository implements PracticeRepository {
   }
 
   async remove(id: Practice['id']): Promise<void> {
-    await this.practiceModel.deleteOne({ _id: id });
+    await this.practiceModel.findByIdAndUpdate(
+      id,
+      { isDeleted: true },
+      { new: true },
+    );
   }
 
   async getTotalPractice(): Promise<number> {

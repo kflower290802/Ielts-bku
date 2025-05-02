@@ -33,7 +33,9 @@ export class examDocumentRepository implements ExamRepository {
     userId: string;
     year: number;
   }): Promise<Exam[]> {
-    const filter = {} as any;
+    const filter = {
+      $or: [{ isDeleted: false }, { isDeleted: { $exists: false } }],
+    } as any;
     if (type) {
       filter.type = type;
     }
@@ -83,7 +85,11 @@ export class examDocumentRepository implements ExamRepository {
   }
 
   async remove(id: Exam['id']): Promise<void> {
-    await this.examModel.deleteOne({ _id: id });
+    await this.examModel.findByIdAndUpdate(
+      id,
+      { isDeleted: true },
+      { new: true },
+    );
   }
 
   findYearsExam(): Promise<number[]> {

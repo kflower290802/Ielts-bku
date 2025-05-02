@@ -25,4 +25,7 @@ export class Practice {
 
   @ApiProperty()
   updatedAt: Date;
+
+  @ApiProperty()
+  isDeleted?: boolean;
 }

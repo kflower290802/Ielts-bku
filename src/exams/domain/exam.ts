@@ -26,6 +26,8 @@ export class Exam {
   year: number;
 
   @ApiProperty()
+  isDeleted?: boolean;
+  @ApiProperty()
   createdAt: Date;
 
   @ApiProperty()

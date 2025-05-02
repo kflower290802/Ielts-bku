@@ -39,6 +39,10 @@ export class ExamSchemaClass extends EntityDocumentHelper {
 
   @Prop({ required: false, type: String })
   audio?: string;
+
+  @Prop({ type: Boolean, default: false })
+  isDeleted?: boolean;
+
   @Prop({ default: now })
   createdAt: Date;
 

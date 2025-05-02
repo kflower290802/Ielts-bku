@@ -31,6 +31,9 @@ export class PracticeSchemaClass extends EntityDocumentHelper {
   @Prop({ type: String, required: true, enum: Object.values(PracticeType) })
   type: PracticeType;
 
+  @Prop({ type: Boolean, default: false })
+  isDeleted?: boolean;
+
   @Prop({ default: now })
   createdAt: Date;
 
