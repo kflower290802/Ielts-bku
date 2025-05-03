@@ -77,15 +77,39 @@ export class ExamWritingsService {
 
   async update(
     id: ExamWriting['id'],
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     updateExamWritingDto: UpdateExamWritingDto,
   ) {
-    // Do not remove comment below.
-    // <updating-property />
-
+    const { content, image } = updateExamWritingDto;
+    if (!image) {
+      return this.examWritingRepository.update(id, { content });
+    }
+    const { secure_url } = await this.cloudinaryService.uploadImage(image);
+    const base64Image = image.buffer.toString('base64');
+    const response = await this.openai.chat.completions.create({
+      model: 'gpt-4o-mini',
+      messages: [
+        {
+          role: 'user',
+          content: [
+            {
+              type: 'text',
+              text: 'Analyze the image and provide a detailed description of the image.',
+            },
+            {
+              type: 'image_url',
+              image_url: {
+                url: `data:image/jpeg;base64,${base64Image}`,
+              },
+            },
+          ],
+        },
+      ],
+      max_tokens: 1000,
+    });
     return this.examWritingRepository.update(id, {
-      // Do not remove comment below.
-      // <updating-property-payload />
+      content,
+      image: secure_url,
+      imageDetails: response.choices[0].message.content || undefined,
     });
   }
 
