@@ -27,6 +27,7 @@ export class Exam {
 
   @ApiProperty()
   isDeleted?: boolean;
+
   @ApiProperty()
   createdAt: Date;
 

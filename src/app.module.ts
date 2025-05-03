@@ -11,7 +11,6 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AuthGoogleModule } from './auth-google/auth-google.module';
 import { HeaderResolver, I18nModule } from 'nestjs-i18n';
 import { MailModule } from './mail/mail.module';
-import { HomeModule } from './home/home.module';
 import { AllConfigType } from './config/config.type';
 import { SessionModule } from './session/session.module';
 import { MailerModule } from './mailer/mailer.module';
@@ -192,7 +191,6 @@ import { PageVisitsModule } from './page-visits/page-visits.module';
     SessionModule,
     MailModule,
     MailerModule,
-    HomeModule,
   ],
 })
 export class AppModule {}

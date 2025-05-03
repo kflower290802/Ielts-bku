@@ -8,6 +8,7 @@ export class GrammarPoint {
 
   @ApiProperty()
   name: string;
+
   @ApiProperty()
   createdAt: Date;
 

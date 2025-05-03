@@ -11,14 +11,10 @@ export class AccountsService {
   constructor(private readonly accountRepository: AccountRepository) {}
 
   async create(createAccountDto: CreateAccountDto) {
-    // Do not remove comment below.
-    // <creating-property />
     const { username } = createAccountDto;
     const salt = await bcrypt.genSalt();
     const password = await bcrypt.hash(createAccountDto.password, salt);
     return this.accountRepository.create({
-      // Do not remove comment below.
-      // <creating-property-payload />
       username,
       password,
       subscriptions: [],
