@@ -1,9 +1,18 @@
-// Don't forget to use the class-validator decorators in the DTO properties.
-// import { Allow } from 'class-validator';
+import { IsEnum, IsString, IsOptional } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
+import { QuestionType } from '../../utils/types/question.type';
 
-import { PartialType } from '@nestjs/swagger';
-import { CreateExamReadingTypeDto } from './create-exam-reading-type.dto';
+export class UpdateExamReadingTypeDto {
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsEnum(Object.values(QuestionType))
+  type: QuestionType;
 
-export class UpdateExamReadingTypeDto extends PartialType(
-  CreateExamReadingTypeDto,
-) {}
+  @ApiProperty({ required: false })
+  @IsString()
+  @IsOptional()
+  content?: string;
+
+  @ApiProperty({ type: String, format: 'binary', required: false })
+  image?: Express.Multer.File;
+}

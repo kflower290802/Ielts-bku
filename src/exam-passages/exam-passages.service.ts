@@ -71,16 +71,9 @@ export class ExamPassagesService {
 
   async update(
     id: ExamPassage['id'],
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     updateExamPassageDto: UpdateExamPassageDto,
   ) {
-    // Do not remove comment below.
-    // <updating-property />
-
-    return this.examPassageRepository.update(id, {
-      // Do not remove comment below.
-      // <updating-property-payload />
-    });
+    return this.examPassageRepository.update(id, updateExamPassageDto);
   }
 
   remove(id: ExamPassage['id']) {

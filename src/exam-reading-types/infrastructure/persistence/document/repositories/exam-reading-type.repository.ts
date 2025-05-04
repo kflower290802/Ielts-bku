@@ -61,10 +61,8 @@ export class ExamReadingTypeDocumentRepository
   ): Promise<NullableType<ExamReadingType>> {
     const clonedPayload = { ...payload };
     delete clonedPayload.id;
-
     const filter = { _id: id.toString() };
     const entity = await this.examReadingTypeModel.findOne(filter);
-
     if (!entity) {
       throw new Error('Record not found');
     }

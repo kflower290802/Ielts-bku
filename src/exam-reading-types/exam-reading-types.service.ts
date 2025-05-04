@@ -13,6 +13,7 @@ import { ExamPassageAnswersService } from '../exam-passage-answers/exam-passage-
 import { CloudinaryService } from '../cloudinary/cloudinary.service';
 import { User } from '../users/domain/user';
 import { UserExamAnswersService } from '../user-exam-answers/user-exam-answers.service';
+import { UpdateExamReadingTypeDto } from './dto/update-exam-reading-type.dto';
 @Injectable()
 export class ExamReadingTypesService {
   constructor(
@@ -52,6 +53,21 @@ export class ExamReadingTypesService {
 
   remove(id: ExamReadingType['id']) {
     return this.examReadingTypeRepository.remove(id);
+  }
+
+  async update(
+    id: ExamReadingType['id'],
+    updateExamReadingTypeDto: UpdateExamReadingTypeDto,
+  ) {
+    const { image, ...rest } = updateExamReadingTypeDto;
+    if (image) {
+      const { secure_url } = await this.cloudinaryService.uploadImage(image);
+      return this.examReadingTypeRepository.update(id, {
+        ...rest,
+        image: secure_url,
+      });
+    }
+    return this.examReadingTypeRepository.update(id, rest);
   }
 
   findByPassageId(id: string) {

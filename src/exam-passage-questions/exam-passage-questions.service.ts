@@ -63,15 +63,20 @@ export class ExamPassageQuestionsService {
 
   async update(
     id: ExamPassageQuestion['id'],
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     updateExamPassageQuestionDto: UpdateExamPassageQuestionDto,
   ) {
-    // Do not remove comment below.
-    // <updating-property />
-
+    const { answers, ...rest } = updateExamPassageQuestionDto;
+    const question = new ExamPassageQuestion();
+    question.id = id;
+    const newAnswerArray = answers.map((answer) => {
+      if (answer.id) {
+        return this.examPassageAnswersService.update(answer.id, answer);
+      }
+      return this.examPassageAnswersService.create({ ...answer, question });
+    });
+    await Promise.all(newAnswerArray);
     return this.examPassageQuestionRepository.update(id, {
-      // Do not remove comment below.
-      // <updating-property-payload />
+      ...rest,
     });
   }
 
