@@ -1,9 +1,15 @@
-// Don't forget to use the class-validator decorators in the DTO properties.
-// import { Allow } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
+import { IsEnum, IsOptional, IsString } from 'class-validator';
+import { QuestionType } from '../../utils/types/question.type';
 
-import { PartialType } from '@nestjs/swagger';
-import { CreateExamListenTypeDto } from './create-exam-listen-type.dto';
+export class UpdateExamListenTypeDto {
+  @ApiProperty()
+  @IsOptional()
+  @IsEnum(Object.values(QuestionType))
+  type: QuestionType;
 
-export class UpdateExamListenTypeDto extends PartialType(
-  CreateExamListenTypeDto,
-) {}
+  @ApiProperty()
+  @IsOptional()
+  @IsString()
+  content?: string;
+}

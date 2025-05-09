@@ -9,6 +9,7 @@ import { ExamListenQuestionRepository } from './infrastructure/persistence/exam-
 import { ExamListenQuestion } from './domain/exam-listen-question';
 import { ExamListenAnswersService } from '../exam-listen-answers/exam-listen-answers.service';
 import { ExamListenTypesService } from '../exam-listen-types/exam-listen-types.service';
+import { UpdateExamListenQuestionDto } from './dto/update-exam-listen-question.dto';
 
 @Injectable()
 export class ExamListenQuestionsService {
@@ -47,6 +48,26 @@ export class ExamListenQuestionsService {
       ...question,
       answers: answerQuestions,
     };
+  }
+
+  async update(
+    id: ExamListenQuestion['id'],
+    updateExamListenQuestionDto: UpdateExamListenQuestionDto,
+  ) {
+    const { answers, ...rest } = updateExamListenQuestionDto;
+    const question = new ExamListenQuestion();
+    question.id = id;
+    const answersArray = answers.map((answer) => {
+      if (answer.id) {
+        return this.examListenAnswersService.update(answer.id, answer);
+      }
+      return this.examListenAnswersService.create({
+        ...answer,
+        examListenQuestionId: id,
+      });
+    });
+    await Promise.all(answersArray);
+    return this.examListenQuestionRepository.update(id, rest);
   }
 
   findById(id: ExamListenQuestion['id']) {

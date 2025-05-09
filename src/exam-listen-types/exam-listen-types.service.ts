@@ -13,6 +13,8 @@ import { ExamListenQuestionsService } from '../exam-listen-questions/exam-listen
 import { ExamListenAnswersService } from '../exam-listen-answers/exam-listen-answers.service';
 import { User } from '../users/domain/user';
 import { UserExamListenAnswersService } from '../user-exam-listen-answers/user-exam-listen-answers.service';
+import { UpdateExamListenTypeDto } from './dto/update-exam-listen-type.dto';
+
 @Injectable()
 export class ExamListenTypesService {
   constructor(
@@ -37,6 +39,13 @@ export class ExamListenTypesService {
       examSection,
       ...rest,
     });
+  }
+
+  update(
+    id: ExamListenType['id'],
+    updateExamListenTypeDto: UpdateExamListenTypeDto,
+  ) {
+    return this.examListenTypeRepository.update(id, updateExamListenTypeDto);
   }
 
   findAllWithPagination({
