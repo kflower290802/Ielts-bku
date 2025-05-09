@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Param, Patch } from '@nestjs/common';
+import { Controller, Post, Body, Param, Patch, Delete } from '@nestjs/common';
 import { ExamPassageQuestionsService } from './exam-passage-questions.service';
 import { CreateExamPassageQuestionDto } from './dto/create-exam-passage-question.dto';
 import {
@@ -45,5 +45,13 @@ export class ExamPassageQuestionsController {
       id,
       updateExamPassageQuestionDto,
     );
+  }
+
+  @Delete(':id')
+  @ApiCreatedResponse({
+    type: ExamPassageQuestion,
+  })
+  remove(@Param('id') id: string) {
+    return this.examPassageQuestionsService.remove(id);
   }
 }

@@ -1,7 +1,30 @@
-// Don't forget to use the class-validator decorators in the DTO properties.
-// import { Allow } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
+import { IsOptional, IsString } from 'class-validator';
 
-import { PartialType } from '@nestjs/swagger';
-import { CreateExamDto } from './create-exam.dto';
+export class UpdateExamDto {
+  @ApiProperty({
+    example: 'Listening',
+    required: false,
+  })
+  @IsString()
+  @IsOptional()
+  name?: string;
 
-export class UpdateExamDto extends PartialType(CreateExamDto) {}
+  @ApiProperty({
+    type: String,
+    required: false,
+    format: 'binary',
+  })
+  file?: Express.Multer.File;
+
+  @ApiProperty({
+    type: String,
+    format: 'binary',
+    required: false,
+  })
+  audio?: Express.Multer.File;
+
+  @ApiProperty({ example: 2024, required: false })
+  @IsOptional()
+  year?: number;
+}

@@ -30,7 +30,7 @@ import { FindAllExamsDto } from './dto/find-all-exams.dto';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { SubmitExamDto } from './dto/submit-exam.dto';
 import { TimeSpentDto } from './dto/time-spent.dto';
-
+import { UpdateExamDto } from './dto/update-exam.dto';
 function paginateData(data: any[], page = 1, limit = 10) {
   const startIndex = (page - 1) * limit;
   const endIndex = startIndex + limit;
@@ -94,8 +94,17 @@ export class ExamsController {
     ]),
   )
   @ApiConsumes('multipart/form-data')
-  update(@Param('id') id: string, @Body() exam: Exam) {
-    return this.examsService.update(id, exam);
+  update(
+    @Param('id') id: string,
+    @Body() updateExamDto: UpdateExamDto,
+    @UploadedFiles()
+    files: { audio?: Express.Multer.File[]; file: Express.Multer.File[] },
+  ) {
+    return this.examsService.update(id, {
+      ...updateExamDto,
+      audio: files.audio ? files.audio[0] : undefined,
+      file: files.file ? files.file[0] : undefined,
+    });
   }
 
   @Get()

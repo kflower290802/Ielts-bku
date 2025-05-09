@@ -32,6 +32,7 @@ import { getIELTSBandScore } from '../utils/band-score';
 import { generateTimeByExamType } from '../utils/generate-time';
 import { SubscriptionsService } from '../subscriptions/subscriptions.service';
 import { SubscriptionPlan } from '../subscriptions/subscription.type';
+import { UpdateExamDto } from './dto/update-exam.dto';
 @Injectable()
 export class ExamsService {
   constructor(
@@ -69,6 +70,25 @@ export class ExamsService {
       image,
       audio: responseAudio?.secure_url ?? undefined,
       time: generateTimeByExamType(createExamDto.type),
+    });
+  }
+
+  async update(id: Exam['id'], updateExamDto: UpdateExamDto) {
+    const exam = await this.examRepository.findById(id);
+    if (!exam) throw new NotFoundException('Exam not found');
+    let audio, image;
+    if (updateExamDto.audio) {
+      audio = await this.cloudinaryService.uploadAudio(updateExamDto.audio);
+    }
+    if (updateExamDto.file) {
+      image = await this.cloudinaryService.uploadImage(updateExamDto.file);
+    }
+    return this.examRepository.update(id, {
+      ...exam,
+      name: updateExamDto.name ?? undefined,
+      year: updateExamDto.year ? +updateExamDto.year : undefined,
+      audio: audio?.secure_url ?? undefined,
+      image: image?.secure_url ?? undefined,
     });
   }
 
@@ -607,9 +627,5 @@ export class ExamsService {
 
   getTotalExam() {
     return this.examRepository.getTotalExam();
-  }
-
-  update(id: Exam['id'], exam: Exam) {
-    return this.examRepository.update(id, exam);
   }
 }

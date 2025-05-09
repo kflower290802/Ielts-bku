@@ -38,10 +38,12 @@ export class UpdateExamPassageQuestionDto {
       {
         answer: 'Answer 1',
         isCorrect: true,
+        id: '668d6b7b8d6b7b8d6b7b8d6b',
       },
       {
         answer: 'Answer 2',
         isCorrect: false,
+        id: '668d6b7b8d6b7b8d6b7b8d6b',
       },
     ],
   })
