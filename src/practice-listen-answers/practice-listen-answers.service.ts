@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { CreatePracticeListenAnswerDto } from './dto/create-practice-listen-answer.dto';
 import { PracticeListenAnswerRepository } from './infrastructure/persistence/practice-listen-answer.repository';
+import { UpdatePracticeListenAnswerDto } from '../practice-listen-questions/dto/update-practice-listen-question.dto';
 
 @Injectable()
 export class PracticeListenAnswersService {
@@ -16,6 +17,16 @@ export class PracticeListenAnswersService {
   createMany(createPracticeReadingAnswerDto: CreatePracticeListenAnswerDto[]) {
     return this.practiceListenAnswerRepository.createMany(
       createPracticeReadingAnswerDto,
+    );
+  }
+
+  update(
+    id: string,
+    updatePracticeListenAnswerDto: UpdatePracticeListenAnswerDto,
+  ) {
+    return this.practiceListenAnswerRepository.update(
+      id,
+      updatePracticeListenAnswerDto,
     );
   }
 

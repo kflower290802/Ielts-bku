@@ -4,6 +4,7 @@ import { PracticeListenQuestionRepository } from './infrastructure/persistence/p
 import { PracticeListenQuestion } from './domain/practice-listen-question';
 import { PracticeListenType } from '../practice-listen-types/domain/practice-listen-type';
 import { PracticeListenAnswersService } from '../practice-listen-answers/practice-listen-answers.service';
+import { UpdatePracticeListenQuestionDto } from './dto/update-practice-listen-question.dto';
 
 @Injectable()
 export class PracticeListenQuestionsService {
@@ -25,6 +26,25 @@ export class PracticeListenQuestionsService {
     const answersQuestion = await this.practiceListenAnswersService.createMany(
       answers.map((answer) => ({ ...answer, question })),
     );
+    return { ...question, answers: answersQuestion };
+  }
+
+  async update(
+    id: PracticeListenQuestion['id'],
+    updatePracticeListenQuestionDto: UpdatePracticeListenQuestionDto,
+  ) {
+    const { answers, ...rest } = updatePracticeListenQuestionDto;
+    const question = await this.practiceListenQuestionRepository.update(
+      id,
+      rest,
+    );
+
+    const newAnswers = answers.map((answer) => {
+      return this.practiceListenAnswersService.update(answer.id, answer);
+    });
+
+    const answersQuestion = await Promise.all(newAnswers);
+
     return { ...question, answers: answersQuestion };
   }
 

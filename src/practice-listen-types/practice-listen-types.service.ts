@@ -5,6 +5,7 @@ import { IPaginationOptions } from '../utils/types/pagination-options';
 import { PracticeListenType } from './domain/practice-listen-type';
 import { PracticeListen } from '../practice-listens/domain/practice-listen';
 import { PracticeListenQuestionsService } from '../practice-listen-questions/practice-listen-questions.service';
+import { UpdatePracticeListenTypeDto } from './dto/update-practice-listen-type.dto';
 
 @Injectable()
 export class PracticeListenTypesService {
@@ -21,6 +22,16 @@ export class PracticeListenTypesService {
       practiceListen,
       ...rest,
     });
+  }
+
+  async update(
+    id: PracticeListenType['id'],
+    updatePracticeListenTypeDto: UpdatePracticeListenTypeDto,
+  ) {
+    return this.practiceListenTypeRepository.update(
+      id,
+      updatePracticeListenTypeDto,
+    );
   }
 
   findAllWithPagination({

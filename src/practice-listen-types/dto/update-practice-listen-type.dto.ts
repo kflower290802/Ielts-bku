@@ -1,9 +1,10 @@
-// Don't forget to use the class-validator decorators in the DTO properties.
-// import { Allow } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
+import { IsString } from 'class-validator';
+import { IsNotEmpty } from 'class-validator';
 
-import { PartialType } from '@nestjs/swagger';
-import { CreatePracticeListenTypeDto } from './create-practice-listen-type.dto';
-
-export class UpdatePracticeListenTypeDto extends PartialType(
-  CreatePracticeListenTypeDto,
-) {}
+export class UpdatePracticeListenTypeDto {
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsString()
+  content: string;
+}

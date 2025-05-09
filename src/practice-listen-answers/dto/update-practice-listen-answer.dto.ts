@@ -1,9 +1,16 @@
-// Don't forget to use the class-validator decorators in the DTO properties.
-// import { Allow } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
+import { PracticeListenQuestion } from '../../practice-listen-questions/domain/practice-listen-question';
 
-import { PartialType } from '@nestjs/swagger';
-import { CreatePracticeListenAnswerDto } from './create-practice-listen-answer.dto';
+export class UpdatePracticeListenAnswerDto {
+  @ApiProperty()
+  question: PracticeListenQuestion;
 
-export class UpdatePracticeListenAnswerDto extends PartialType(
-  CreatePracticeListenAnswerDto,
-) {}
+  @ApiProperty()
+  answer: string;
+
+  @ApiProperty()
+  isCorrect: boolean;
+
+  @ApiProperty()
+  id: string;
+}
