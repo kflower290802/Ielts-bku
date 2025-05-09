@@ -4,12 +4,15 @@ import {
   Body,
   UseInterceptors,
   UploadedFile,
+  Param,
+  Patch,
 } from '@nestjs/common';
 import { PracticeWritingsService } from './practice-writings.service';
 import { CreatePracticeWritingDto } from './dto/create-practice-writing.dto';
 import { ApiConsumes, ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
 import { PracticeWriting } from './domain/practice-writing';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { UpdatePracticeWritingDto } from './dto/update-practice-writing.dto';
 
 @ApiTags('Practicewritings')
 @Controller({
@@ -33,6 +36,20 @@ export class PracticeWritingsController {
   ) {
     return this.practiceWritingsService.create({
       ...createPracticeWritingDto,
+      image,
+    });
+  }
+
+  @Patch(':id')
+  @UseInterceptors(FileInterceptor('image'))
+  @ApiConsumes('multipart/form-data')
+  update(
+    @Param('id') id: string,
+    @Body() updatePracticeWritingDto: UpdatePracticeWritingDto,
+    @UploadedFile() image?: Express.Multer.File,
+  ) {
+    return this.practiceWritingsService.update(id, {
+      ...updatePracticeWritingDto,
       image,
     });
   }

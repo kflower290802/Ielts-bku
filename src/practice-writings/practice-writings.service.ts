@@ -72,6 +72,42 @@ export class PracticeWritingsService {
     });
   }
 
+  async update(
+    id: PracticeWriting['id'],
+    updatePracticeWritingDto: UpdatePracticeWritingDto,
+  ) {
+    const { image, ...rest } = updatePracticeWritingDto;
+    const update = { ...rest } as Partial<PracticeWriting>;
+    if (image) {
+      const { secure_url } = await this.cloudinaryService.uploadImage(image);
+      const base64Image = image.buffer.toString('base64');
+      const response = await this.openai.chat.completions.create({
+        model: 'gpt-4o-mini',
+        messages: [
+          {
+            role: 'user',
+            content: [
+              {
+                type: 'text',
+                text: 'Analyze the image and provide a detailed description of the image.',
+              },
+              {
+                type: 'image_url',
+                image_url: {
+                  url: `data:image/jpeg;base64,${base64Image}`,
+                },
+              },
+            ],
+          },
+        ],
+        max_tokens: 1000,
+      });
+      update.image = secure_url;
+      update.imageDetails = response.choices[0].message.content || undefined;
+    }
+    return this.practiceWritingRepository.update(id, update);
+  }
+
   findByPracticeId(practiceId: Practice['id']) {
     return this.practiceWritingRepository.findByPracticeId(practiceId);
   }
@@ -95,20 +131,6 @@ export class PracticeWritingsService {
 
   findByIds(ids: PracticeWriting['id'][]) {
     return this.practiceWritingRepository.findByIds(ids);
-  }
-
-  async update(
-    id: PracticeWriting['id'],
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    updatePracticeWritingDto: UpdatePracticeWritingDto,
-  ) {
-    // Do not remove comment below.
-    // <updating-property />
-
-    return this.practiceWritingRepository.update(id, {
-      // Do not remove comment below.
-      // <updating-property-payload />
-    });
   }
 
   remove(id: PracticeWriting['id']) {
