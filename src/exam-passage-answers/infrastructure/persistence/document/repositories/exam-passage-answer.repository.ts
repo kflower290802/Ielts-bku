@@ -100,13 +100,11 @@ export class ExamPassageAnswerDocumentRepository
   }
 
   async findAllByQuestionId(questionId: string): Promise<ExamPassageAnswer[]> {
-    const entities = await this.examPassageAnswerModel
-      .find({
-        question: {
-          _id: questionId,
-        },
-      })
-      .select('-isCorrect');
+    const entities = await this.examPassageAnswerModel.find({
+      question: {
+        _id: questionId,
+      },
+    });
     return entities.map(ExamPassageAnswerMapper.toDomain);
   }
 }

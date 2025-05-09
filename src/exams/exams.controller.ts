@@ -10,6 +10,7 @@ import {
   Request,
   UploadedFiles,
   Delete,
+  Patch,
 } from '@nestjs/common';
 import { ExamsService } from './exams.service';
 import { CreateExamDto } from './dto/create-exam.dto';
@@ -31,14 +32,11 @@ import { SubmitExamDto } from './dto/submit-exam.dto';
 import { TimeSpentDto } from './dto/time-spent.dto';
 
 function paginateData(data: any[], page = 1, limit = 10) {
-  // Tính toán vị trí bắt đầu và kết thúc của dữ liệu cần lấy
   const startIndex = (page - 1) * limit;
   const endIndex = startIndex + limit;
 
-  // Cắt dữ liệu theo trang
   const paginatedData = data.slice(startIndex, endIndex);
 
-  // Tổng số trang
   const totalPages = Math.ceil(data.length / limit);
 
   return {
@@ -81,6 +79,23 @@ export class ExamsController {
       file: file[0],
       audio: audio ? audio[0] : undefined,
     });
+  }
+
+  @Patch(':id')
+  @ApiParam({
+    name: 'id',
+    type: String,
+    required: true,
+  })
+  @UseInterceptors(
+    FileFieldsInterceptor([
+      { name: 'audio', maxCount: 1 },
+      { name: 'file', maxCount: 1 },
+    ]),
+  )
+  @ApiConsumes('multipart/form-data')
+  update(@Param('id') id: string, @Body() exam: Exam) {
+    return this.examsService.update(id, exam);
   }
 
   @Get()

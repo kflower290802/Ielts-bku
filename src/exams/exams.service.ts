@@ -608,4 +608,8 @@ export class ExamsService {
   getTotalExam() {
     return this.examRepository.getTotalExam();
   }
+
+  update(id: Exam['id'], exam: Exam) {
+    return this.examRepository.update(id, exam);
+  }
 }
