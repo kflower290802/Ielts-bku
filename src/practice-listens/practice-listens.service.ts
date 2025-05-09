@@ -7,6 +7,7 @@ import { Practice } from '../practices/domain/practice';
 import { PracticeListenTypesService } from '../practice-listen-types/practice-listen-types.service';
 import { UserPracticesService } from '../user-practices/user-practices.service';
 import { UserPracticeListenAnswersService } from '../user-practice-listen-answers/user-practice-listen-answers.service';
+import { UpdatePracticeListenDto } from './dto/update-practice-listen.dto';
 
 @Injectable()
 export class PracticeListensService {
@@ -28,6 +29,18 @@ export class PracticeListensService {
       practice,
     });
   }
+
+  async update(
+    id: PracticeListen['id'],
+    updatePracticeListenDto: UpdatePracticeListenDto,
+  ) {
+    const { audio } = updatePracticeListenDto;
+    const { secure_url } = await this.cloudinaryService.uploadAudio(audio);
+    return this.practiceListenRepository.update(id, {
+      audio: secure_url,
+    });
+  }
+
   findById(id: PracticeListen['id']) {
     return this.practiceListenRepository.findById(id);
   }

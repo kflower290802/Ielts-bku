@@ -1,9 +1,6 @@
-// Don't forget to use the class-validator decorators in the DTO properties.
-// import { Allow } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
 
-import { PartialType } from '@nestjs/swagger';
-import { CreatePracticeListenDto } from './create-practice-listen.dto';
-
-export class UpdatePracticeListenDto extends PartialType(
-  CreatePracticeListenDto,
-) {}
+export class UpdatePracticeListenDto {
+  @ApiProperty({ type: String, format: 'binary', required: true })
+  audio: Express.Multer.File;
+}

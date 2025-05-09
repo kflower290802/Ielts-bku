@@ -4,11 +4,14 @@ import {
   Body,
   UseInterceptors,
   UploadedFile,
+  Param,
+  Patch,
 } from '@nestjs/common';
 import { PracticeListensService } from './practice-listens.service';
 import { CreatePracticeListenDto } from './dto/create-practice-listen.dto';
 import { ApiConsumes, ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
 import { PracticeListen } from './domain/practice-listen';
+import { UpdatePracticeListenDto } from './dto/update-practice-listen.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 
 @ApiTags('Practicelistens')
@@ -33,6 +36,20 @@ export class PracticeListensController {
   ): Promise<PracticeListen> {
     return this.practiceListensService.create({
       ...createPracticeListenDto,
+      audio,
+    });
+  }
+
+  @Patch(':id')
+  @UseInterceptors(FileInterceptor('audio'))
+  @ApiConsumes('multipart/form-data')
+  update(
+    @Param('id') id: string,
+    @Body() updatePracticeListenDto: UpdatePracticeListenDto,
+    @UploadedFile() audio: Express.Multer.File,
+  ) {
+    return this.practiceListensService.update(id, {
+      ...updatePracticeListenDto,
       audio,
     });
   }
