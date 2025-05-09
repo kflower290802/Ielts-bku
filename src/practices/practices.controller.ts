@@ -10,6 +10,9 @@ import {
   UseGuards,
   Query,
   Delete,
+  Patch,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
 import { PracticesService } from './practices.service';
 import { CreatePracticeDto } from './dto/create-practice.dto';
@@ -32,6 +35,7 @@ import {
   SubmitPracticeDto,
   SubmitPracticeWritingDto,
 } from './dto/submit-practice.dto';
+import { UpdatePracticeDto } from './dto/update-practice.dto';
 
 @ApiTags('Practices')
 @Controller({
@@ -139,5 +143,19 @@ export class PracticesController {
   @UseGuards(AuthGuard('jwt'))
   remove(@Param('id') id: string) {
     return this.practicesService.remove(id);
+  }
+
+  @Patch(':id')
+  @UseInterceptors(FileInterceptor('image'))
+  @UsePipes(new ValidationPipe({ transform: true }))
+  update(
+    @Param('id') id: string,
+    @Body() updatePracticeDto: UpdatePracticeDto,
+    @UploadedFile() image?: Express.Multer.File,
+  ) {
+    return this.practicesService.update(id, {
+      ...updatePracticeDto,
+      image,
+    });
   }
 }

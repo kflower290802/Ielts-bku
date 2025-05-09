@@ -34,6 +34,7 @@ import { UserPracticeSessionsService } from '../user-practice-sessions/user-prac
 import { ExamWritingsService } from '../exam-writings/exam-writings.service';
 import { SubscriptionsService } from '../subscriptions/subscriptions.service';
 import { SubscriptionPlan } from '../subscriptions/subscription.type';
+import { UpdatePracticeDto } from './dto/update-practice.dto';
 @Injectable()
 export class PracticesService {
   constructor(
@@ -520,6 +521,20 @@ export class PracticesService {
 
   getTotalPractice() {
     return this.practiceRepository.getTotalPractice();
+  }
+
+  async update(id: string, updatePracticeDto: UpdatePracticeDto) {
+    const { topicId, image, ...rest } = updatePracticeDto;
+    const update = { ...rest } as Partial<Practice>;
+    const topic = topicId ? await this.topicsService.findById(topicId) : null;
+    if (topic) {
+      update.topic = topic;
+    }
+    if (image) {
+      const { secure_url } = await this.cloudinaryService.uploadImage(image);
+      update.image = secure_url;
+    }
+    return this.practiceRepository.update(id, update);
   }
 
   remove(id: string) {

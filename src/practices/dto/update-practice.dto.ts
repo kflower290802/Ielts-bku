@@ -1,7 +1,17 @@
-// Don't forget to use the class-validator decorators in the DTO properties.
-// import { Allow } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
+import { IsOptional, IsMongoId, IsString } from 'class-validator';
 
-import { PartialType } from '@nestjs/swagger';
-import { CreatePracticeDto } from './create-practice.dto';
+export class UpdatePracticeDto {
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsMongoId()
+  topicId?: string;
 
-export class UpdatePracticeDto extends PartialType(CreatePracticeDto) {}
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsString()
+  name?: string;
+
+  @ApiProperty({ type: String, required: false, format: 'binary' })
+  image?: Express.Multer.File;
+}
