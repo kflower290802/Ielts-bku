@@ -1,9 +1,42 @@
-// Don't forget to use the class-validator decorators in the DTO properties.
-// import { Allow } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
+import {
+  IsArray,
+  IsBoolean,
+  IsNotEmpty,
+  IsMongoId,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 
-import { PartialType } from '@nestjs/swagger';
-import { CreatePracticeReadingQuestionDto } from './create-practice-reading-question.dto';
+export class UpdatePracticeReadingAnswerDto {
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsString()
+  answer: string;
 
-export class UpdatePracticeReadingQuestionDto extends PartialType(
-  CreatePracticeReadingQuestionDto,
-) {}
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsBoolean()
+  isCorrect: boolean;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsMongoId()
+  id: string;
+}
+
+export class UpdatePracticeReadingQuestionDto {
+  @ApiProperty()
+  @IsOptional()
+  @IsString()
+  question: string;
+
+  @ApiProperty({
+    type: [UpdatePracticeReadingAnswerDto],
+    isArray: true,
+    example: [{ answer: 'Paris', isCorrect: true, id: '123' }],
+  })
+  @IsNotEmpty()
+  @IsArray()
+  answers: UpdatePracticeReadingAnswerDto[];
+}

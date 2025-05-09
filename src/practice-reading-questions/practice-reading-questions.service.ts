@@ -43,6 +43,21 @@ export class PracticeReadingQuestionsService {
     return { ...question, answersDomain };
   }
 
+  async update(
+    id: PracticeReadingQuestion['id'],
+    updatePracticeReadingQuestionDto: UpdatePracticeReadingQuestionDto,
+  ) {
+    const { answers, ...rest } = updatePracticeReadingQuestionDto;
+
+    const updateAnswers = answers.map((answer) =>
+      this.practiceReadingAnswersService.update(answer.id, answer),
+    );
+
+    await Promise.all(updateAnswers);
+
+    return this.practiceReadingQuestionRepository.update(id, rest);
+  }
+
   findAllWithPagination({
     paginationOptions,
   }: {
@@ -62,20 +77,6 @@ export class PracticeReadingQuestionsService {
 
   findByIds(ids: PracticeReadingQuestion['id'][]) {
     return this.practiceReadingQuestionRepository.findByIds(ids);
-  }
-
-  async update(
-    id: PracticeReadingQuestion['id'],
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    updatePracticeReadingQuestionDto: UpdatePracticeReadingQuestionDto,
-  ) {
-    // Do not remove comment below.
-    // <updating-property />
-
-    return this.practiceReadingQuestionRepository.update(id, {
-      // Do not remove comment below.
-      // <updating-property-payload />
-    });
   }
 
   remove(id: PracticeReadingQuestion['id']) {

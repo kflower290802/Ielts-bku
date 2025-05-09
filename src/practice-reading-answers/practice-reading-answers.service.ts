@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { CreatePracticeReadingAnswerDto } from './dto/create-practice-reading-answer.dto';
 import { PracticeReadingAnswerRepository } from './infrastructure/persistence/practice-reading-answer.repository';
 import { PracticeReadingAnswer } from './domain/practice-reading-answer';
+import { UpdatePracticeReadingAnswerDto } from './dto/update-practice-reading-answer.dto';
 
 @Injectable()
 export class PracticeReadingAnswersService {
@@ -17,6 +18,16 @@ export class PracticeReadingAnswersService {
   createMany(createPracticeReadingAnswerDto: CreatePracticeReadingAnswerDto[]) {
     return this.practiceReadingAnswerRepository.createMany(
       createPracticeReadingAnswerDto,
+    );
+  }
+
+  update(
+    id: PracticeReadingAnswer['id'],
+    updatePracticeReadingAnswerDto: UpdatePracticeReadingAnswerDto,
+  ) {
+    return this.practiceReadingAnswerRepository.update(
+      id,
+      updatePracticeReadingAnswerDto,
     );
   }
 

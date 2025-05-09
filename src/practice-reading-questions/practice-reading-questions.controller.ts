@@ -1,8 +1,9 @@
-import { Controller, Post, Body } from '@nestjs/common';
+import { Controller, Post, Body, Patch, Param } from '@nestjs/common';
 import { PracticeReadingQuestionsService } from './practice-reading-questions.service';
 import { CreatePracticeReadingQuestionDto } from './dto/create-practice-reading-question.dto';
 import { ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
 import { PracticeReadingQuestion } from './domain/practice-reading-question';
+import { UpdatePracticeReadingQuestionDto } from './dto/update-practice-reading-question.dto';
 
 @ApiTags('Practicereadingquestions')
 @Controller({
@@ -23,6 +24,17 @@ export class PracticeReadingQuestionsController {
   ) {
     return this.practiceReadingQuestionsService.create(
       createPracticeReadingQuestionDto,
+    );
+  }
+
+  @Patch(':id')
+  update(
+    @Param('id') id: string,
+    @Body() updatePracticeReadingQuestionDto: UpdatePracticeReadingQuestionDto,
+  ) {
+    return this.practiceReadingQuestionsService.update(
+      id,
+      updatePracticeReadingQuestionDto,
     );
   }
 }

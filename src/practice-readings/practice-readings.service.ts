@@ -40,6 +40,19 @@ export class PracticeReadingsService {
     });
   }
 
+  async update(id: string, updatePracticeReadingDto: UpdatePracticeReadingDto) {
+    const { image, ...rest } = updatePracticeReadingDto;
+    if (image) {
+      const { secure_url } = await this.cloudinaryService.uploadImage(image);
+      return this.practiceReadingRepository.update(id, {
+        ...rest,
+        image: secure_url,
+      });
+    } else {
+      return this.practiceReadingRepository.update(id, rest);
+    }
+  }
+
   async getPracticeData(id: string, userId: string) {
     const practiceReading =
       await this.practiceReadingRepository.findByPracticeId(id);
@@ -106,20 +119,6 @@ export class PracticeReadingsService {
 
   findByIds(ids: PracticeReading['id'][]) {
     return this.practiceReadingRepository.findByIds(ids);
-  }
-
-  async update(
-    id: PracticeReading['id'],
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    updatePracticeReadingDto: UpdatePracticeReadingDto,
-  ) {
-    // Do not remove comment below.
-    // <updating-property />
-
-    return this.practiceReadingRepository.update(id, {
-      // Do not remove comment below.
-      // <updating-property-payload />
-    });
   }
 
   remove(id: PracticeReading['id']) {

@@ -1,9 +1,15 @@
 // Don't forget to use the class-validator decorators in the DTO properties.
 // import { Allow } from 'class-validator';
 
-import { PartialType } from '@nestjs/swagger';
-import { CreatePracticeReadingTypeDto } from './create-practice-reading-type.dto';
+import { ApiProperty } from '@nestjs/swagger';
+import { IsOptional, IsString } from 'class-validator';
 
-export class UpdatePracticeReadingTypeDto extends PartialType(
-  CreatePracticeReadingTypeDto,
-) {}
+export class UpdatePracticeReadingTypeDto {
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsString()
+  content?: string;
+
+  @ApiProperty({ type: String, format: 'binary', required: false })
+  image?: Express.Multer.File;
+}

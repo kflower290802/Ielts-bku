@@ -66,15 +66,17 @@ export class PracticeReadingTypesService {
 
   async update(
     id: PracticeReadingType['id'],
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     updatePracticeReadingTypeDto: UpdatePracticeReadingTypeDto,
   ) {
-    // Do not remove comment below.
-    // <updating-property />
-
+    const { image, ...rest } = updatePracticeReadingTypeDto;
+    let imageResponse: string | undefined;
+    if (image) {
+      const { secure_url } = await this.cloudinaryService.uploadImage(image);
+      imageResponse = secure_url;
+    }
     return this.practiceReadingTypeRepository.update(id, {
-      // Do not remove comment below.
-      // <updating-property-payload />
+      ...rest,
+      image: imageResponse,
     });
   }
 
