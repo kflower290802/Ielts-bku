@@ -4,13 +4,15 @@ import {
   Body,
   UseInterceptors,
   UploadedFile,
+  Patch,
+  Param,
 } from '@nestjs/common';
 import { PracticeSpeakingQuestionsService } from './practice-speaking-questions.service';
 import { CreatePracticeSpeakingQuestionDto } from './dto/create-practice-speaking-question.dto';
 import { ApiConsumes, ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
 import { PracticeSpeakingQuestion } from './domain/practice-speaking-question';
 import { FileInterceptor } from '@nestjs/platform-express';
-
+import { UpdatePracticeSpeakingQuestionDto } from './dto/update-practice-speaking-question.dto';
 @ApiTags('Practicespeakingquestions')
 @Controller({
   path: 'practice-speaking-questions',
@@ -34,6 +36,20 @@ export class PracticeSpeakingQuestionsController {
   ) {
     return this.practiceSpeakingQuestionsService.create({
       ...createPracticeSpeakingQuestionDto,
+      audio,
+    });
+  }
+
+  @Patch(':id')
+  @UseInterceptors(FileInterceptor('audio'))
+  update(
+    @Param('id') id: string,
+    @Body()
+    updatePracticeSpeakingQuestionDto: UpdatePracticeSpeakingQuestionDto,
+    @UploadedFile() audio?: Express.Multer.File,
+  ) {
+    return this.practiceSpeakingQuestionsService.update(id, {
+      ...updatePracticeSpeakingQuestionDto,
       audio,
     });
   }

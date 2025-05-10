@@ -5,6 +5,7 @@ import { CloudinaryService } from '../cloudinary/cloudinary.service';
 import { Practice } from '../practices/domain/practice';
 import { UserPracticesService } from '../user-practices/user-practices.service';
 import { UserPracticeSpeakAnswersService } from '../user-practice-speak-answers/user-practice-speak-answers.service';
+import { UpdatePracticeSpeakingQuestionDto } from './dto/update-practice-speaking-question.dto';
 @Injectable()
 export class PracticeSpeakingQuestionsService {
   constructor(
@@ -27,6 +28,22 @@ export class PracticeSpeakingQuestionsService {
       ...rest,
     });
   }
+
+  async update(
+    id: string,
+    updatePracticeSpeakingQuestionDto: UpdatePracticeSpeakingQuestionDto,
+  ) {
+    const { audio, ...rest } = updatePracticeSpeakingQuestionDto;
+    if (audio) {
+      const { secure_url } = await this.cloudinaryService.uploadAudio(audio);
+      return this.practiceSpeakingQuestionRepository.update(id, {
+        ...rest,
+        audio: secure_url,
+      });
+    }
+    return this.practiceSpeakingQuestionRepository.update(id, rest);
+  }
+
   async getPracticeData(id: string, userId: string) {
     const practice =
       await this.practiceSpeakingQuestionRepository.findByPracticeId(id);
