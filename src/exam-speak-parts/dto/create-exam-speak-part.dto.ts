@@ -4,5 +4,5 @@ export class CreateExamSpeakPartDto {
   @ApiProperty()
   @IsNotEmpty()
   @IsMongoId()
-  examSpeakId: string;
+  examId: string;
 }

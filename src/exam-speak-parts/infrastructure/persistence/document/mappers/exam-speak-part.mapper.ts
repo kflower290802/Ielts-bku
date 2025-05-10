@@ -1,15 +1,14 @@
-import { ExamSpeak } from '../../../../../exam-speaks/domain/exam-speak';
-import { ExamSpeakSchemaClass } from '../../../../../exam-speaks/infrastructure/persistence/document/entities/exam-speak.schema';
 import { ExamSpeakPart } from '../../../../domain/exam-speak-part';
 import { ExamSpeakPartSchemaClass } from '../entities/exam-speak-part.schema';
-
+import { Exam } from '../../../../../exams/domain/exam';
+import { ExamSchemaClass } from '../../../../../exams/infrastructure/persistence/document/entities/exam.schema';
 export class ExamSpeakPartMapper {
   public static toDomain(raw: ExamSpeakPartSchemaClass): ExamSpeakPart {
     const domainEntity = new ExamSpeakPart();
     domainEntity.id = raw._id.toString();
-    const examSpeak = new ExamSpeak();
-    examSpeak.id = raw.examSpeak._id.toString();
-    domainEntity.examSpeak = examSpeak;
+    const exam = new Exam();
+    exam.id = raw.exam._id.toString();
+    domainEntity.exam = exam;
     domainEntity.createdAt = raw.createdAt;
     domainEntity.updatedAt = raw.updatedAt;
 
@@ -23,9 +22,9 @@ export class ExamSpeakPartMapper {
     if (domainEntity.id) {
       persistenceSchema._id = domainEntity.id;
     }
-    const examSpeakSchema = new ExamSpeakSchemaClass();
-    examSpeakSchema._id = domainEntity.examSpeak.id;
-    persistenceSchema.examSpeak = examSpeakSchema;
+    const examSchema = new ExamSchemaClass();
+    examSchema._id = domainEntity.exam.id;
+    persistenceSchema.exam = examSchema;
     persistenceSchema.createdAt = domainEntity.createdAt;
     persistenceSchema.updatedAt = domainEntity.updatedAt;
 

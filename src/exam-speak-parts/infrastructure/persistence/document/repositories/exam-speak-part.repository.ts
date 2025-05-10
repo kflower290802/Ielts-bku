@@ -87,7 +87,7 @@ export class ExamSpeakPartDocumentRepository
 
   async findAllByExamId(examId: string): Promise<ExamSpeakPart[]> {
     const entityObjects = await this.examSpeakPartModel.find({
-      examSpeak: { _id: examId },
+      exam: { _id: examId },
     });
     return entityObjects.map(ExamSpeakPartMapper.toDomain);
   }

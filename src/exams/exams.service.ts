@@ -21,7 +21,6 @@ import { UserExamAnswersService } from '../user-exam-answers/user-exam-answers.s
 import { ExamPassageAnswersService } from '../exam-passage-answers/exam-passage-answers.service';
 import { ExamListenSectionsService } from '../exam-listen-sections/exam-listen-sections.service';
 import { UserExamListenAnswersService } from '../user-exam-listen-answers/user-exam-listen-answers.service';
-import { ExamSpeaksService } from '../exam-speaks/exam-speaks.service';
 import { UserExamSpeakAnswersService } from '../user-exam-speak-answers/user-exam-speak-answers.service';
 import { ExamWritingsService } from '../exam-writings/exam-writings.service';
 import { UserExamWritingsService } from '../user-exam-writings/user-exam-writings.service';
@@ -33,6 +32,7 @@ import { generateTimeByExamType } from '../utils/generate-time';
 import { SubscriptionsService } from '../subscriptions/subscriptions.service';
 import { SubscriptionPlan } from '../subscriptions/subscription.type';
 import { UpdateExamDto } from './dto/update-exam.dto';
+import { ExamSpeakPartsService } from '../exam-speak-parts/exam-speak-parts.service';
 @Injectable()
 export class ExamsService {
   constructor(
@@ -48,12 +48,12 @@ export class ExamsService {
     @Inject(forwardRef(() => ExamListenSectionsService))
     private readonly examListenSectionsService: ExamListenSectionsService,
     private readonly userExamListenAnswersService: UserExamListenAnswersService,
-    private readonly examSpeakService: ExamSpeaksService,
     private readonly userExamSpeakAnswersService: UserExamSpeakAnswersService,
     private readonly examWritingsService: ExamWritingsService,
     private readonly userExamWritingsService: UserExamWritingsService,
     private readonly examListenAnswersService: ExamListenAnswersService,
     private readonly subscriptionsService: SubscriptionsService,
+    private readonly examSpeakPartsService: ExamSpeakPartsService,
   ) {}
 
   async create(createExamDto: CreateExamDto) {
@@ -159,7 +159,7 @@ export class ExamsService {
         );
     }
     if (exam?.type === ExamType.Speaking) {
-      examPassage = await this.examSpeakService.findAllByExamIdAndUserId(
+      examPassage = await this.examSpeakPartsService.findAllByExamIdAndUserId(
         id,
         userId,
       );
@@ -614,7 +614,7 @@ export class ExamsService {
       examPassage = await this.examListenSectionsService.findAllByExamId(id);
     }
     if (exam?.type === ExamType.Speaking) {
-      examPassage = await this.examSpeakService.findAllByExamId(id);
+      examPassage = await this.examSpeakPartsService.findAllByExamId(id);
     }
     if (exam.type === ExamType.Writing) {
       examPassage = await this.examWritingsService.findAllByExamId(id);

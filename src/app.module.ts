@@ -43,8 +43,6 @@ import { ExamListenAnswersModule } from './exam-listen-answers/exam-listen-answe
 
 import { UserExamListenAnswersModule } from './user-exam-listen-answers/user-exam-listen-answers.module';
 
-import { ExamSpeaksModule } from './exam-speaks/exam-speaks.module';
-
 import { UserExamSpeakAnswersModule } from './user-exam-speak-answers/user-exam-speak-answers.module';
 
 import { ExamWritingsModule } from './exam-writings/exam-writings.module';
@@ -138,7 +136,6 @@ import { PageVisitsModule } from './page-visits/page-visits.module';
     UserExamWritingsModule,
     ExamWritingsModule,
     UserExamSpeakAnswersModule,
-    ExamSpeaksModule,
     UserExamListenAnswersModule,
     ExamListenAnswersModule,
     ExamListenQuestionsModule,

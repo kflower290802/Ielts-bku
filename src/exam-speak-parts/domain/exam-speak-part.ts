@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { ExamSpeak } from '../../exam-speaks/domain/exam-speak';
+import { Exam } from '../../exams/domain/exam';
 
 export class ExamSpeakPart {
   @ApiProperty({
@@ -8,7 +8,7 @@ export class ExamSpeakPart {
   id: string;
 
   @ApiProperty()
-  examSpeak: ExamSpeak;
+  exam: Exam;
 
   @ApiProperty()
   createdAt: Date;
