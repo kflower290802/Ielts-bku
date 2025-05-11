@@ -57,15 +57,9 @@ export class ExamListenQuestionsService {
     const { answers, ...rest } = updateExamListenQuestionDto;
     const question = new ExamListenQuestion();
     question.id = id;
-    const answersArray = answers.map((answer) => {
-      if (answer.id) {
-        return this.examListenAnswersService.update(answer.id, answer);
-      }
-      return this.examListenAnswersService.create({
-        ...answer,
-        examListenQuestionId: id,
-      });
-    });
+    const answersArray = answers.map((answer) =>
+      this.examListenAnswersService.update(answer.id, answer),
+    );
     await Promise.all(answersArray);
     return this.examListenQuestionRepository.update(id, rest);
   }

@@ -7,6 +7,7 @@ import {
   IsArray,
   IsBoolean,
   IsMongoId,
+  IsNotEmpty,
 } from 'class-validator';
 
 export class AnswerDto {
@@ -21,9 +22,9 @@ export class AnswerDto {
   isCorrect: boolean;
 
   @ApiProperty()
-  @IsOptional()
+  @IsNotEmpty()
   @IsMongoId()
-  id?: string;
+  id: string;
 }
 
 export class UpdateExamListenQuestionDto {
